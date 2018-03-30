@@ -1,16 +1,29 @@
+﻿
 <!DOCTYPE html>
 <html>
 <head>
+    <base href="@Html.Raw(ViewBag.ContextRoot)/" target="_blank">
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - MuhuGame2018</title>
-    <base href="~/" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <link rel="stylesheet" href="~/dist/vendor.css" asp-append-version="true" />
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="@Html.Raw(ViewBag.ContextRoot)/assets/icons/favicon.ico">
+
+    <title></title>
+    <link href="@Html.Raw(ViewBag.ContextRoot)/app.css" rel="stylesheet" asp-append-version="true">
+    @RenderSection("configurationScripts", required: false)
 </head>
-<body>
+<body class="fixed-left" style="background-color: black">
+    <app>
+        <div class="spinner">
+            <div class="bounce1"></div>
+            <div class="bounce2"></div>
+            <div class="bounce3"></div>
+        </div>
+    </app>
     @RenderBody()
-
+    <script src="@Html.Raw(ViewBag.ContextRoot)/app.js"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace MuhuGame2018
+namespace nabe_order_management
 {
     public class Program
     {
@@ -17,7 +17,7 @@ namespace MuhuGame2018
             BuildWebHost(args).Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
+        public static IWebHost BuildWebHost(string[] args) => 
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
                 .Build();
