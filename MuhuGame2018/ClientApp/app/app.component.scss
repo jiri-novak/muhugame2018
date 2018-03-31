@@ -1,0 +1,15 @@
+@import '../assets/sass/_variables';
+
+.container {
+    font-family: atwriter, sans-serif;
+    color: $color-grey;
+    background-color: $color-black;
+
+    hr.delimiter {
+        background-color: $color-green;
+        margin-top: 20px;
+        padding: 0px;
+        border: 0px;
+        height: 2px;
+    }    
+}

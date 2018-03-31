@@ -5,9 +5,9 @@
   "scripts": {
     "lint": "tslint ClientApp/**/*.ts",
     "start": "webpack-dev-server --hot --content-base ClientApp/",
-    "build:dev": "npm-run-all clean && webpack --config config/webpack.dev.js --bail --progress",
-    "build": "npm-run-all clean && webpack --config config/webpack.prod.js --bail --progress",
-    "watch:dev": "npm-run-all clean && webpack --progress --watch",
+    "build:dev": "npm run clean && webpack --config config/webpack.dev.js --bail --progress",
+    "build": "npm run clean && webpack --config config/webpack.prod.js --bail --progress",
+    "watch:dev": "npm run clean && webpack --progress --watch",
     "test": "karma start ClientApp/test/karma.conf.js",
     "clean": "rimraf wwwroot"
   },
@@ -63,6 +63,7 @@
     "postcss-loader": "^2.0.8",
     "raw-loader": "^0.5.1",
     "reflect-metadata": "^0.1.10",
+    "rimraf": "^2.6.2",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.19.0",
     "typescript": "2.6.1",
