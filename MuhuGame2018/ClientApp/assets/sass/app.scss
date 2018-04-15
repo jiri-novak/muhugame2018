@@ -1,6 +1,8 @@
 @import "_spinner";
 @import "_variables";
 @import "_buttons";
+$vg-font-path: "/assets/fonts/";
+@import "_videogular";
 $icon-font-path: "/assets/fonts/";
 $fa-font-path: "/assets/fonts/";
 @import "~bootstrap-sass/assets/stylesheets/_bootstrap.scss";
@@ -34,4 +36,25 @@ $fa-font-path: "/assets/fonts/";
 
 .ng-invalid:not(form) {
     border-left: 5px solid $color-validation-error;
+}
+
+/* unvisited link */
+a:link {
+    color: $color-white;
+    font-weight: bold;
+}
+
+/* visited link */
+a:visited {
+    color: $color-white;
+}
+
+/* mouse over link */
+a:hover {
+    color: $color-grey;
+}
+
+/* selected link */
+a:active {
+    color: $color-darkgrey;
 }

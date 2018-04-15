@@ -7,6 +7,10 @@ import { RouterModule } from '@angular/router';
 
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { VgCoreModule } from "videogular2/core";
+import { VgControlsModule } from "videogular2/controls";
+import { VgOverlayPlayModule } from "videogular2/overlay-play";
+import { VgBufferingModule } from "videogular2/buffering";
 
 import * as fromComponents from './components';
 import * as fromServices from './services';
@@ -14,12 +18,13 @@ import * as fromServices from './services';
 const declarations = [
     fromComponents.NavMenuComponent,
     fromComponents.NewsComponent,
-    fromComponents.RulesComponent,
+    fromComponents.InstructionsComponent,
     fromComponents.MediaComponent,
-    fromComponents.TeamsComponent,
+    fromComponents.ParticipantsComponent,
     fromComponents.CiphersComponent,
     fromComponents.ResultsComponent,
-    fromComponents.LoginComponent
+    fromComponents.LoginComponent,
+    fromComponents.ContactComponent
 ];
 
 const providers = [
@@ -34,7 +39,12 @@ const providers = [
         FormsModule,
         ReactiveFormsModule,
         RouterModule,
-        
+
+        VgCoreModule,
+        VgControlsModule,
+        VgOverlayPlayModule,
+        VgBufferingModule,
+
         ModalModule.forRoot(),
         CollapseModule.forRoot(),
     ],

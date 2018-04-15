@@ -27,11 +27,13 @@ namespace nabe_order_management
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-
+            
+#if DEBUG
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "nabe.order.management.api", Version = "v1" });
+                c.SwaggerDoc("v1", new Info { Title = "Muhugame 2018 API", Version = "v1" });
             });
+#endif
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -51,11 +53,13 @@ namespace nabe_order_management
 				    HotModuleReplacementEndpoint = "/__webpack_hmr"
                 });
 
+#if DEBUG
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "nabe.order.management.api V1");
                 });
+#endif
 
                 app.MapWhen(x => !x.Request.Path.Value.StartsWith("/swagger", StringComparison.OrdinalIgnoreCase), builder =>
                 {

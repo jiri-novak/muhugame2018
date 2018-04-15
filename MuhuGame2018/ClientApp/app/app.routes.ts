@@ -5,23 +5,25 @@ import { AppComponent } from './app.component';
 import { 
     NavMenuComponent, 
     NewsComponent,
-    RulesComponent,
+    InstructionsComponent,
     MediaComponent,
-    TeamsComponent,
+    ParticipantsComponent,
     CiphersComponent,
     ResultsComponent,
-    LoginComponent
+    LoginComponent,
+    ContactComponent
 } from './main/components/index';
 
 const routes: Routes = [
     { path: '', redirectTo: 'news', pathMatch: 'full' },
     { path: 'news', component: NewsComponent },
-    { path: 'rules', component: RulesComponent },
+    { path: 'instructions', component: InstructionsComponent },
     { path: 'media', component: MediaComponent },
-    { path: 'teams', component: TeamsComponent },
+    { path: 'participants', component: ParticipantsComponent },
     { path: 'ciphers', component: CiphersComponent },
     { path: 'results', component: ResultsComponent },
     { path: 'login', component: LoginComponent },
+    { path: 'contact', component: ContactComponent },
     { path: '**', redirectTo: 'news' }
 ];
 
