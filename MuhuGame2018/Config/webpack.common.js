@@ -86,10 +86,6 @@ module.exports = {
             to: 'assets/icons'
         },
         {
-            from: `ClientApp/assets/i18n`,
-            to: 'assets/icons'
-        },
-        {
             from: `ClientApp/assets/fonts`,
             to: 'assets/fonts'
         }]),

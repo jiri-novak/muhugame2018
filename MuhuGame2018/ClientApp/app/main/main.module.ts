@@ -5,11 +5,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 
-import { TableModule } from 'ngx-easy-table';
-import { BusyModule } from 'angular2-busy';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
-import { NgxFitTextModule } from 'ngx-fit-text';
 
 import * as fromComponents from './components';
 import * as fromServices from './services';
@@ -37,12 +34,9 @@ const providers = [
         FormsModule,
         ReactiveFormsModule,
         RouterModule,
-
-        TableModule,
-        BusyModule,
+        
         ModalModule.forRoot(),
         CollapseModule.forRoot(),
-        NgxFitTextModule.forRoot()
     ],
     exports: declarations,
     providers: providers

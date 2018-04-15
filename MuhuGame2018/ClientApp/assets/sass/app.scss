@@ -3,12 +3,7 @@
 @import "_buttons";
 $icon-font-path: "/assets/fonts/";
 $fa-font-path: "/assets/fonts/";
-@import '~font-awesome/scss/font-awesome.scss';
 @import "~bootstrap-sass/assets/stylesheets/_bootstrap.scss";
-@import "~ngx-easy-table/spectre";
-@import "~ngx-easy-table/spectre-icons";
-@import '../../../node_modules/angular2-toaster/toaster';
-@import '../../../node_modules/angular2-busy/build/style/busy';
 @import '../../../node_modules/sweetalert2/dist/sweetalert2';
 
 @font-face {
