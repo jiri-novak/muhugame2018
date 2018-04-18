@@ -3,20 +3,9 @@ import { Component, OnInit, ViewChild, TemplateRef, ChangeDetectionStrategy } fr
 @Component({
     selector: 'media',
     templateUrl: './media.component.html',
-    styleUrls: ['./media.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    styleUrls: ['./media.component.scss']
 })
 export class MediaComponent{
-    sources: Array<Object>;
-
-    constructor() {
-        this.sources = [
-            {
-                src: "/assets/videos/press-conf-720p.mp4",
-                type: "video/mp4"
-            }
-        ];
-    }
 
     ngOnInit() {
     }

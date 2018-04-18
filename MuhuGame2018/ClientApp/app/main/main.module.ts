@@ -20,6 +20,7 @@ const declarations = [
     fromComponents.NewsComponent,
     fromComponents.InstructionsComponent,
     fromComponents.MediaComponent,
+    fromComponents.VideoComponent,
     fromComponents.ParticipantsComponent,
     fromComponents.CiphersComponent,
     fromComponents.ResultsComponent,

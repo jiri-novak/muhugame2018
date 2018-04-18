@@ -11,7 +11,8 @@ import {
     CiphersComponent,
     ResultsComponent,
     LoginComponent,
-    ContactComponent
+    ContactComponent,
+    VideoComponent
 } from './main/components/index';
 
 const routes: Routes = [
@@ -19,6 +20,7 @@ const routes: Routes = [
     { path: 'news', component: NewsComponent },
     { path: 'instructions', component: InstructionsComponent },
     { path: 'media', component: MediaComponent },
+    { path: 'media/:id', component: VideoComponent },
     { path: 'participants', component: ParticipantsComponent },
     { path: 'ciphers', component: CiphersComponent },
     { path: 'results', component: ResultsComponent },
