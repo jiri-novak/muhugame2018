@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserService, AlertService } from '../../_services';
+import { AlertService, UserService } from '../../../shared/_services';
 
 @Component({
     selector: 'registration',

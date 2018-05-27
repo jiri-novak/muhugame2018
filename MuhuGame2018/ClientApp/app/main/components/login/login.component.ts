@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthenticationService, AlertService } from '../../_services';
+import { AlertService, AuthenticationService } from '../../../shared/_services';
 
 @Component({
     selector: 'login',

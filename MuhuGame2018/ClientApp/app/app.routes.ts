@@ -2,36 +2,23 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
 
-import { 
-    NavMenuComponent, 
-    NewsComponent,
-    InstructionsComponent,
-    MediaComponent,
-    ParticipantsComponent,
-    CiphersComponent,
-    ResultsComponent,
-    LoginComponent,
-    ContactComponent,
-    VideoComponent,
-    RegistrationComponent,
-    HomeComponent
-} from './main/components/index';
-import { AuthGuard } from './main/_guards';
+import * as fromComponents from './main/components/index';
+import { AuthGuard } from './shared/_guards';
 
 const routes: Routes = [
-    { path: '', component: HomeComponent, canActivate: [AuthGuard] },
+    { path: '', component: fromComponents.HomeComponent, canActivate: [AuthGuard] },
     //{ path: '', redirectTo: 'news', pathMatch: 'full' },
-    { path: 'news', component: NewsComponent },
-    { path: 'instructions', component: InstructionsComponent },
-    { path: 'media', component: MediaComponent },
-    { path: 'media/:id', component: VideoComponent },
-    { path: 'participants', component: ParticipantsComponent },
-    { path: 'ciphers', component: CiphersComponent },
-    { path: 'results', component: ResultsComponent },
-    { path: 'login', component: LoginComponent },
-    { path: 'contact', component: ContactComponent },
-    { path: 'registration', component: RegistrationComponent },
-    
+    { path: 'news', component: fromComponents.NewsComponent },
+    { path: 'instructions', component: fromComponents.InstructionsComponent },
+    { path: 'media', component: fromComponents.MediaComponent },
+    { path: 'media/:id', component: fromComponents.VideoComponent },
+    { path: 'participants', component: fromComponents.ParticipantsComponent },
+    { path: 'ciphers', component: fromComponents.CiphersComponent },
+    { path: 'results', component: fromComponents.ResultsComponent },
+    { path: 'login', component: fromComponents.LoginComponent },
+    { path: 'contact', component: fromComponents.ContactComponent },
+    { path: 'registration', component: fromComponents.RegistrationComponent },
+
     //{ path: '**', redirectTo: 'news' }
     { path: '**', redirectTo: '' }
 ];

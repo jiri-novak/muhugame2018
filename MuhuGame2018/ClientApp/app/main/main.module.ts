@@ -14,13 +14,8 @@ import { VgOverlayPlayModule } from "videogular2/overlay-play";
 import { VgBufferingModule } from "videogular2/buffering";
 
 import * as fromComponents from './components';
-import * as fromServices from './_services';
-import * as fromDirectives from './_directives/index';
-import * as fromGuards from './_guards/index';
 
 const declarations = [
-    fromDirectives.AlertsComponent,
-    fromComponents.NavMenuComponent,
     fromComponents.NewsComponent,
     fromComponents.InstructionsComponent,
     fromComponents.MediaComponent,
@@ -31,8 +26,7 @@ const declarations = [
     fromComponents.LoginComponent,
     fromComponents.ContactComponent,
     fromComponents.RegistrationComponent,
-    fromComponents.HomeComponent,
-    fromComponents.FooterComponent
+    fromComponents.HomeComponent
 ];
 
 @NgModule({
@@ -55,11 +49,6 @@ const declarations = [
     ],
     exports: declarations,
     providers: [
-        fromGuards.AuthGuard,
-        fromServices.DialogService,
-        fromServices.AlertService,
-        fromServices.UserService,
-        fromServices.AuthenticationService
     ]
 })
 export class MainModule {

@@ -9,7 +9,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 
-import { MainModule } from './main'
+import { SharedModule } from './shared';
+import { MainModule } from './main';
 import { AppComponent } from './app.component';
 import { RoutesConfig } from './app.routes';
 import { AppConfig } from './app.config';
@@ -31,6 +32,8 @@ export function getBaseUrl() {
         BrowserAnimationsModule,
         ModalModule.forRoot(),
         CollapseModule.forRoot(),
+
+        SharedModule,
         MainModule
     ],
     providers: [
