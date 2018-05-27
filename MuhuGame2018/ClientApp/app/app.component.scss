@@ -1,15 +1,27 @@
 @import '../assets/sass/_variables';
-
+$footerHeight: 50px;
 .container {
+    height: 100%;
+    position: relative;
     font-family: atwriter, MyUnderwood, sans-serif;
     color: $color-grey;
     background-color: $color-black;
-
     hr.delimiter {
         background-color: $color-green;
         margin-top: 20px;
+        margin-bottom: 2px;
         padding: 0px;
         border: 0px;
         height: 2px;
-    }    
+    }
+    padding-bottom: $footerHeight;
+    #footer {
+        //position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: $footerHeight;
+        .content {
+            float: right;
+        }
+    }
 }

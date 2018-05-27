@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { AlertModule } from 'ngx-bootstrap/alert';
 import { VgCoreModule } from "videogular2/core";
 import { VgControlsModule } from "videogular2/controls";
 import { VgOverlayPlayModule } from "videogular2/overlay-play";
@@ -18,7 +19,7 @@ import * as fromDirectives from './_directives/index';
 import * as fromGuards from './_guards/index';
 
 const declarations = [
-    fromDirectives.AlertComponent,
+    fromDirectives.AlertsComponent,
     fromComponents.NavMenuComponent,
     fromComponents.NewsComponent,
     fromComponents.InstructionsComponent,
@@ -30,7 +31,8 @@ const declarations = [
     fromComponents.LoginComponent,
     fromComponents.ContactComponent,
     fromComponents.RegistrationComponent,
-    fromComponents.HomeComponent
+    fromComponents.HomeComponent,
+    fromComponents.FooterComponent
 ];
 
 @NgModule({
@@ -49,6 +51,7 @@ const declarations = [
 
         ModalModule.forRoot(),
         CollapseModule.forRoot(),
+        AlertModule.forRoot()
     ],
     exports: declarations,
     providers: [
