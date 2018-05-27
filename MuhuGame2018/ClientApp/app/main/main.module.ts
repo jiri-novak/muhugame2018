@@ -13,9 +13,12 @@ import { VgOverlayPlayModule } from "videogular2/overlay-play";
 import { VgBufferingModule } from "videogular2/buffering";
 
 import * as fromComponents from './components';
-import * as fromServices from './services';
+import * as fromServices from './_services';
+import * as fromDirectives from './_directives/index';
+import * as fromGuards from './_guards/index';
 
 const declarations = [
+    fromDirectives.AlertComponent,
     fromComponents.NavMenuComponent,
     fromComponents.NewsComponent,
     fromComponents.InstructionsComponent,
@@ -26,11 +29,8 @@ const declarations = [
     fromComponents.ResultsComponent,
     fromComponents.LoginComponent,
     fromComponents.ContactComponent,
-    fromComponents.RegistrationComponent
-];
-
-const providers = [
-    fromServices.DialogService
+    fromComponents.RegistrationComponent,
+    fromComponents.HomeComponent
 ];
 
 @NgModule({
@@ -51,7 +51,13 @@ const providers = [
         CollapseModule.forRoot(),
     ],
     exports: declarations,
-    providers: providers
+    providers: [
+        fromGuards.AuthGuard,
+        fromServices.DialogService,
+        fromServices.AlertService,
+        fromServices.UserService,
+        fromServices.AuthenticationService
+    ]
 })
 export class MainModule {
 }

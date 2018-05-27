@@ -36,6 +36,9 @@
                         <div class="collapse navbar-collapse" id="navbar-primary-collapse" [collapse]="isCollapsed">
                             <ul class="nav navbar-nav">
                                 <li [routerLinkActive]="['active']">
+                                    <a [routerLink]="['/home']">HOME</a>
+                                </li>
+                                <li [routerLinkActive]="['active']">
                                     <a [routerLink]="['/news']">NOVINKY</a>
                                 </li>
                                 <li [routerLinkActive]="['active']">
@@ -61,7 +64,7 @@
                                 </li>
                                 <li [routerLinkActive]="['active']">
                                     <a [routerLink]="['/login']">LOGIN TÝMU</a>
-                                </li>                               
+                                </li>
                             </ul>
                         </div>
 

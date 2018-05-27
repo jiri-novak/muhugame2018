@@ -13,11 +13,14 @@ import {
     LoginComponent,
     ContactComponent,
     VideoComponent,
-    RegistrationComponent
+    RegistrationComponent,
+    HomeComponent
 } from './main/components/index';
+import { AuthGuard } from './main/_guards';
 
 const routes: Routes = [
-    { path: '', redirectTo: 'news', pathMatch: 'full' },
+    { path: '', component: HomeComponent, canActivate: [AuthGuard] },
+    //{ path: '', redirectTo: 'news', pathMatch: 'full' },
     { path: 'news', component: NewsComponent },
     { path: 'instructions', component: InstructionsComponent },
     { path: 'media', component: MediaComponent },
@@ -28,7 +31,9 @@ const routes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'contact', component: ContactComponent },
     { path: 'registration', component: RegistrationComponent },
-    { path: '**', redirectTo: 'news' }
+    
+    //{ path: '**', redirectTo: 'news' }
+    { path: '**', redirectTo: '' }
 ];
 
 export const RoutesConfig = RouterModule.forRoot(routes);
