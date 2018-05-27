@@ -12,7 +12,8 @@ import {
     ResultsComponent,
     LoginComponent,
     ContactComponent,
-    VideoComponent
+    VideoComponent,
+    RegistrationComponent
 } from './main/components/index';
 
 const routes: Routes = [
@@ -26,6 +27,7 @@ const routes: Routes = [
     { path: 'results', component: ResultsComponent },
     { path: 'login', component: LoginComponent },
     { path: 'contact', component: ContactComponent },
+    { path: 'registration', component: RegistrationComponent },
     { path: '**', redirectTo: 'news' }
 ];
 

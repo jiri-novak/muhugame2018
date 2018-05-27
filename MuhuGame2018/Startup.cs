@@ -6,6 +6,13 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.Extensions.Logging;
+using MuhuGame2018.Helpers;
+using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
+using MuhuGame2018.Services;
 
 namespace nabe_order_management
 {
@@ -26,8 +33,38 @@ namespace nabe_order_management
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<DataContext>(x => x.UseInMemoryDatabase("TestDb"));
             services.AddMvc();
-            
+            services.AddAutoMapper();
+
+            // configure strongly typed settings objects
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            services.Configure<AppSettings>(appSettingsSection);
+
+            // configure jwt authentication
+            var appSettings = appSettingsSection.Get<AppSettings>();
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+
+            // configure DI for application services
+            services.AddScoped<IUserService, UserService>();
+
 #if DEBUG
             services.AddSwaggerGen(c =>
             {
@@ -42,6 +79,7 @@ namespace nabe_order_management
             loggerFactory.AddDebug();
 
             app.UseStaticFiles();
+            app.UseAuthentication();
 
             if (env.IsDevelopment())
             {

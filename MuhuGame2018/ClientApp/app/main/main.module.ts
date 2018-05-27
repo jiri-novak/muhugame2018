@@ -25,7 +25,8 @@ const declarations = [
     fromComponents.CiphersComponent,
     fromComponents.ResultsComponent,
     fromComponents.LoginComponent,
-    fromComponents.ContactComponent
+    fromComponents.ContactComponent,
+    fromComponents.RegistrationComponent
 ];
 
 const providers = [
