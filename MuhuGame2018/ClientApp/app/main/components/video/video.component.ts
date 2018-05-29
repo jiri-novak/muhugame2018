@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, TemplateRef, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'video-detail',
@@ -9,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class VideoComponent{
     sources: Array<Object>;
-    private sub:any;
+    private subscription: Subscription;
 
     constructor(private route: ActivatedRoute) {
         this.sources = [
@@ -22,7 +23,7 @@ export class VideoComponent{
 
     ngOnInit() {
         // Subscribe to route params
-        this.sub = this.route.params.subscribe(params => {
+        this.subscription = this.route.params.subscribe(params => {
           let id = params['id'];
           console.log(id);
       });
@@ -30,6 +31,6 @@ export class VideoComponent{
 
     ngOnDestroy() {
         // Clean sub to avoid memory leak
-      this.sub.unsubscribe();
+      this.subscription.unsubscribe();
     }
 }

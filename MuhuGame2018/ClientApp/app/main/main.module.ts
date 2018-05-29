@@ -25,8 +25,7 @@ const declarations = [
     fromComponents.ResultsComponent,
     fromComponents.LoginComponent,
     fromComponents.ContactComponent,
-    fromComponents.RegistrationComponent,
-    fromComponents.HomeComponent
+    fromComponents.RegistrationComponent
 ];
 
 @NgModule({

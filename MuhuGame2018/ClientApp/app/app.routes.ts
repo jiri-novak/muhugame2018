@@ -6,8 +6,7 @@ import * as fromComponents from './main/components/index';
 import { AuthGuard } from './shared/_guards';
 
 const routes: Routes = [
-    { path: '', component: fromComponents.HomeComponent, canActivate: [AuthGuard] },
-    //{ path: '', redirectTo: 'news', pathMatch: 'full' },
+    { path: '', redirectTo: 'news', pathMatch: 'full' },
     { path: 'news', component: fromComponents.NewsComponent },
     { path: 'instructions', component: fromComponents.InstructionsComponent },
     { path: 'media', component: fromComponents.MediaComponent },
@@ -16,11 +15,11 @@ const routes: Routes = [
     { path: 'ciphers', component: fromComponents.CiphersComponent },
     { path: 'results', component: fromComponents.ResultsComponent },
     { path: 'login', component: fromComponents.LoginComponent },
+    { path: 'logout', component: fromComponents.LoginComponent },
     { path: 'contact', component: fromComponents.ContactComponent },
     { path: 'registration', component: fromComponents.RegistrationComponent },
-
-    //{ path: '**', redirectTo: 'news' }
-    { path: '**', redirectTo: '' }
+    { path: 'registration/:id', component: fromComponents.RegistrationComponent, canActivate: [AuthGuard] },
+    { path: '**', redirectTo: 'news' }
 ];
 
 export const RoutesConfig = RouterModule.forRoot(routes);

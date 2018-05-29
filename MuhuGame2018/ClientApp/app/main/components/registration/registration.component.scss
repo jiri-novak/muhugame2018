@@ -1,0 +1,17 @@
+@import '../../../../assets/sass/_variables';
+
+.panel {
+    background-color: $color-grey;
+    border-color: $color-black;
+}
+
+.panel-body {
+    background-color: $color-darkgrey;
+    border-color: $color-black;
+    padding: 15px;
+}
+
+.panel-default > .panel-heading {
+    background-color: $color-grey;
+    border-color: $color-darkgrey;
+}

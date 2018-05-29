@@ -10,7 +10,7 @@ import { AlertService, AuthenticationService } from '../../../shared/_services';
 export class LoginComponent implements OnInit {
     model: any = {};
     loading = false;
-    returnUrl: string;
+    //returnUrl: string;
 
     constructor(
         private route: ActivatedRoute,
@@ -23,7 +23,11 @@ export class LoginComponent implements OnInit {
         this.authenticationService.logout();
 
         // get return url from route parameters or default to '/'
-        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+        //this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+
+        if (this.route.snapshot.routeConfig.path === "logout") {
+            this.logout();
+        }
     }
 
     login() {
@@ -31,11 +35,17 @@ export class LoginComponent implements OnInit {
         this.authenticationService.login(this.model.username, this.model.password)
             .subscribe(
                 data => {
-                    this.router.navigate([this.returnUrl]);
+                    this.router.navigate([`/registration/${data.username}`]);
                 },
                 error => {
-                    this.alertService.error('Username or password is incorrect');
+                    this.alertService.error('Zadaná kombinace jména a hesla není správná!');
                     this.loading = false;
                 });
-    }    
+    }
+
+    logout() {
+        this.authenticationService.logout();
+        //this.router.navigate([this.returnUrl]);
+        this.router.navigate(['']);
+    }
 }
