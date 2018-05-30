@@ -15,27 +15,26 @@
     border-color: $color-darkgrey;
 }
 
-.control-label {
-    padding-bottom: 5px;
-}
-
-.form-group.required {
-    .control-label::after {
-        font-weight: bold;
-        content: "*";
-        font-size: 15pt;
-        margin-left: 5px;
-        color: red;
-    }
+.form-group.required .control-label::after {
+    font-weight: bold;
+    content: "*";
+    font-size: 15pt;
+    margin-left: 5px;
+    color: red;
 }
 
 .ng-valid[required],
 .ng-valid.required {
-    border-left: 5px solid #42A948;
+    border-left: 0px solid #42A948;
     /* green */
 }
 
 .ng-invalid:not(form) {
-    border-left: 5px solid #a94442;
+    border-left: 0px solid #a94442;
     /* red */
 }
+
+.help-block {
+    margin: 0px;
+    font-size: small;
+  }

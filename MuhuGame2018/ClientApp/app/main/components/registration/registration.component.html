@@ -9,92 +9,58 @@
         </div>
     </div>
 
-    <!-- <form id="emailForm" #emailForm class="form-horizontal" 
-        data-fv-framework="bootstrap" data-fv-icon-valid="glyphicon glyphicon-ok" data-fv-icon-invalid="glyphicon glyphicon-remove"
-        data-fv-icon-validating="glyphicon glyphicon-refresh">
+    <div class="row">
+        <div class="col-lg-12">
+            <h3>Registrační údaje týmu:</h3>
 
-        <div class="form-group">
-            <label class="col-xs-3 control-label">Email address</label>
-            <div class="col-xs-7">
-                <input type="text" class="form-control" name="email" data-fv-emailaddress="true" data-fv-emailaddress-message="The value is not a valid email address"
-                />
-            </div>
-        </div>
-    </form> -->
+            <form class="form-horizontal" name="form" (ngSubmit)="teamForm.form.valid && register()" #teamForm="ngForm" novalidate>
 
-    <form name="form" (ngSubmit)="f.form.valid && register()" #f="ngForm"  
-        data-fv-framework="bootstrap" 
-        data-fv-icon-valid="glyphicon glyphicon-ok"
-        data-fv-icon-invalid="glyphicon glyphicon-remove"
-        data-fv-icon-validating="glyphicon glyphicon-refresh">
-        <div class="row">
-            <div class="col-lg-12">
-                <h3>Registrační údaje týmu:</h3>
-
-                <div class="col-md-6">
-                    <div class="form-group required" [ngClass]="{ 'has-error': f.submitted && !name.valid }">
+                <div class="col-md-4">
+                    <div class="form-group required has-feedback" [ngClass]="{ 'has-error': (teamForm.submitted || name.touched) && !name.valid, 'has-success': name.valid }">
                         <label class="col-md-4 control-label" for="name">Název týmu:</label>
                         <div class="col-md-8">
-                            <input type="text" class="form-control" name="name" [(ngModel)]="model.name" #name="ngModel" required />
+                            <input type="text" class="form-control" name="name" [(ngModel)]="model.name" #name="ngModel" required>
+                            <span class="glyphicon form-control-feedback" [ngClass]="{ 'glyphicon-remove': (teamForm.submitted || name.touched) && !name.valid, 'glyphicon-ok': name.valid }"></span>
+                            <!-- <div class="help-block" *ngIf="(f.submitted || name.touched) && !name.valid">Název týmu je povinný!</div> -->
                         </div>
-                        <div class="col-md-8 help-block" *ngIf="f.submitted && !name.valid">Název týmu je povinný</div>
                     </div>
-                </div>
 
-                <div class="col-md-6">
-                    <div class="form-group required" [ngClass]="{ 'has-error': f.submitted && !email.valid }">
+                    <div class="form-group required has-feedback" [ngClass]="{ 'has-error': (teamForm.submitted || email.touched) && !email.valid, 'has-success': email.valid }">
                         <label class="col-md-4 control-label" for="email">Email:</label>
                         <div class="col-md-8">
-                            <input type="email" class="form-control" name="email" [(ngModel)]="model.email" #email="ngModel" required 
-                            data-fv-emailaddress-message="The value is not a valid email address" />
+                            <input type="email" class="form-control" name="email" [(ngModel)]="model.email" #email="ngModel" required email/>
+                            <span class="glyphicon form-control-feedback" [ngClass]="{ 'glyphicon-remove': (teamForm.submitted || email.touched) && !email.valid, 'glyphicon-ok': email.valid }"></span>
                         </div>
-                        <div class="col-md-8 help-block" *ngIf="f.submitted && !email.valid">Email je povinný</div>
+                        <!-- <div class="col-md-8 help-block" *ngIf="(f.submitted || email.touched) && !email.valid">Email je povinný a musí mít správný formát!</div> -->
                     </div>
-                </div>
 
-                <div class="col-md-6">
-                    <div class="form-group required" [ngClass]="{ 'has-error': f.submitted && !login.valid }">
+                    <div class="form-group required has-feedback" [ngClass]="{ 'has-error': (teamForm.submitted || login.touched) && !login.valid, 'has-success': login.valid }">
                         <label class="col-md-4 control-label" for="login">Login:</label>
                         <div class="col-md-8">
-                            <input type="text" class="form-control" name="login" [(ngModel)]="model.login" #login="ngModel" required />
+                            <input type="text" class="form-control" name="login" [(ngModel)]="model.login" #login="ngModel" required/>
+                            <span class="glyphicon form-control-feedback" [ngClass]="{ 'glyphicon-remove': (teamForm.submitted || login.touched) && !login.valid, 'glyphicon-ok': login.valid }"></span>
                         </div>
-                        <div class="col-md-8 help-block" *ngIf="f.submitted && !login.valid">Login je povinný</div>
+                        <!-- <div class="col-md-8 help-block" *ngIf="(f.submitted || login.touched) && !login.valid">Login je povinný!</div> -->
                     </div>
-                </div>
 
-                <div class="col-md-6">
-                    <div class="form-group required" [ngClass]="{ 'has-error': f.submitted && !password.valid }">
-                        <label class="col-md-4 control-label" for="password">Heslo</label>
+                    <div class="form-group required has-feedback" [ngClass]="{ 'has-error': (teamForm.submitted || password.touched) && !password.valid, 'has-success': password.valid }">
+                        <label class="col-md-4 control-label" for="password">Heslo:</label>
                         <div class="col-md-8">
-                            <input type="password" class="form-control" name="password" [(ngModel)]="model.password" #password="ngModel" required />
+                            <input type="password" class="form-control" name="password" [(ngModel)]="model.password" #password="ngModel" required/>
+                            <span class="glyphicon form-control-feedback" [ngClass]="{ 'glyphicon-remove': (teamForm.submitted || password.touched) && !password.valid, 'glyphicon-ok': password.valid }"></span>
                         </div>
-                        <div *ngIf="f.submitted && !password.valid" class="col-md-8 help-block">Heslo je povinné</div>
+                        <!-- <div class="col-md-8 help-block" *ngIf="(f.submitted || password.touched) && !password.valid">Heslo je povinné!</div> -->
                     </div>
-                </div>
 
-                <div class="col-md-12">
-                    <div class="form-group">
+                    <div class="form-group col-md-offset-3">
                         <br/>
-                        <button [disabled]="loading" class="btn btn-primary">Zaregistrovat</button>
+                        <button [disabled]="!teamForm.form.valid" class="btn btn-primary">Zaregistrovat</button>
                         <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
                         />
                     </div>
-                </div>
-            </div>
-        </div>
-    </form>
 
-    <!-- <div class="row">
-        <div class="col-lg-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <strong>Účastníci (nejméně 3)</strong>
                 </div>
-                <div class="panel-body">
-                    Tralalala
-                </div>
-            </div>
+            </form>
         </div>
-    </div> -->
-
+    </div>
 </div>
