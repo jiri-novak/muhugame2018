@@ -6,9 +6,10 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row" *ngFor="let source of sources">
         <div class="col-lg-12">
-            <video-detail></video-detail>
+            <h3>{{source.title}}</h3>
+            <video-detail [src]="source.src" [type]="source.type"></video-detail>
         </div>
     </div>
 

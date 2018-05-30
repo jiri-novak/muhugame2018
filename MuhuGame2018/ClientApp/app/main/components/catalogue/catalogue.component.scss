@@ -1,0 +1,17 @@
+@import '../../../../assets/sass/_variables';
+h4 {
+    padding-top: 25px;
+    font-weight: bold;
+}
+
+p {
+    text-align: justify;
+}
+
+article section:nth-child(odd) {
+    background-color: transparent;
+}
+
+article section:nth-child(even) {
+    background-color: transparent;
+}

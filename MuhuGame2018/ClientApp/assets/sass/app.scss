@@ -16,6 +16,13 @@ $fa-font-path: "/assets/fonts/";
 }
 
 @font-face {
+    font-family: 'SpecialElite';
+    src:url(/assets/fonts/SpecialElite.ttf) format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
     font-family: 'atwriter';
     src:url(/assets/fonts/atwriter.ttf) format('truetype');
     font-weight: normal;
