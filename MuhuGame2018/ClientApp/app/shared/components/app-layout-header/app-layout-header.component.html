@@ -52,9 +52,6 @@
                                 <a [routerLink]="['/results']">VÝSLEDKY</a>
                             </li>
                             <li [routerLinkActive]="['active']">
-                                <a [routerLink]="['/contact']">KONTAKT</a>
-                            </li>
-                            <li [routerLinkActive]="['active']">
                                 <a *ngIf="!currentUser" [routerLink]="['/registration']">REGISTRACE</a>
                                 <a *ngIf="currentUser" [routerLink]="['/registration']">VÁŠ TÝM</a>
                             </li>
@@ -63,6 +60,9 @@
                             </li>
                             <li *ngIf="currentUser" [routerLinkActive]="['active']">
                                 <a [routerLink]="['/logout']">LOGOUT TÝMU</a>
+                            </li>
+                            <li [routerLinkActive]="['active']">
+                                <a [routerLink]="['/contact']">KONTAKT</a>
                             </li>
                         </ul>
                     </div>
