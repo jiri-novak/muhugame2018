@@ -10,11 +10,13 @@ import { AlertModule } from 'ngx-bootstrap/alert';
 import * as fromComponents from './components';
 import * as fromServices from './_services';
 import * as fromGuards from './_guards/index';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 const declarations = [
     fromComponents.AlertsComponent,
     fromComponents.AppLayoutHeaderComponent,
     fromComponents.AppLayoutFooterComponent,
+    fromComponents.ValidatingInputComponent
 ];
 
 @NgModule({
@@ -22,6 +24,8 @@ const declarations = [
     imports: [
         CommonModule,
         RouterModule,
+        FormsModule,
+        ReactiveFormsModule,
 
         ModalModule.forRoot(),
         CollapseModule.forRoot(),

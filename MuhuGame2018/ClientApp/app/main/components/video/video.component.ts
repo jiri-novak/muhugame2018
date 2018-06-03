@@ -7,6 +7,6 @@ import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VideoComponent {
-    @Input() src: string;// = "/assets/videos/press-conf-720p.mp4";
-    @Input() type: string;// = "video/mp4";
+    @Input() src: string;
+    @Input() type: string;
 }

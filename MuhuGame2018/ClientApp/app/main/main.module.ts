@@ -13,24 +13,16 @@ import { VgControlsModule } from "videogular2/controls";
 import { VgOverlayPlayModule } from "videogular2/overlay-play";
 import { VgBufferingModule } from "videogular2/buffering";
 
-import * as fromComponents from './components';
+import { SharedModule } from '../shared';
 
-const declarations = [
-    fromComponents.NewsComponent,
-    fromComponents.InstructionsComponent,
-    fromComponents.MediaComponent,
-    fromComponents.VideoComponent,
-    fromComponents.ParticipantsComponent,
-    fromComponents.CiphersComponent,
-    fromComponents.ResultsComponent,
-    fromComponents.LoginComponent,
-    fromComponents.ContactComponent,
-    fromComponents.RegistrationComponent,
-    fromComponents.CatalogueComponent
-];
+import * as components from './components';
+
+const allComponents = Object.keys(components).map(k => components[k]);
 
 @NgModule({
-    declarations,
+    declarations: [
+        ...allComponents
+    ],
     imports: [
         CommonModule,
         HttpModule,
@@ -45,10 +37,12 @@ const declarations = [
 
         ModalModule.forRoot(),
         CollapseModule.forRoot(),
-        AlertModule.forRoot()
+        AlertModule.forRoot(),
+
+        SharedModule
     ],
-    exports: declarations,
-    providers: [
+    exports: [
+        ...allComponents
     ]
 })
 export class MainModule {

@@ -1,0 +1,27 @@
+<div class="form-group required has-feedback" [ngClass]="{ 'has-error': (form.submitted || val.touched) && !val.valid, 'has-success': val.valid }">
+    <label class="col-md-4 control-label" for="value">{{label}}</label>
+    <div class="col-md-8">
+        <input type="text" class="form-control" name="value" [(ngModel)]="value" #val="ngModel">
+        <span class="glyphicon form-control-feedback" [ngClass]="{ 'glyphicon-remove': (form.submitted || val.touched) && !val.valid, 'glyphicon-ok': val.valid }"></span>
+        <div class="help-block" *ngIf="(form.submitted || val.touched) && !val.valid">{{validationMsg}}</div>
+    </div>
+</div>
+
+<!-- <div class="form-group required has-feedback" [ngClass]="{ 'has-error': (form.submitted || val.touched) && !val.valid, 'has-success': val.valid }">
+    <label class="col-md-4 control-label" for="value">{{label}}</label>
+    <div class="col-md-8">
+        <input type="text" class="form-control" name="value" [(ngModel)]="value" #val="ngModel">
+        <span class="glyphicon form-control-feedback" [ngClass]="{ 'glyphicon-remove': (form.submitted || val.touched) && !val.valid, 'glyphicon-ok': val.valid }"></span>
+        <div class="help-block" *ngIf="(form.submitted || val.touched) && !val.valid">{{validationMsg}}</div>
+    </div>
+</div> -->
+
+<!-- <div class="form-group required has-feedback" 
+    [ngClass]="{ 'has-error': (form.submitted || name.touched) && !name.valid, 'has-success': name.valid }">
+    <label class="col-md-4 control-label" for="name">{{label}}</label>
+    <div class="col-md-8">
+        <input type="text" class="form-control" name="name" [(ngModel)]="model.name" #name="ngModel" required>
+        <span class="glyphicon form-control-feedback" [ngClass]="{ 'glyphicon-remove': (form.submitted || name.touched) && !name.valid, 'glyphicon-ok': name.valid }"></span>
+        <div class="help-block" *ngIf="(f.submitted || name.touched) && !name.valid">Název týmu je povinný!</div>
+    </div>
+</div> -->

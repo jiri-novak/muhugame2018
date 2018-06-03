@@ -10,13 +10,16 @@ import { Team } from '../../_models';
 })
 export class RegistrationComponent implements OnInit {
     model: Team = new Team();
-    loading = false;
+    loading: boolean = false;
+    temporaryDisabled: boolean = false;
 
     constructor(
         private router: Router,
         private userService: UserService,
         private alertService: AlertService,
-    ) { }
+    ) { 
+
+    }
 
     ngOnInit() {
     }
