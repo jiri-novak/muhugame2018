@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 
 export class AlertsComponent implements OnInit, OnDestroy {
     dismissible: boolean = true;
-    timeout: number = 4000;
+    timeout: number = 10000;
     alerts: Alert[] = [];
     subscription: Subscription;
 

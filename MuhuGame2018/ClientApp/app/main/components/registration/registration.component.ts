@@ -12,9 +12,10 @@ import { Subscription } from 'rxjs';
 export class RegistrationComponent implements OnInit, OnDestroy {
     loading: boolean = false;
     temporaryDisabled: boolean = false;
+    existingUser: boolean = false;
     subscription: Subscription;
 
-    user: User = new User();
+    user: User;
 
     startingCost: number = 1200;
     tshirtCost: number = 250;
@@ -26,7 +27,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     variants: Variant[] = [
         new Variant(VariantType.Budova4, "V pokoji v budově (4 účastníci)"),
         new Variant(VariantType.Chatka4, "V chatce (4 účastníci)"),
-        new Variant(VariantType.Budova3, "V pokoji v budově (3 účastníci)"),
         new Variant(VariantType.Chatka3, "V chatce (3 účastníci)")
     ];
 
@@ -58,6 +58,18 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         private userService: UserService,
         private alertService: AlertService
     ) {
+        this.user = new User();
+
+        this.user.name = "Lamy"
+        this.user.login = "lamy";
+        this.user.email = "jiri.novak@petriny.net";
+        this.user.telephone = "123456";
+        this.user.password = "256314";
+        this.user.variant = VariantType.Chatka3;
+        this.user.members[0].name = "1";
+        this.user.members[1].name = "2";
+        this.user.members[2].name = "3";
+
         this.updateParticipants(this.user.variant);
     }
 
@@ -68,6 +80,8 @@ export class RegistrationComponent implements OnInit, OnDestroy {
             if (id) {
                 let s = this.userService.getById(id).subscribe(next => {
                     this.user = next;
+                    this.existingUser = this.user != null;
+                    console.log(this.existingUser);
                     s.unsubscribe();
                 });
             }
@@ -80,7 +94,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
     updateParticipants(event: VariantType): void {
         switch (event) {
-            case VariantType.Budova3:
             case VariantType.Chatka3:
                 this.user.members = this.user.members.filter(x => x.order <= 3);
                 break;
@@ -116,30 +129,45 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
         this.user.members.forEach(m => {
             m.cost = perMember;
-            
+
             if (m.tshirt) {
                 m.cost += this.tshirtCost;
             }
         });
 
         this.lodgingCost = memberCount * perMember;
-        this.tshirtsCost = this.user.members
-            .reduce((sum, current) => sum + (current.tshirt ? 1 : 0) * this.tshirtCost, 0);
+        this.tshirtsCost = this.user.members.reduce((sum, current) => sum + (current.tshirt ? 1 : 0) * this.tshirtCost, 0);
         this.totalCost = this.lodgingCost + this.tshirtsCost + this.startingCost;
     }
 
     register(): void {
         this.loading = true;
 
-        this.userService.create(this.user)
-            .subscribe(
-                data => {
-                    this.alertService.success('Registrace proběhla úspěšně! Zkontrolujte prosím, že jste obdrželi potvrzující email...', true);
-                    this.router.navigate(['/login']);
-                },
-                error => {
-                    this.alertService.error(error._body);
-                    this.loading = false;
-                });
+        if (!this.existingUser) {
+            let s = this.userService.create(this.user)
+                .subscribe(
+                    data => {
+                        this.alertService.success('Registrace proběhla úspěšně! Zkontrolujte prosím, že jste obdrželi potvrzující email...', true);
+                        this.router.navigate(['/login']);
+                        s.unsubscribe();
+                    },
+                    error => {
+                        this.alertService.error(error._body);
+                        this.loading = false;
+                        s.unsubscribe();
+                    });
+        } else {
+            let s = this.userService.update(this.user)
+                .subscribe(
+                    data => {
+                        this.alertService.success('Údaje o vašem týmu byly úspěšně aktualizovány!', true);
+                        s.unsubscribe();
+                    },
+                    error => {
+                        this.alertService.error(error._body);
+                        this.loading = false;
+                        s.unsubscribe();
+                    });
+        }
     }
 }

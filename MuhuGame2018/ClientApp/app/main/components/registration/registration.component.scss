@@ -39,13 +39,17 @@
     font-size: small;
 }
 
-ng-select {
+ng-select, input {
     margin-bottom: 5px;
 }
 
 .red {
     color: #a94442;
     font-weight: bold;
+}
+
+ul > li {
+    text-align: justify;
 }
 
 .vertical-align {

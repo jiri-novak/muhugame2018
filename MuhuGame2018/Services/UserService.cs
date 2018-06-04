@@ -10,11 +10,13 @@ namespace MuhuGame2018.Services
 
     public class UserService : IUserService
     {
-        private DataContext _context;
+        private readonly DataContext _context;
+        private readonly IMailService _mailService;
 
-        public UserService(DataContext context)
+        public UserService(DataContext context, IMailService mailService)
         {
             _context = context;
+            _mailService = mailService;
         }
 
         public User Authenticate(string login, string password)
@@ -22,7 +24,7 @@ namespace MuhuGame2018.Services
             if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
                 return null;
 
-            var user = _context.Users.SingleOrDefault(x => string.Equals(x.Login, login, StringComparison.OrdinalIgnoreCase));
+            var user = _context.Users.SingleOrDefault(x => x.Login == login);
 
             // check if username exists
             if (user == null)
@@ -52,8 +54,11 @@ namespace MuhuGame2018.Services
             if (string.IsNullOrWhiteSpace(password))
                 throw new AppException("Heslo je povinné!");
 
-            if (_context.Users.Any(x => string.Equals(x.Login, user.Login, StringComparison.OrdinalIgnoreCase)))
+            if (_context.Users.Any(x => x.Login == user.Login))
                 throw new AppException($"Login {user.Login} je již obsazen!");
+
+            if (_context.Users.Any(x => x.Name == user.Name))
+                throw new AppException($"Jméno {user.Name} je již obsazeno!");
 
             CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -63,12 +68,21 @@ namespace MuhuGame2018.Services
             _context.Users.Add(user);
             _context.SaveChanges();
 
+            try
+            {
+                _mailService.SendMail("muhugame2018@gmail.com", user.Email, "MUHUGAME 2018 - Registrace byla úspěšná", "Vaše registrace na Víkendový pobyt v Zóně proběhla úspěšně.");
+            }
+            catch(Exception ex)
+            {
+                Console.Error.WriteLine($"Chyba při odesílání emailů. {ex.ToString()}");
+            }
+
             return user;
         }
 
         public void Update(User userParam, string password = null)
         {
-            var user = _context.Users.Find(userParam.Id);
+            var user = _context.Users.Include(x => x.Members).FirstOrDefault(x => x.Id == userParam.Id);
 
             if (user == null)
                 throw new AppException("Uživatel nenalezen!");
@@ -85,7 +99,25 @@ namespace MuhuGame2018.Services
             user.Name = userParam.Name;
             user.Email = userParam.Email;
             user.Telephone = userParam.Telephone;
-            user.Members = userParam.Members;
+            user.Variant = userParam.Variant;
+            
+            for (var i = 0; i < userParam.Members.Count(); ++i)
+            {
+                if (i < user.Members.Count) {
+                    var member = user.Members[i];
+                    var userParamMember = userParam.Members[i];
+
+                    member.Order = userParamMember.Order;
+                    member.Cost = userParamMember.Cost;
+                    member.Dinner1 = userParamMember.Dinner1;
+                    member.Dinner2 = userParamMember.Dinner2;
+                    member.Name = userParamMember.Name;
+                }
+                else
+                {
+                    user.Members.Add(userParam.Members[i]);
+                }
+            }
 
             // update password if it was entered
             if (!string.IsNullOrWhiteSpace(password))
@@ -109,8 +141,6 @@ namespace MuhuGame2018.Services
                 _context.SaveChanges();
             }
         }
-
-        // private helper methods
 
         private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {

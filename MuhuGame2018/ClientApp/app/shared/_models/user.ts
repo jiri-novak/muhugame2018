@@ -11,7 +11,7 @@ export class User {
     email: string;
     telephone: string;
 
-    variant: VariantType = VariantType.Budova4;
+    variant: VariantType;
 
     note: string;
 

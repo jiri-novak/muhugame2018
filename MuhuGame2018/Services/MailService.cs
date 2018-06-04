@@ -18,10 +18,11 @@ namespace MuhuGame2018.Services
 
         public void SendMail(string from, string to, string subject, string body)
         {
-            SmtpClient client = new SmtpClient("mysmtpserver")
+            SmtpClient client = new SmtpClient(_smtpServer)
             {
                 UseDefaultCredentials = false,
-                Credentials = new NetworkCredential("username", "password")
+                EnableSsl = true,
+                Credentials = new NetworkCredential(_smtpUser, _smtpPasswd)
             };
 
             MailMessage mailMessage = new MailMessage

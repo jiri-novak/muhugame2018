@@ -13,7 +13,7 @@ export class MediaComponent implements OnInit, OnDestroy {
     private subscription: Subscription;
 
     private pressConference: Video = new Video("/assets/videos/press-conf-720p.mp4", "video/mp4", "Video z tiskové konference u příležitosti zakoupení Zóny:");
-    //private zoneTeaser: Video = new Video("/assets/videos/press-conf-720p.mp4", "video/mp4", "Víkendový pobyt v Zóně s piknikem:");
+    private zoneTeaser: Video = new Video("/assets/videos/zone-teaser-720p.mp4", "video/mp4", "Víkendový pobyt v Zóně s piknikem:");
 
 /*
 <meta property="og:site_name" content="Vimeo">
@@ -43,14 +43,14 @@ export class MediaComponent implements OnInit, OnDestroy {
                         this.pressConference
                     ];
                     break;
-                // case 'zone-teaser':
-                //     this.sources = [
-                //         this.zoneTeaser
-                //     ];
-                //     break;
+                case 'zone-teaser':
+                    this.sources = [
+                        this.zoneTeaser
+                    ];
+                    break;
                 default:
                     this.sources = [
-                        //this.zoneTeaser,
+                        this.zoneTeaser,
                         this.pressConference
                     ];
                     break;

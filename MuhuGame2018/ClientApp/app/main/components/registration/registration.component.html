@@ -26,7 +26,7 @@
                             <div class="form-group required">
                                 <label class="col-md-4 control-label" for="name">Název týmu:</label>
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control" name="name" [(ngModel)]="user.name" #name="ngModel" required>
+                                    <input type="text" class="form-control" name="name" [(ngModel)]="user.name" #name="ngModel" required [disabled]="existingUser">
                                 </div>
                             </div>
                         </div>
@@ -53,7 +53,8 @@
                             <div class="form-group required">
                                 <label class="col-md-4 control-label" for="login">Login:</label>
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control" name="login" [(ngModel)]="user.login" #login="ngModel" required minlength="4" />
+                                    <input type="text" class="form-control" name="login" [(ngModel)]="user.login" #login="ngModel" required minlength="4" [disabled]="existingUser"
+                                    />
                                 </div>
                                 <div class="col-md-2 vertical-align">
                                     >= 4 znaky
@@ -61,12 +62,25 @@
                             </div>
                         </div>
 
-                        <div class="col-md-12">
+                        <div class="col-md-12" *ngIf="!existingUser">
                             <div class="form-group required">
                                 <label class="col-md-4 control-label" for="password">Heslo:</label>
                                 <div class="col-md-6">
                                     <input type="password" class="form-control" name="password" [(ngModel)]="user.password" #password="ngModel" minlength="5"
                                         required/>
+                                </div>
+                                <div class="col-md-2 vertical-align">
+                                    >= 5 znaků
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12" *ngIf="existingUser">
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="password">Heslo (chcete-li ho změnit):</label>
+                                <div class="col-md-6">
+                                    <input type="password" class="form-control" name="password" [(ngModel)]="user.password" #password="ngModel" minlength="5"
+                                    />
                                 </div>
                                 <div class="col-md-2 vertical-align">
                                     >= 5 znaků
@@ -80,37 +94,37 @@
 
                         <div class="row">
                             <div class="col-md-4">
-                                Startovné:
+                                <label class="control-label" for="startovne">Startovné:</label>
                             </div>
                             <div class="col-md-2 text-right">
-                                <b>{{startingCost}},- Kč</b>
+                                <b name="startovne">{{startingCost}},- Kč</b>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-4">
-                                Ubytování:
+                                <label class="control-label" for="ubytovani">Ubytování:</label>
                             </div>
                             <div class="col-md-2 text-right">
-                                <b>{{lodgingCost}},- Kč</b>
+                                <b name="ubytovani">{{lodgingCost}},- Kč</b>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-4">
-                                Trička:
+                                <label class="control-label" for="tricka">Trička:</label>
                             </div>
                             <div class="col-md-2 text-right">
-                                <b>{{tshirtsCost}},- Kč</b>
+                                <b name="tricka">{{tshirtsCost}},- Kč</b>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-4 red">
-                                Celková cena:
+                                <label class="control-label" for="celkovacena">Celková cena:</label>
                             </div>
                             <div class="col-md-2 red text-right">
-                                {{totalCost}},- Kč
+                                <b name="celkovacena">{{totalCost}},- Kč</b>
                             </div>
                         </div>
 
@@ -141,12 +155,27 @@
                 <h3>Účastníci:</h3>
 
                 <div class="row">
+                    <div class="col-md-12">
+                        <ul>
+                            <li>Každý tým bude ubytován dle svého výběru ve vlastním pokoji v budově (přednost mají čtyřčlenné
+                                týmy) či v chatce v areálu poblíž Zóny. V pokojích v budově je možnost (v případě zájmu)
+                                ubytovat navíc až 2 členy doprovodu týmu (bude řešeno dodatečně s orgy).
+                            </li>
+                            <li>Pokud má tým speciální požadavek na zajištění stravy / ubytování napište tento požadavek do poznámky
+                                při registraci, případně kontaktujte organizátory. Dle možností se ho pokusíme vyřešit.</li>
+                        </ul>
+                        <br/>
+                    </div>
+                </div>
+
+                <div class="row">
                     <div class="col-md-6">
                         <div class="form-group required">
                             <label class="col-md-4 control-label" for="variant">Typ ubytování:</label>
                             <div class="col-md-8">
-                                <ng-select [items]="variants" [clearable]="false" (ngModelChange)="updateParticipants($event)" bindLabel="name" bindValue="id"
-                                    name="variant" [(ngModel)]="user.variant" #variant="ngModel" required>
+                                <ng-select [selectOnTab]="true" [items]="variants" [selectOnTab]="true" [clearable]="false" (ngModelChange)="updateParticipants($event)"
+                                    bindLabel="name" bindValue="id" name="variant" [(ngModel)]="user.variant" #variant="ngModel"
+                                    required>
                                 </ng-select>
                             </div>
                         </div>
@@ -173,24 +202,23 @@
                     </div>
                 </div>
 
-                <div class="row vertical-align" *ngFor="let member of user.members">
+                <div class="row" *ngFor="let member of user.members">
                     <div class="col-md-2">
-                        <input type="text" class="form-control" [(ngModel)]="member.name" name="{{'name-member' + member.order}}" required *ngIf="member.order == 1"
-                        />
-                        <input type="text" class="form-control" [(ngModel)]="member.name" name="{{'name-member' + member.order}}" *ngIf="member.order > 1"
-                        />
+                        <input type="text" class="form-control" [(ngModel)]="member.name" name="{{'name-member' + member.order}}" required/>
                     </div>
                     <div class="col-md-2">
-                        <ng-select [items]="tshirts" [clearable]="true" bindLabel="name" bindValue="id" [(ngModel)]="member.tshirt" (ngModelChange)="updateTShirt(member, $event)"
-                            name="{{'tshirt-member' + member.order}}">
+                        <ng-select [selectOnTab]="true" [items]="tshirts" [clearable]="true" bindLabel="name" bindValue="id" [(ngModel)]="member.tshirt"
+                            (ngModelChange)="updateTShirt(member, $event)" name="{{'tshirt-member' + member.order}}">
                         </ng-select>
                     </div>
                     <div class="col-md-3">
-                        <ng-select [items]="dinner1" [clearable]="false" bindLabel="name" bindValue="id" [(ngModel)]="member.dinner1" required name="{{'dinner1-member' + member.order}}">
+                        <ng-select [selectOnTab]="true" [items]="dinner1" [clearable]="false" bindLabel="name" bindValue="id" [(ngModel)]="member.dinner1"
+                            name="{{'dinner1-member' + member.order}}">
                         </ng-select>
                     </div>
                     <div class="col-md-3">
-                        <ng-select [items]="dinner2" [clearable]="false" bindLabel="name" bindValue="id" [(ngModel)]="member.dinner2" required name="{{'dinner2-member' + member.order}}">
+                        <ng-select [selectOnTab]="true" [items]="dinner2" [clearable]="false" bindLabel="name" bindValue="id" [(ngModel)]="member.dinner2"
+                            name="{{'dinner2-member' + member.order}}">
                         </ng-select>
                     </div>
                     <div class="col-md-1 text-right">
@@ -201,7 +229,8 @@
                 <div class="row">
                     <div class="col-md-2">
                         <br/>
-                        <button style="min-width: 100%;" class="btn btn-primary" [disabled]="!teamForm.form.valid && !loading">Zaregistrovat</button>
+                        <button *ngIf="!existingUser" style="min-width: 100%;" class="btn btn-primary" [disabled]="!teamForm.form.valid && !loading">Zaregistrovat</button>
+                        <button *ngIf="existingUser" style="min-width: 100%;" class="btn btn-primary" [disabled]="!teamForm.form.valid && !loading">Aktualizovat</button>
                     </div>
                     <div class="col-md-2">
                         <img class="col-md-1" *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="

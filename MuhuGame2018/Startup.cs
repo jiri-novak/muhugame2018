@@ -34,7 +34,10 @@ namespace nabe_order_management
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(x => x.UseInMemoryDatabase("TestDb"));
+            //services.AddDbContext<DataContext>(x => x.UseInMemoryDatabase("TestDb"));
+            //services.AddDbContext<DataContext>(x => x.UseNpgsql("Host=pgsql.pipni.cz;Database=muhugame2018.cestuje.net;Username=muhugame2018.cestuje.net;Password=Mdmfced60"));
+            //services.AddDbContext<DataContext>(x => x.UseMySql("Host=sql20.pipni.cz;Database=muhugame2018_cestuje_net;Username=muhugame2018.cestuje.net;Password=Mdmfced60"));
+            services.AddDbContext<DataContext>(x => x.UseMySQL("Server=sql20.pipni.cz;Port=3306;Database=muhugame2018_cestuje_net;UserId=muhugame2018.cestuje.net;Password=Mdmfced60;"));
             services.AddMvc();
             services.AddAutoMapper();
 
@@ -75,7 +78,7 @@ namespace nabe_order_management
 #endif
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -125,6 +128,11 @@ namespace nabe_order_management
                 });
 
                 app.UseExceptionHandler("/Home/Error");
+            }
+
+            using (var context = serviceProvider.GetService<DataContext>())
+            {
+                context.Database.EnsureCreated();
             }
         }
     }
