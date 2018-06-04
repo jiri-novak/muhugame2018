@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace MuhuGame2018.Services
 {
+
     public interface IUserService
     {
         User Authenticate(string username, string password);

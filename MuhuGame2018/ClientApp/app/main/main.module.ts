@@ -12,23 +12,36 @@ import { VgCoreModule } from "videogular2/core";
 import { VgControlsModule } from "videogular2/controls";
 import { VgOverlayPlayModule } from "videogular2/overlay-play";
 import { VgBufferingModule } from "videogular2/buffering";
+import { NgSelectModule } from '@ng-select/ng-select';
 
 import { SharedModule } from '../shared';
 
 import * as components from './components';
 
-const allComponents = Object.keys(components).map(k => components[k]);
+const allComponents = [
+    components.CatalogueComponent,
+    components.CiphersComponent,
+    components.ContactComponent,
+    components.InstructionsComponent,
+    components.LoginComponent,
+    components.MediaComponent,
+    components.NewsComponent,
+    components.ParticipantsComponent,
+    components.RegistrationComponent,
+    components.ResultsComponent,
+    components.VideoComponent
+];
 
 @NgModule({
-    declarations: [
-        ...allComponents
-    ],
+    declarations: allComponents,
     imports: [
         CommonModule,
         HttpModule,
         FormsModule,
         ReactiveFormsModule,
         RouterModule,
+
+        NgSelectModule,
 
         VgCoreModule,
         VgControlsModule,
@@ -37,13 +50,9 @@ const allComponents = Object.keys(components).map(k => components[k]);
 
         ModalModule.forRoot(),
         CollapseModule.forRoot(),
-        AlertModule.forRoot(),
-
-        SharedModule
+        AlertModule.forRoot()
     ],
-    exports: [
-        ...allComponents
-    ]
+    exports: allComponents
 })
 export class MainModule {
 }

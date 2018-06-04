@@ -20,21 +20,35 @@
     content: "*";
     font-size: 15pt;
     margin-left: 5px;
-    color: red;
+    color: #a94442;
 }
 
 .ng-valid[required],
 .ng-valid.required {
-    border-left: 0px solid #42A948;
+    border-left: 4px solid #42A948;
     /* green */
 }
 
 .ng-invalid:not(form) {
-    border-left: 0px solid #a94442;
+    border-left: 4px solid #a94442;
     /* red */
 }
 
 .help-block {
     margin: 0px;
     font-size: small;
-  }
+}
+
+ng-select {
+    margin-bottom: 5px;
+}
+
+.red {
+    color: #a94442;
+    font-weight: bold;
+}
+
+.vertical-align {
+    display: flex;
+    align-items: center;
+}

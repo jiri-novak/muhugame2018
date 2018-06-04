@@ -65,6 +65,7 @@ namespace nabe_order_management
 
             // configure DI for application services
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IMailService, MailService>();
 
 #if DEBUG
             services.AddSwaggerGen(c =>

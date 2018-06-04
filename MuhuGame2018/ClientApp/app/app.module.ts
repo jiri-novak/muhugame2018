@@ -11,6 +11,7 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
 
 import { SharedModule } from './shared';
 import { MainModule } from './main';
+
 import { AppComponent } from './app.component';
 import { RoutesConfig } from './app.routes';
 import { AppConfig } from './app.config';

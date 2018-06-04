@@ -3,17 +3,26 @@ import { Http, Headers, RequestOptions, Response } from '@angular/http';
 
 import { AppConfig } from '../../app.config';
 import { User } from '../_models/index';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class UserService {
     constructor(private http: Http, private config: AppConfig) { }
 
     getAll() {
-        return this.http.get(this.config.apiUrl + '/users', this.jwt()).map((response: Response) => response.json());
+        return this.http
+            .get(this.config.apiUrl + '/users', this.jwt())
+            .pipe(
+                map((response: Response) => response.json())
+            );
     }
 
     getById(id: number) {
-        return this.http.get(this.config.apiUrl + '/users/' + id, this.jwt()).map((response: Response) => response.json());
+        return this.http
+            .get(this.config.apiUrl + '/users/' + id, this.jwt())
+            .pipe(
+                map((response: Response) => response.json())
+            );
     }
 
     create(user: User) {

@@ -12,7 +12,7 @@ import * as fromServices from './_services';
 import * as fromGuards from './_guards/index';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-const declarations = [
+const allComponents = [
     fromComponents.AlertsComponent,
     fromComponents.AppLayoutHeaderComponent,
     fromComponents.AppLayoutFooterComponent,
@@ -20,7 +20,7 @@ const declarations = [
 ];
 
 @NgModule({
-    declarations,
+    declarations: allComponents,
     imports: [
         CommonModule,
         RouterModule,
@@ -31,7 +31,7 @@ const declarations = [
         CollapseModule.forRoot(),
         AlertModule.forRoot()
     ],
-    exports: declarations,
+    exports: allComponents,
     providers: [
         fromServices.AlertService,
         fromServices.UserService,

@@ -6,7 +6,8 @@ using System.Linq;
 
 namespace MuhuGame2018.Services
 {
-        public class UserService : IUserService
+
+    public class UserService : IUserService
     {
         private DataContext _context;
 
