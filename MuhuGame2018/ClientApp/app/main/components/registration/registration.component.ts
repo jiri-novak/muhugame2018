@@ -1,20 +1,20 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AlertService, UserService } from '../../../shared/_services';
-import { Team, Variant, VariantType, Registration, Member, Dinner, DinnerType, TShirt, TShirtType } from '../../_models';
+import { Variant, User, VariantType, TShirt, TShirtType, Dinner, DinnerType, Member } from '../../../shared/_models';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'registration',
     templateUrl: './registration.component.html',
     styleUrls: ['./registration.component.scss']
 })
-export class RegistrationComponent {
+export class RegistrationComponent implements OnInit, OnDestroy {
     loading: boolean = false;
     temporaryDisabled: boolean = false;
+    subscription: Subscription;
 
-    team: Team = new Team();
-
-    registration: Registration = new Registration();
+    user: User = new User();
 
     startingCost: number = 1200;
     tshirtCost: number = 250;
@@ -54,23 +54,41 @@ export class RegistrationComponent {
 
     constructor(
         private router: Router,
+        private route: ActivatedRoute,
         private userService: UserService,
-        private alertService: AlertService,
+        private alertService: AlertService
     ) {
-        this.updateParticipants(this.registration.variant);
+        this.updateParticipants(this.user.variant);
+    }
+
+    ngOnInit(): void {
+        this.subscription = this.route.params.subscribe(params => {
+            let id = params['id'];
+
+            if (id) {
+                let s = this.userService.getById(id).subscribe(next => {
+                    this.user = next;
+                    s.unsubscribe();
+                });
+            }
+        });
+    }
+
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     updateParticipants(event: VariantType): void {
         switch (event) {
             case VariantType.Budova3:
             case VariantType.Chatka3:
-                this.registration.members = this.registration.members.filter(x => x.order <= 3);
+                this.user.members = this.user.members.filter(x => x.order <= 3);
                 break;
 
             case VariantType.Budova4:
             case VariantType.Chatka4:
-                if (this.registration.members.length == 3) {
-                    this.registration.members.push(new Member(4))
+                if (this.user.members.length == 3) {
+                    this.user.members.push(new Member(4))
                 }
                 break;
         }
@@ -88,15 +106,15 @@ export class RegistrationComponent {
             member.cost -= this.tshirtCost;
         }
 
-        this.recalculateExpenses(this.registration.variant);
+        this.recalculateExpenses(this.user.variant);
     }
 
     private recalculateExpenses(event: VariantType) {
-        let memberCount = this.registration.members.length;
+        let memberCount = this.user.members.length;
         let chatka = event == VariantType.Chatka3 || event == VariantType.Chatka4;
         let perMember = chatka ? 850 : 1000;
 
-        this.registration.members.forEach(m => {
+        this.user.members.forEach(m => {
             m.cost = perMember;
             
             if (m.tshirt) {
@@ -105,24 +123,23 @@ export class RegistrationComponent {
         });
 
         this.lodgingCost = memberCount * perMember;
-        this.tshirtsCost = this.registration.members
+        this.tshirtsCost = this.user.members
             .reduce((sum, current) => sum + (current.tshirt ? 1 : 0) * this.tshirtCost, 0);
         this.totalCost = this.lodgingCost + this.tshirtsCost + this.startingCost;
     }
 
     register(): void {
-        //this.loading = true;
+        this.loading = true;
 
-        console.log(this.registration);
-        // this.userService.create(this.team)
-        //     .subscribe(
-        //         data => {
-        //             this.alertService.success('Registration successful', true);
-        //             this.router.navigate(['/login']);
-        //         },
-        //         error => {
-        //             this.alertService.error(error._body);
-        //             this.loading = false;
-        //         });
+        this.userService.create(this.user)
+            .subscribe(
+                data => {
+                    this.alertService.success('Registrace proběhla úspěšně! Zkontrolujte prosím, že jste obdrželi potvrzující email...', true);
+                    this.router.navigate(['/login']);
+                },
+                error => {
+                    this.alertService.error(error._body);
+                    this.loading = false;
+                });
     }
 }

@@ -1,7 +1,24 @@
+import { Member } from "./members";
+import { VariantType } from ".";
+
 export class User {
     id: number;
-    username: string;
+    name: string;
+
+    login: string;
     password: string;
-    firstName: string;
-    lastName: string;
+
+    email: string;
+    telephone: string;
+
+    variant: VariantType = VariantType.Budova4;
+
+    note: string;
+
+    members: Member[] = [
+        new Member(1),
+        new Member(2),
+        new Member(3),
+        new Member(4)
+    ];
 }

@@ -35,7 +35,7 @@ export class LoginComponent implements OnInit {
         this.authenticationService.login(this.model.username, this.model.password)
             .subscribe(
                 data => {
-                    this.router.navigate([`/registration/${data.username}`]);
+                    this.router.navigate([`/registration/${data.id}`]);
                 },
                 error => {
                     this.alertService.error('Zadaná kombinace jména a hesla není správná!');

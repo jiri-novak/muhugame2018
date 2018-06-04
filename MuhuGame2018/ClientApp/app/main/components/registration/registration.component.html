@@ -26,7 +26,7 @@
                             <div class="form-group required">
                                 <label class="col-md-4 control-label" for="name">Název týmu:</label>
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control" name="name" [(ngModel)]="team.name" #name="ngModel" required>
+                                    <input type="text" class="form-control" name="name" [(ngModel)]="user.name" #name="ngModel" required>
                                 </div>
                             </div>
                         </div>
@@ -35,7 +35,7 @@
                             <div class="form-group required">
                                 <label class="col-md-4 control-label" for="email">Email:</label>
                                 <div class="col-md-6">
-                                    <input type="email" class="form-control" name="email" [(ngModel)]="team.email" #email="ngModel" required email/>
+                                    <input type="email" class="form-control" name="email" [(ngModel)]="user.email" #email="ngModel" required email/>
                                 </div>
                             </div>
                         </div>
@@ -44,7 +44,7 @@
                             <div class="form-group required">
                                 <label class="col-md-4 control-label" for="tel">Telefon:</label>
                                 <div class="col-md-6">
-                                    <input type="tel" class="form-control" name="tel" [(ngModel)]="team.telephone" #telephone="ngModel" required tel/>
+                                    <input type="tel" class="form-control" name="tel" [(ngModel)]="user.telephone" #telephone="ngModel" required tel/>
                                 </div>
                             </div>
                         </div>
@@ -53,7 +53,10 @@
                             <div class="form-group required">
                                 <label class="col-md-4 control-label" for="login">Login:</label>
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control" name="login" [(ngModel)]="team.login" #login="ngModel" required/>
+                                    <input type="text" class="form-control" name="login" [(ngModel)]="user.login" #login="ngModel" required minlength="4" />
+                                </div>
+                                <div class="col-md-2 vertical-align">
+                                    >= 4 znaky
                                 </div>
                             </div>
                         </div>
@@ -62,8 +65,11 @@
                             <div class="form-group required">
                                 <label class="col-md-4 control-label" for="password">Heslo:</label>
                                 <div class="col-md-6">
-                                    <input type="password" class="form-control" name="password" [(ngModel)]="team.password" #password="ngModel" minlength="5"
+                                    <input type="password" class="form-control" name="password" [(ngModel)]="user.password" #password="ngModel" minlength="5"
                                         required/>
+                                </div>
+                                <div class="col-md-2 vertical-align">
+                                    >= 5 znaků
                                 </div>
                             </div>
                         </div>
@@ -119,6 +125,16 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <br/>
+                            <label class="col-md-2 control-label" for="note">Poznámka:</label>
+                            <div class="col-md-8">
+                                <textarea name="note" [(ngModel)]="user.note" rows="4" style="min-width: 100%"></textarea>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <h3></h3>
@@ -126,11 +142,11 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group required has-feedback">
+                        <div class="form-group required">
                             <label class="col-md-4 control-label" for="variant">Typ ubytování:</label>
                             <div class="col-md-8">
                                 <ng-select [items]="variants" [clearable]="false" (ngModelChange)="updateParticipants($event)" bindLabel="name" bindValue="id"
-                                    name="variant" [(ngModel)]="registration.variant" #variant="ngModel" required>
+                                    name="variant" [(ngModel)]="user.variant" #variant="ngModel" required>
                                 </ng-select>
                             </div>
                         </div>
@@ -147,17 +163,17 @@
                         <b>Tričko:</b>
                     </div>
                     <div class="col-md-3">
-                        <b>Večeře (pá):</b>
+                        <b>Večeře (pátek):</b>
                     </div>
                     <div class="col-md-3">
-                        <b>Večeře (so):</b>
+                        <b>Večeře (sobota):</b>
                     </div>
                     <div class="col-md-2">
                         <b>Cena:</b>
                     </div>
                 </div>
 
-                <div class="row vertical-align" *ngFor="let member of registration.members">
+                <div class="row vertical-align" *ngFor="let member of user.members">
                     <div class="col-md-2">
                         <input type="text" class="form-control" [(ngModel)]="member.name" name="{{'name-member' + member.order}}" required *ngIf="member.order == 1"
                         />
@@ -182,14 +198,23 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-2">
                         <br/>
-                        <button class="btn btn-primary" [disabled]="!teamForm.form.valid">Zaregistrovat</button>
-                        <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
+                        <button style="min-width: 100%;" class="btn btn-primary" [disabled]="!teamForm.form.valid && !loading">Zaregistrovat</button>
+                    </div>
+                    <div class="col-md-2">
+                        <img class="col-md-1" *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
                         />
                     </div>
+                    <div class="col-md-3">
+                    </div>
+                    <div class="col-md-3">
+                    </div>
+                    <div class="col-md-2">
+                    </div>
                 </div>
+
             </form>
         </div>
     </div>

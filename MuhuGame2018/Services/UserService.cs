@@ -1,4 +1,5 @@
-﻿using MuhuGame2018.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using MuhuGame2018.Entities;
 using MuhuGame2018.Helpers;
 using System;
 using System.Collections.Generic;
@@ -16,12 +17,12 @@ namespace MuhuGame2018.Services
             _context = context;
         }
 
-        public User Authenticate(string username, string password)
+        public User Authenticate(string login, string password)
         {
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
                 return null;
 
-            var user = _context.Users.SingleOrDefault(x => x.Username == username);
+            var user = _context.Users.SingleOrDefault(x => string.Equals(x.Login, login, StringComparison.OrdinalIgnoreCase));
 
             // check if username exists
             if (user == null)
@@ -37,22 +38,22 @@ namespace MuhuGame2018.Services
 
         public IEnumerable<User> GetAll()
         {
-            return _context.Users;
+            return _context.Users.Include(x => x.Members);
         }
 
         public User GetById(int id)
         {
-            return _context.Users.Find(id);
+            return _context.Users.Include(x => x.Members).FirstOrDefault(x => x.Id == id);
         }
 
         public User Create(User user, string password)
         {
             // validation
             if (string.IsNullOrWhiteSpace(password))
-                throw new AppException("Password is required");
+                throw new AppException("Heslo je povinné!");
 
-            if (_context.Users.Any(x => x.Username == user.Username))
-                throw new AppException("Username " + user.Username + " is already taken");
+            if (_context.Users.Any(x => string.Equals(x.Login, user.Login, StringComparison.OrdinalIgnoreCase)))
+                throw new AppException($"Login {user.Login} je již obsazen!");
 
             CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -70,19 +71,21 @@ namespace MuhuGame2018.Services
             var user = _context.Users.Find(userParam.Id);
 
             if (user == null)
-                throw new AppException("User not found");
+                throw new AppException("Uživatel nenalezen!");
 
-            if (userParam.Username != user.Username)
+            if (userParam.Login != user.Login)
             {
                 // username has changed so check if the new username is already taken
-                if (_context.Users.Any(x => x.Username == userParam.Username))
-                    throw new AppException("Username " + userParam.Username + " is already taken");
+                if (_context.Users.Any(x => x.Login == userParam.Login))
+                    throw new AppException($"Login {userParam.Login} je již obsazen!");
             }
 
             // update user properties
-            user.FirstName = userParam.FirstName;
-            user.LastName = userParam.LastName;
-            user.Username = userParam.Username;
+            user.Login = userParam.Login;
+            user.Name = userParam.Name;
+            user.Email = userParam.Email;
+            user.Telephone = userParam.Telephone;
+            user.Members = userParam.Members;
 
             // update password if it was entered
             if (!string.IsNullOrWhiteSpace(password))
