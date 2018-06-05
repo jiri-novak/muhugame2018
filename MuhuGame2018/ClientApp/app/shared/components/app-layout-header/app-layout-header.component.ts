@@ -17,6 +17,7 @@ export class AppLayoutHeaderComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.currentUser = JSON.parse(localStorage.getItem('currentUser')); 
         this.subscription = this.messageService.getMessage().subscribe(message => { 
             this.currentUser = JSON.parse(localStorage.getItem('currentUser'));    
         });

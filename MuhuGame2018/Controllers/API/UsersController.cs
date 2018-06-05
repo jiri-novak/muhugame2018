@@ -37,7 +37,7 @@ namespace MuhuGame2018.Controllers.API
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody]UserDto userDto)
         {
-            var user = _userService.Authenticate(userDto.Login, userDto.Password);
+            var user = _userService.Authenticate(userDto.Email, userDto.Password);
 
             if (user == null)
                 return Unauthorized();
@@ -60,7 +60,7 @@ namespace MuhuGame2018.Controllers.API
             return Ok(new
             {
                 user.Id,
-                user.Login,
+                user.Email,
                 user.Name,
                 Token = tokenString
             });

@@ -53,13 +53,10 @@
                             </li>
                             <li [routerLinkActive]="['active']">
                                 <a *ngIf="!currentUser" [routerLink]="['/registration']">REGISTRACE</a>
-                                <a *ngIf="currentUser" [routerLink]="['/registration']">VÁŠ TÝM</a>
+                                <a *ngIf="currentUser" [routerLink]="['/registration/'+currentUser.id]">VÁŠ TÝM</a>
                             </li>
                             <li *ngIf="!currentUser" [routerLinkActive]="['active']">
                                 <a [routerLink]="['/login']">LOGIN TÝMU</a>
-                            </li>
-                            <li *ngIf="currentUser" [routerLinkActive]="['active']">
-                                <a [routerLink]="['/logout']">LOGOUT TÝMU</a>
                             </li>
                             <li [routerLinkActive]="['active']">
                                 <a [routerLink]="['/contact']">KONTAKT</a>
@@ -70,15 +67,15 @@
 
                 <hr class="delimiter" />
 
-                <!-- <div class="row">
+                <div class="row">
                     <div class="col-md-12 text-right">
                         <div *ngIf="currentUser" style="float: right;">
                             Přihlášen tým:
-                            <strong>{{currentUser?.username | uppercase}}</strong> | 
+                            <strong>{{currentUser?.name | uppercase}}</strong> | 
                             <a [routerLink]="['/logout']">LOGOUT</a>
                         </div>
                     </div>
-                </div> -->
+                </div>
             </nav>
         </div>
     </div>

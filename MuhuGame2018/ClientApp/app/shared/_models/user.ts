@@ -3,13 +3,12 @@ import { VariantType } from ".";
 
 export class User {
     id: number;
+
     name: string;
-
-    login: string;
-    password: string;
-
     email: string;
     telephone: string;
+    
+    password: string;
 
     variant: VariantType;
 

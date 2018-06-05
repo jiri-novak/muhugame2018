@@ -1,0 +1,7 @@
+.form-group.required .control-label::after {
+    font-weight: bold;
+    content: "*";
+    font-size: 15pt;
+    margin-left: 5px;
+    color: #a94442;
+}

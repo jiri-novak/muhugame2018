@@ -33,9 +33,10 @@
 
                         <div class="col-md-12">
                             <div class="form-group required">
-                                <label class="col-md-4 control-label" for="email">Email:</label>
+                                <label class="col-md-4 control-label" for="email">Email / login:</label>
                                 <div class="col-md-6">
-                                    <input type="email" class="form-control" name="email" [(ngModel)]="user.email" #email="ngModel" required email/>
+                                    <input type="email" class="form-control" name="email" [(ngModel)]="user.email" #email="ngModel" required email
+                                    [disabled]="existingUser"/>
                                 </div>
                             </div>
                         </div>
@@ -44,20 +45,7 @@
                             <div class="form-group required">
                                 <label class="col-md-4 control-label" for="tel">Telefon:</label>
                                 <div class="col-md-6">
-                                    <input type="tel" class="form-control" name="tel" [(ngModel)]="user.telephone" #telephone="ngModel" required tel/>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-12">
-                            <div class="form-group required">
-                                <label class="col-md-4 control-label" for="login">Login:</label>
-                                <div class="col-md-6">
-                                    <input type="text" class="form-control" name="login" [(ngModel)]="user.login" #login="ngModel" required minlength="4" [disabled]="existingUser"
-                                    />
-                                </div>
-                                <div class="col-md-2 vertical-align">
-                                    >= 4 znaky
+                                    <input type="tel" class="form-control" name="tel" [(ngModel)]="user.telephone" #telephone="ngModel" required tel pattern='^\+?\d{0,13}'/>
                                 </div>
                             </div>
                         </div>

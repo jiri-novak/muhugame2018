@@ -35,7 +35,7 @@ namespace MuhuGame2018.Services
 
                 _users.AddOrUpdate(user.Id, user, (key, oldValue) => user);
 
-                result.Poradi = _users.Values.OrderBy(x => x.RegistrationDate).Where(x => x.Id == user.Id).Select((v, i) => new { Index = i+1 }).First().Index;
+                result.Poradi = _users.Values.OrderBy(x => x.RegistrationDate).Select((v, i) => new { Id = v.Id, Index = i+1 }).First(x => x.Id == user.Id).Index;
                 result.Nahradnik = false;
                 result.ChteneVChatce = user.Variant.StartsWith("Chatka");
 

@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 })
 export class RegistrationComponent implements OnInit, OnDestroy {
     loading: boolean = false;
-    temporaryDisabled: boolean = true;
+    temporaryDisabled: boolean = false;
     existingUser: boolean = false;
     subscription: Subscription;
 

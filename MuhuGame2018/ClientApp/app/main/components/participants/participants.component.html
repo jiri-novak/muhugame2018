@@ -23,15 +23,15 @@
             <b>Pořadí:</b>
         </div>
         <div class="col-md-2">
-            <b>Jméno týmu:</b>
+            <b>Název týmu:</b>
         </div>
-        <div class="col-md-2">
-            <b>Počet členů:</b>
+        <div class="col-md-1">
+            <b>Členů:</b>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <b>Seznam členů:</b>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <b>Čas registrace:</b>
         </div>
         <div class="col-md-1">
@@ -50,13 +50,13 @@
             <div class="col-md-1">
                 {{user.members | arrayLength }}
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 {{user.members | memberNames }}
             </div>
-            <div class="col-md-3">
-                {{user.registrationDate | date:'dd.MM.yyyy hh:mm:ss' }}
-            </div>
             <div class="col-md-2">
+                {{user.registrationDate | date:'dd.MM.yyyy HH:mm:ss' }}
+            </div>
+            <div class="col-md-1">
                 {{user.paid | questionableBoolean}}
             </div>
         </div>

@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using MuhuGame2018.Services;
 using Microsoft.Net.Http.Headers;
+using Serilog;
+using Microsoft.Extensions.Logging.AzureAppServices;
 
 namespace nabe_order_management
 {
@@ -86,6 +88,12 @@ namespace nabe_order_management
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+            loggerFactory.AddAzureWebAppDiagnostics(
+              new AzureAppServicesDiagnosticsSettings
+              {
+                  OutputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss zzz} [{Level}] {RequestId}-{SourceContext}: {Message}{NewLine}{Exception}"
+              }
+            );
 
             app.UseStaticFiles(new StaticFileOptions
             {
@@ -96,6 +104,7 @@ namespace nabe_order_management
                         "public,max-age=" + durationInSeconds;
                 }
             });
+
             app.UseAuthentication();
 
             if (env.IsDevelopment())

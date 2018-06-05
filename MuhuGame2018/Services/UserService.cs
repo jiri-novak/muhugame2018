@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using MuhuGame2018.Entities;
 using MuhuGame2018.Helpers;
 using System;
@@ -13,19 +14,21 @@ namespace MuhuGame2018.Services
     {
         private readonly DataContext _context;
         private readonly IMailService _mailService;
+        private readonly ILogger<UserService> _logger;
 
-        public UserService(DataContext context, IMailService mailService)
+        public UserService(DataContext context, IMailService mailService, ILogger<UserService> logger)
         {
             _context = context;
             _mailService = mailService;
+            _logger = logger;
         }
 
-        public User Authenticate(string login, string password)
+        public User Authenticate(string email, string password)
         {
-            if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
                 return null;
 
-            var user = _context.Users.SingleOrDefault(x => x.Login == login);
+            var user = _context.Users.SingleOrDefault(x => x.Email == email);
 
             // check if username exists
             if (user == null)
@@ -55,8 +58,8 @@ namespace MuhuGame2018.Services
             if (string.IsNullOrWhiteSpace(password))
                 throw new AppException("Heslo je povinné!");
 
-            if (_context.Users.Any(x => x.Login == user.Login))
-                throw new AppException($"Login {user.Login} je již obsazen!");
+            if (_context.Users.Any(x => x.Email == user.Email))
+                throw new AppException($"Email {user.Email} je již obsazen!");
 
             if (_context.Users.Any(x => x.Name == user.Name))
                 throw new AppException($"Jméno {user.Name} je již obsazeno!");
@@ -90,8 +93,8 @@ namespace MuhuGame2018.Services
                 }
 
                 sb.AppendLine();
-                sb.AppendLine($"Login: {user.Login}");
-                sb.AppendLine($"Pořadí přihlášení: {validationResult.Poradi} ({user.RegistrationDate})");
+                sb.AppendLine($"Login: {user.Email}");
+                sb.AppendLine($"Pořadí přihlášení: {validationResult.Poradi} ({user.RegistrationDate.ToString("dd.MM.yyyy HH:mm:ss")})");
                 sb.AppendLine();
 
                 if (!validationResult.Nahradnik)
@@ -155,7 +158,7 @@ namespace MuhuGame2018.Services
                     _context.SaveChanges();
                 }
 
-                _mailService.SendMail("muhugame2018@gmail.com", new[] { user.Email }, "MUHUGAME 2018 - Výsledek registrace", emailBody);
+                _mailService.SendMail(new[] { user.Email }, "MUHUGAME 2018 - Výsledek registrace", emailBody);
 
                 var sb2 = new StringBuilder();
                 sb2.AppendLine("Právě proběhla registrace týmu:");
@@ -164,11 +167,11 @@ namespace MuhuGame2018.Services
                 sb2.AppendLine(emailBody);
                 var emailBody2 = sb2.ToString();
 
-                _mailService.SendMail("muhugame2018@gmail.com", new[] { "jiri.novak@petriny.net", "novakova.jana@volny.cz", "tomaszatrapa@gmail.com" }, "MUHUGAME 2018 - Registrace týmu", emailBody2);
+                _mailService.SendMail(new[] { "jiri.novak@petriny.net" }, "MUHUGAME 2018 - Registrace týmu", emailBody2);
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"Chyba při odesílání emailů. {ex.ToString()}");
+                _logger.LogError($"Chyba při odesílání emailů. {ex.ToString()}");
             }
 
             return user;
@@ -181,15 +184,14 @@ namespace MuhuGame2018.Services
             if (user == null)
                 throw new AppException("Uživatel nenalezen!");
 
-            if (userParam.Login != user.Login)
+            if (userParam.Email != user.Email)
             {
                 // username has changed so check if the new username is already taken
-                if (_context.Users.Any(x => x.Login == userParam.Login))
-                    throw new AppException($"Login {userParam.Login} je již obsazen!");
+                if (_context.Users.Any(x => x.Email == userParam.Email))
+                    throw new AppException($"Email {userParam.Email} je již obsazen!");
             }
 
             // update user properties
-            user.Login = userParam.Login;
             user.Name = userParam.Name;
             user.Email = userParam.Email;
             user.Telephone = userParam.Telephone;
