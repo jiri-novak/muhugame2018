@@ -50,7 +50,9 @@ const allComponents = [
 
         ModalModule.forRoot(),
         CollapseModule.forRoot(),
-        AlertModule.forRoot()
+        AlertModule.forRoot(),
+
+        SharedModule
     ],
     exports: allComponents
 })

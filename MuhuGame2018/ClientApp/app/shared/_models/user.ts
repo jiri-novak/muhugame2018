@@ -14,6 +14,7 @@ export class User {
     variant: VariantType;
 
     registrationDate: Date;
+    paid: boolean;
 
     note: string;
 

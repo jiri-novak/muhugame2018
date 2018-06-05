@@ -86,6 +86,7 @@ namespace MuhuGame2018.Controllers.API
             }
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult GetAll()
         {

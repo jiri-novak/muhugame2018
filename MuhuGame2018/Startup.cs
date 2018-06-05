@@ -71,8 +71,8 @@ namespace nabe_order_management
             });
 
             // configure DI for application services
-            services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<IMailService, MailService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IMailService, MailService>();
 
 #if DEBUG
             services.AddSwaggerGen(c =>
@@ -137,6 +137,7 @@ namespace nabe_order_management
             using (var context = serviceProvider.GetService<DataContext>())
             {
                 context.Database.EnsureCreated();
+                UserValidator.Initialize(context);
             }
         }
     }

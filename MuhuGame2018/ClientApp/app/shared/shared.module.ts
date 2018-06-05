@@ -10,9 +10,13 @@ import { AlertModule } from 'ngx-bootstrap/alert';
 import * as fromComponents from './components';
 import * as fromServices from './_services';
 import * as fromGuards from './_guards/index';
+import * as fromPipes from './_pipes/index';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 const allComponents = [
+    fromPipes.QuestionableBooleanPipe,
+    fromPipes.ArrayLengthPipe,
+    fromPipes.MemberNamesPipe,
     fromComponents.AlertsComponent,
     fromComponents.AppLayoutHeaderComponent,
     fromComponents.AppLayoutFooterComponent,

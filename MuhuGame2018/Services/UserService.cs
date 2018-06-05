@@ -2,11 +2,9 @@
 using MuhuGame2018.Entities;
 using MuhuGame2018.Helpers;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
 
 namespace MuhuGame2018.Services
 {
@@ -16,25 +14,10 @@ namespace MuhuGame2018.Services
         private readonly DataContext _context;
         private readonly IMailService _mailService;
 
-        private readonly ConcurrentDictionary<int, User> _users;
-        private readonly object _lock;
-
-        private readonly int Chatek = 28;
-        private readonly int Pokoju = 16;
-
-        private int UsedChatek = 0;
-        private int UsedPokoju = 0;
-
         public UserService(DataContext context, IMailService mailService)
         {
             _context = context;
             _mailService = mailService;
-
-            _users = new ConcurrentDictionary<int, User>(_context.Users.ToDictionary(x => x.Id, x => x));
-            _lock = new object();
-
-            UsedChatek = _users.Count(x => x.Value.Variant.StartsWith("Chatka"));
-            UsedPokoju = _users.Count(x => x.Value.Variant.StartsWith("Budova"));
         }
 
         public User Authenticate(string login, string password)
@@ -58,87 +41,12 @@ namespace MuhuGame2018.Services
 
         public IEnumerable<User> GetAll()
         {
-            return _context.Users.Include(x => x.Members);
+            return _context.Users.Include(x => x.Members).OrderBy(x => x.RegistrationDate);
         }
 
         public User GetById(int id)
         {
             return _context.Users.Include(x => x.Members).FirstOrDefault(x => x.Id == id);
-        }
-
-        private class ValidationResult
-        {
-            public int Poradi { get; set; }
-            public bool Nahradnik { get; set; }
-
-            public bool ChteneVChatce { get; set; }
-            public bool PrirazenoChteneUbytovani { get; set; }
-            public bool PrirazenoVChatce { get; set; }
-        }
-
-        private ValidationResult ValidateLodging(User user)
-        {
-            lock (_lock)
-            {
-                var result = new ValidationResult();
-
-                _users.AddOrUpdate(user.Id, user, (key, oldValue) => user);
-
-                result.Poradi = _context.Users.OrderBy(x => x.RegistrationDate).Where(x => x.Id == user.Id).Select((v, i) => new { Index = i }).First().Index;
-                result.Nahradnik = false;
-                result.ChteneVChatce = user.Variant.StartsWith("Chatka");
-
-                if (result.ChteneVChatce)
-                {
-                    if (UsedChatek + 1 <= Chatek)
-                    {
-                        // mam jeste chatku
-                        ++UsedChatek;
-
-                        result.PrirazenoChteneUbytovani = true;
-                        result.PrirazenoVChatce = true;
-                    }
-                    else if (UsedPokoju + 1 <= Pokoju)
-                    {
-                        // mam jeste pokoj
-                        ++UsedPokoju;
-
-                        result.PrirazenoChteneUbytovani = false;
-                        result.PrirazenoVChatce = false;
-                    }
-                    else
-                    {
-                        // nemam uz nic
-                        result.Nahradnik = true;
-                    }
-                }
-                else
-                {
-                    if (UsedPokoju + 1 <= Pokoju)
-                    {
-                        // mam jeste pokoj
-                        ++UsedPokoju;
-
-                        result.PrirazenoChteneUbytovani = true;
-                        result.PrirazenoVChatce = false;
-                    }
-                    else if (UsedChatek + 1 <= Chatek)
-                    {
-                        // mam jeste chatku
-                        ++UsedChatek;
-
-                        result.PrirazenoChteneUbytovani = false;
-                        result.PrirazenoVChatce = true;
-                    }
-                    else
-                    {
-                        // nemam uz nic
-                        result.Nahradnik = true;
-                    }
-                }
-
-                return result;
-            }
         }
 
         public User Create(User user, string password)
@@ -157,7 +65,7 @@ namespace MuhuGame2018.Services
 
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
-            user.RegistrationDate = new DateTime();
+            user.RegistrationDate = DateTime.Now;
 
             _context.Users.Add(user);
             _context.SaveChanges();
@@ -167,81 +75,79 @@ namespace MuhuGame2018.Services
                 string emailBody = null;
                 bool updateNeeded = false;
 
-                lock (_lock) {
-                    var validationResult = ValidateLodging(user);
+                var validationResult = UserValidator.ValidateLodging(user);
 
-                    StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new StringBuilder();
 
-                    if (!validationResult.Nahradnik)
+                if (!validationResult.Nahradnik)
+                {
+                    sb.AppendLine("Vaše registrace na Víkendový pobyt v Zóně proběhla úspěšně.");
+                }
+                else
+                {
+                    sb.AppendLine("Ceníme si vašeho zájmu o náš zájezd.Bohužel v tuto chvíli již kapacita počtu účastníků byla vyčerpána.");
+                    sb.AppendLine("Registrace proběhla, Váš tým byl zařazen mezi náhradníky. V případě rozšíření kapacity či odhlášení některého z týmů budete kontaktováni organizátorem.");
+                }
+
+                sb.AppendLine();
+                sb.AppendLine($"Login: {user.Login}");
+                sb.AppendLine($"Pořadí přihlášení: {validationResult.Poradi} ({user.RegistrationDate})");
+                sb.AppendLine();
+
+                if (!validationResult.Nahradnik)
+                {
+                    int memberCount = user.Members.Count;
+                    int memberLodging = validationResult.PrirazenoVChatce ? 850 : 1000;
+
+                    if (!validationResult.PrirazenoChteneUbytovani)
                     {
-                        sb.AppendLine("Vaše registrace na Víkendový pobyt v Zóně proběhla úspěšně.");
-                    }
-                    else
-                    {
-                        sb.AppendLine("Ceníme si vašeho zájmu o náš zájezd.Bohužel v tuto chvíli již kapacita počtu účastníků byla vyčerpána.");
-                        sb.AppendLine("Registrace proběhla, Váš tým byl zařazen mezi náhradníky. V případě rozšíření kapacity či odhlášení některého z týmů budete kontaktováni organizátorem.");
-                    }
-
-                    sb.AppendLine();
-                    sb.AppendLine($"Login: {user.Login}");
-                    sb.AppendLine($"Pořadí přihlášení: {validationResult.Poradi} ({user.RegistrationDate})");
-                    sb.AppendLine();
-
-                    if (!validationResult.Nahradnik)
-                    {
-                        int memberCount = user.Members.Count;
-                        int memberLodging = validationResult.PrirazenoVChatce ? 850 : 1000;
-
-                        if (!validationResult.PrirazenoChteneUbytovani)
+                        if (validationResult.PrirazenoVChatce)
                         {
-                            if (validationResult.PrirazenoVChatce)
-                            {
-                                sb.AppendLine("Vámi vybrané ubytování v budově již není k dispozici! Bylo vám přiřazeno ubytování v chatce.");
-                                sb.AppendLine();
+                            sb.AppendLine("Vámi vybrané ubytování v budově již není k dispozici! Bylo vám přiřazeno ubytování v chatce.");
+                            sb.AppendLine();
 
-                                user.Variant = memberCount == 3 ? "Chatka3" : "Chatka4";
-                            }
-                            else
-                            {
-                                sb.AppendLine("Vámi vybrané ubytování v chatce již není k dispozici! Bylo vám přiřazeno ubytování v budově.");
-                                sb.AppendLine();
+                            user.Variant = memberCount == 3 ? "Chatka3" : "Chatka4";
+                        }
+                        else
+                        {
+                            sb.AppendLine("Vámi vybrané ubytování v chatce již není k dispozici! Bylo vám přiřazeno ubytování v budově.");
+                            sb.AppendLine();
 
-                                user.Variant = memberCount == 3 ? "Budova3" : "Budova4";
-                            }
-
-                            foreach (var m in user.Members)
-                                m.Cost = memberLodging + 250 * (m.TShirt == null ? 0 : 1);
-
-                            updateNeeded = true;
+                            user.Variant = memberCount == 3 ? "Budova3" : "Budova4";
                         }
 
-                        int start = 1200;
-                        int shirts = user.Members.Count(x => x.TShirt != null) * 250;
-                        int lodging = memberCount * memberLodging;
-                        int total = start + lodging + shirts;
+                        foreach (var m in user.Members)
+                            m.Cost = memberLodging + 250 * (m.TShirt == null ? 0 : 1);
 
-                        sb.AppendLine($"Rekapitulace platby: ");
-                        sb.AppendLine($"  Startovné: {start},- Kč");
-                        sb.AppendLine($"  Ubytování: {lodging},- Kč");
-                        sb.AppendLine($"  Trička: {shirts},- Kč");
-                        sb.AppendLine($"  Celková cena: {total},- Kč");
-                        sb.AppendLine();
-                        sb.AppendLine("Částku prosím uhraďte na číslo účtu: 670100 - 2215359802 / 6210 (Mbank) nejpozději do 25.7. 2018. Do zprávy pro příjemce vždy uveďte název týmu.");
-                        sb.AppendLine();
-                        sb.AppendLine("Těšíme se na vás!");
-                    }
-                    else
-                    {
-                        sb.AppendLine("Hodně štěstí!");
+                        updateNeeded = true;
                     }
 
-                    sb.AppendLine();
-                    sb.AppendLine("Za kolektiv CK MUHUGAMES");
-                    sb.AppendLine();
-                    sb.AppendLine("Lamy");
+                    int start = 1200;
+                    int shirts = user.Members.Count(x => x.TShirt != null) * 250;
+                    int lodging = memberCount * memberLodging;
+                    int total = start + lodging + shirts;
 
-                    emailBody = sb.ToString();
+                    sb.AppendLine($"Rekapitulace platby: ");
+                    sb.AppendLine($"  Startovné: {start},- Kč");
+                    sb.AppendLine($"  Ubytování: {lodging},- Kč");
+                    sb.AppendLine($"  Trička: {shirts},- Kč");
+                    sb.AppendLine($"  Celková cena: {total},- Kč");
+                    sb.AppendLine();
+                    sb.AppendLine("Částku prosím uhraďte na číslo účtu: 670100 - 2215359802 / 6210 (Mbank) nejpozději do 25.7. 2018. Do zprávy pro příjemce vždy uveďte název týmu.");
+                    sb.AppendLine();
+                    sb.AppendLine("Těšíme se na vás!");
                 }
+                else
+                {
+                    sb.AppendLine("Hodně štěstí!");
+                }
+
+                sb.AppendLine();
+                sb.AppendLine("Za kolektiv CK MUHUGAMES");
+                sb.AppendLine();
+                sb.AppendLine("Lamy");
+
+                emailBody = sb.ToString();
 
                 if (updateNeeded)
                 {
@@ -258,9 +164,9 @@ namespace MuhuGame2018.Services
                 sb2.AppendLine(emailBody);
                 var emailBody2 = sb2.ToString();
 
-                _mailService.SendMail("muhugame2018@gmail.com", new[] { "jiri.novak@petriny.net"/*, "novakova.jana@volny.cz", "tomaszatrapa@gmail.com"*/ }, "MUHUGAME 2018 - Registrace týmu", emailBody2);
+                _mailService.SendMail("muhugame2018@gmail.com", new[] { "jiri.novak@petriny.net", "novakova.jana@volny.cz", "tomaszatrapa@gmail.com" }, "MUHUGAME 2018 - Registrace týmu", emailBody2);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.Error.WriteLine($"Chyba při odesílání emailů. {ex.ToString()}");
             }
@@ -288,10 +194,11 @@ namespace MuhuGame2018.Services
             user.Email = userParam.Email;
             user.Telephone = userParam.Telephone;
             user.Variant = userParam.Variant;
-            
+
             for (var i = 0; i < userParam.Members.Count(); ++i)
             {
-                if (i < user.Members.Count) {
+                if (i < user.Members.Count)
+                {
                     var member = user.Members[i];
                     var userParamMember = userParam.Members[i];
 
