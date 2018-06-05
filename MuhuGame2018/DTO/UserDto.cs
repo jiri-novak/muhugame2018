@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MuhuGame2018.DTO
 {
@@ -17,6 +18,8 @@ namespace MuhuGame2018.DTO
         public string Variant { get; set; }
 
         public string Note { get; set; }
+
+        public DateTime RegistrationDate { get; set; }
 
         public IEnumerable<MemberDto> Members { get; set; }
     }

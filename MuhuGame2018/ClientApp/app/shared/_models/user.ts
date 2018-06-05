@@ -13,6 +13,8 @@ export class User {
 
     variant: VariantType;
 
+    registrationDate: Date;
+
     note: string;
 
     members: Member[] = [

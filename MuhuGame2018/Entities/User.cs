@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MuhuGame2018.Entities
 {
@@ -18,6 +19,8 @@ namespace MuhuGame2018.Entities
         public string Variant { get; set; }
 
         public string Note { get; set; }
+
+        public DateTime RegistrationDate { get; set; }
 
         public IList<Member> Members { get; set; }
     }

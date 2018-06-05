@@ -35,9 +35,13 @@ namespace nabe_order_management
         public void ConfigureServices(IServiceCollection services)
         {
             //services.AddDbContext<DataContext>(x => x.UseInMemoryDatabase("TestDb"));
+            services.AddDbContext<DataContext>(x => x.UseSqlite("DataSource=muhugame2018.db"));
+
             //services.AddDbContext<DataContext>(x => x.UseNpgsql("Host=pgsql.pipni.cz;Database=muhugame2018.cestuje.net;Username=muhugame2018.cestuje.net;Password=Mdmfced60"));
             //services.AddDbContext<DataContext>(x => x.UseMySql("Host=sql20.pipni.cz;Database=muhugame2018_cestuje_net;Username=muhugame2018.cestuje.net;Password=Mdmfced60"));
-            services.AddDbContext<DataContext>(x => x.UseMySQL("Server=sql20.pipni.cz;Port=3306;Database=muhugame2018_cestuje_net;UserId=muhugame2018.cestuje.net;Password=Mdmfced60;"));
+            //services.AddDbContext<DataContext>(x => x.UseMySql("server=sql20.pipni.cz;database=muhugame2018_cestuje_net;uid=muhugame2018.cestuje.net;pwd=Mdmfced60;"));
+            //services.AddDbContext<DataContext>(x => x.UseMySql("server=localhost;database=;uid=muhugame2018.cestuje.net;pwd=Mdmfced60;"));
+
             services.AddMvc();
             services.AddAutoMapper();
 
@@ -67,8 +71,8 @@ namespace nabe_order_management
             });
 
             // configure DI for application services
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IMailService, MailService>();
+            services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<IMailService, MailService>();
 
 #if DEBUG
             services.AddSwaggerGen(c =>

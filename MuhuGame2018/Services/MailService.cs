@@ -16,7 +16,7 @@ namespace MuhuGame2018.Services
             _smtpPasswd = "velkavikuna";
         }
 
-        public void SendMail(string from, string to, string subject, string body)
+        public void SendMail(string from, string[] tos, string subject, string body)
         {
             SmtpClient client = new SmtpClient(_smtpServer)
             {
@@ -29,7 +29,8 @@ namespace MuhuGame2018.Services
             {
                 From = new MailAddress(from)
             };
-            mailMessage.To.Add(to);
+            foreach (var to in tos)
+                mailMessage.To.Add(to);
             mailMessage.Body = body;
             mailMessage.Subject = subject;
 

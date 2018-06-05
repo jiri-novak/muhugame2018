@@ -174,7 +174,7 @@
                             <label class="col-md-4 control-label" for="variant">Typ ubytování:</label>
                             <div class="col-md-8">
                                 <ng-select [selectOnTab]="true" [items]="variants" [selectOnTab]="true" [clearable]="false" (ngModelChange)="updateParticipants($event)"
-                                    bindLabel="name" bindValue="id" name="variant" [(ngModel)]="user.variant" #variant="ngModel"
+                                    bindLabel="name" bindValue="id" name="variant" [(ngModel)]="user.variant" #variant="ngModel" [disabled]="existingUser"
                                     required>
                                 </ng-select>
                             </div>
