@@ -120,13 +120,13 @@ namespace MuhuGame2018.Services
                         }
 
                         foreach (var m in user.Members)
-                            m.Cost = memberLodging + 250 * (m.TShirt == null ? 0 : 1);
+                            m.Cost = memberLodging + 250 * (m.Tshirt == null ? 0 : 1);
 
                         updateNeeded = true;
                     }
 
                     int start = 1200;
-                    int shirts = user.Members.Count(x => x.TShirt != null) * 250;
+                    int shirts = user.Members.Count(x => x.Tshirt != null) * 250;
                     int lodging = memberCount * memberLodging;
                     int total = start + lodging + shirts;
 
@@ -196,6 +196,7 @@ namespace MuhuGame2018.Services
             user.Email = userParam.Email;
             user.Telephone = userParam.Telephone;
             user.Variant = userParam.Variant;
+            user.Note = userParam.Note;
 
             for (var i = 0; i < userParam.Members.Count(); ++i)
             {
@@ -209,6 +210,7 @@ namespace MuhuGame2018.Services
                     member.Dinner1 = userParamMember.Dinner1;
                     member.Dinner2 = userParamMember.Dinner2;
                     member.Name = userParamMember.Name;
+                    member.Tshirt = userParamMember.Tshirt;
                 }
                 else
                 {
