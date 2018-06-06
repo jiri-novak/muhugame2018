@@ -78,7 +78,7 @@ namespace MuhuGame2018.Services
                     }
                 }
 
-                if (UsedChatek + UsedPokoju > Total)
+                if (UsedChatek + UsedPokoju >= Total)
                 {
                     result.Nahradnik = true;
                 }

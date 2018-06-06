@@ -73,6 +73,13 @@ namespace MuhuGame2018.Services
             _context.Users.Add(user);
             _context.SaveChanges();
 
+            TrySendMails(user, password);
+
+            return user;
+        }
+
+        public void TrySendMails(User user, string password)
+        {
             try
             {
                 string emailBody = null;
@@ -93,6 +100,7 @@ namespace MuhuGame2018.Services
                 }
 
                 sb.AppendLine();
+                sb.AppendLine($"Jméno týmu: {user.Name}");
                 sb.AppendLine($"Login: {user.Email}");
                 sb.AppendLine($"Heslo: {password}");
                 sb.AppendLine($"Pořadí přihlášení: {validationResult.Poradi} ({user.RegistrationDate.ToString("dd.MM.yyyy HH:mm:ss")})");
@@ -175,8 +183,6 @@ namespace MuhuGame2018.Services
             {
                 _logger.LogError($"Chyba při odesílání emailů. {ex.ToString()}");
             }
-
-            return user;
         }
 
         public void Update(User userParam, string password = null)

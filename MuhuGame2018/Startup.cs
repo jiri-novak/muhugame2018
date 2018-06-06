@@ -113,34 +113,27 @@ namespace nabe_order_management
                 app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
                 {
                     HotModuleReplacement = true
-                });
-
-#if DEBUG
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "nabe.order.management.api V1");
-                });
-#endif
-
-                app.MapWhen(x => !x.Request.Path.Value.StartsWith("/swagger", StringComparison.OrdinalIgnoreCase), builder =>
-                {
-                    builder.UseMvc(routes =>
-                    {
-                        routes.MapSpaFallbackRoute(name: "spa-fallback", defaults: new { controller = "Home", action = "Index" });
-                    });
-                });
+                });   
             }
             else
             {
-                app.UseMvc(routes =>
+                app.UseExceptionHandler("/Home/Error");
+            }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "MuhuGame 2018 V1");
+            });
+
+            app.MapWhen(x => !x.Request.Path.Value.StartsWith("/swagger", StringComparison.OrdinalIgnoreCase), builder =>
+            {
+                builder.UseMvc(routes =>
                 {
                     routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}");
                     routes.MapSpaFallbackRoute(name: "spa-fallback", defaults: new { controller = "Home", action = "Index" });
                 });
-
-                app.UseExceptionHandler("/Home/Error");
-            }
+            });
 
             using (var context = serviceProvider.GetService<DataContext>())
             {

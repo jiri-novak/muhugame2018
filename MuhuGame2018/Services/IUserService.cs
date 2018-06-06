@@ -9,6 +9,7 @@ namespace MuhuGame2018.Services
         User Authenticate(string username, string password);
         IEnumerable<User> GetAll();
         User GetById(int id);
+        void TrySendMails(User user, string password);
         User Create(User user, string password);
         void Update(User user, string password = null);
         void Delete(int id);
