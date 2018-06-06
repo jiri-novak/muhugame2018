@@ -12,6 +12,7 @@ using MuhuGame2018.Services;
 using MuhuGame2018.Helpers;
 using MuhuGame2018.DTO;
 using MuhuGame2018.Entities;
+using System.Linq;
 
 namespace MuhuGame2018.Controllers.API
 {
@@ -66,6 +67,15 @@ namespace MuhuGame2018.Controllers.API
             });
         }
 
+        private bool HasClaimForUser(int id)
+        {
+            var nameClaim = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name);
+            if (nameClaim == null)
+                return false;
+
+            return id == int.Parse(nameClaim.Value);
+        }
+
         [AllowAnonymous]
         [HttpPost]
         public IActionResult Register([FromBody]UserDto userDto)
@@ -98,6 +108,9 @@ namespace MuhuGame2018.Controllers.API
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
+            if (!HasClaimForUser(id))
+                return Unauthorized();
+
             var user = _userService.GetById(id);
             var userDto = _mapper.Map<UserDto>(user);
             return Ok(userDto);
@@ -106,6 +119,9 @@ namespace MuhuGame2018.Controllers.API
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody]UserDto userDto)
         {
+            if (!HasClaimForUser(id))
+                return Unauthorized();
+
             // map dto to entity and set id
             var user = _mapper.Map<User>(userDto);
             user.Id = id;
@@ -123,11 +139,14 @@ namespace MuhuGame2018.Controllers.API
             }
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
-        {
-            _userService.Delete(id);
-            return Ok();
-        }
+        //[HttpDelete("{id}")]
+        //public IActionResult Delete(int id)
+        //{
+        //    if (CheckUser(id))
+        //        return Unauthorized();
+
+        //    _userService.Delete(id);
+        //    return Ok();
+        //}
     }
 }

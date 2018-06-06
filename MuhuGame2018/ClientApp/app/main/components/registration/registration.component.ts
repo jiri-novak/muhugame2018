@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 })
 export class RegistrationComponent implements OnInit, OnDestroy {
     loading: boolean = false;
-    temporaryDisabled: boolean = false;
+    temporaryDisabled: boolean = true;
     existingUser: boolean = false;
     subscription: Subscription;
 
@@ -24,12 +24,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     tshirtsCost: number;
     totalCost: number;
 
-    variants: Variant[] = [
-        new Variant(VariantType.Budova4, "V pokoji v budově (4 účastníci)"),
-        new Variant(VariantType.Budova3, "V pokoji v budově (3 účastníci)"),
-        new Variant(VariantType.Chatka4, "V chatce (4 účastníci)"),
-        new Variant(VariantType.Chatka3, "V chatce (3 účastníci)")
-    ];
+    variants: Variant[] = [];
 
     tshirts: TShirt[] = [
         new TShirt(TShirtType.MenS, "Pánské S"),
@@ -60,33 +55,36 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         private alertService: AlertService
     ) {
         this.user = new User();
-
-        // this.user.name = "Lamy"
-        // this.user.login = "lamy";
-        // this.user.email = "jiri.novak@petriny.net";
-        // this.user.telephone = "123456";
-        // this.user.password = "256314";
-        // this.user.variant = VariantType.Chatka3;
-        // this.user.members[0].name = "1";
-        // this.user.members[1].name = "2";
-        // this.user.members[2].name = "3";
     }
 
     ngOnInit(): void {
+        this.initVariants();
+
         this.subscription = this.route.params.subscribe(params => {
             let id = params['id'];
 
             if (id) {
                 let s = this.userService.getById(id).subscribe(next => {
                     this.user = next;
-
                     this.existingUser = this.user != null;
                     this.updateParticipants(this.user.variant);
 
                     s.unsubscribe();
                 });
             }
+
+            this.initVariants();
         });
+    }
+
+    private initVariants(): void {
+        this.variants = [];
+        this.variants.push(new Variant(VariantType.Budova4, "V pokoji v budově (4 účastníci)"));
+        if (this.existingUser) {
+            this.variants.push(new Variant(VariantType.Budova3, "V pokoji v budově (3 účastníci)"));
+        }
+        this.variants.push(new Variant(VariantType.Chatka4, "V chatce (4 účastníci)"));
+        this.variants.push(new Variant(VariantType.Chatka3, "V chatce (3 účastníci)"));
     }
 
     ngOnDestroy(): void {

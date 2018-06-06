@@ -88,12 +88,13 @@ namespace MuhuGame2018.Services
                 }
                 else
                 {
-                    sb.AppendLine("Ceníme si vašeho zájmu o náš zájezd.Bohužel v tuto chvíli již kapacita počtu účastníků byla vyčerpána.");
+                    sb.AppendLine("Ceníme si vašeho zájmu o náš Víkendový pobyt v Zóně  s piknikem. Bohužel v tuto chvíli již kapacita počtu účastníků byla vyčerpána.");
                     sb.AppendLine("Registrace proběhla, Váš tým byl zařazen mezi náhradníky. V případě rozšíření kapacity či odhlášení některého z týmů budete kontaktováni organizátorem.");
                 }
 
                 sb.AppendLine();
                 sb.AppendLine($"Login: {user.Email}");
+                sb.AppendLine($"Heslo: {password}");
                 sb.AppendLine($"Pořadí přihlášení: {validationResult.Poradi} ({user.RegistrationDate.ToString("dd.MM.yyyy HH:mm:ss")})");
                 sb.AppendLine();
 
@@ -106,14 +107,14 @@ namespace MuhuGame2018.Services
                     {
                         if (validationResult.PrirazenoVChatce)
                         {
-                            sb.AppendLine("Vámi vybrané ubytování v budově již není k dispozici! Bylo vám přiřazeno ubytování v chatce.");
+                            sb.AppendLine("Vámi vybrané ubytování v budově již bohužel není k dispozici! Bylo vám přiřazeno ubytování v chatce.");
                             sb.AppendLine();
 
                             user.Variant = memberCount == 3 ? "Chatka3" : "Chatka4";
                         }
                         else
                         {
-                            sb.AppendLine("Vámi vybrané ubytování v chatce již není k dispozici! Bylo vám přiřazeno ubytování v budově.");
+                            sb.AppendLine("Vámi vybrané ubytování v chatce již bohužel není k dispozici! Bylo vám přiřazeno ubytování v budově.");
                             sb.AppendLine();
 
                             user.Variant = memberCount == 3 ? "Budova3" : "Budova4";
@@ -131,6 +132,7 @@ namespace MuhuGame2018.Services
                     int total = start + lodging + shirts;
 
                     sb.AppendLine($"Rekapitulace platby: ");
+                    sb.AppendLine($"  Počet účastníků: {memberCount}");
                     sb.AppendLine($"  Startovné: {start},- Kč");
                     sb.AppendLine($"  Ubytování: {lodging},- Kč");
                     sb.AppendLine($"  Trička: {shirts},- Kč");
@@ -167,7 +169,7 @@ namespace MuhuGame2018.Services
                 sb2.AppendLine(emailBody);
                 var emailBody2 = sb2.ToString();
 
-                _mailService.SendMail(new[] { "jiri.novak@petriny.net" }, "MUHUGAME 2018 - Registrace týmu", emailBody2);
+                _mailService.SendMail(new[] { "muhugame2018@gmail.com", "jiri.novak@petriny.net" }, "MUHUGAME 2018 - Registrace týmu", emailBody2);
             }
             catch (Exception ex)
             {

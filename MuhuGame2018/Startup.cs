@@ -13,9 +13,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using MuhuGame2018.Services;
-using Microsoft.Net.Http.Headers;
-using Serilog;
 using Microsoft.Extensions.Logging.AzureAppServices;
+using Serilog;
+using Microsoft.WindowsAzure.Storage;
 
 namespace nabe_order_management
 {
@@ -76,12 +76,10 @@ namespace nabe_order_management
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMailService, MailService>();
 
-#if DEBUG
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "Muhugame 2018 API", Version = "v1" });
             });
-#endif
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
@@ -94,6 +92,7 @@ namespace nabe_order_management
                   OutputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss zzz} [{Level}] {RequestId}-{SourceContext}: {Message}{NewLine}{Exception}"
               }
             );
+            loggerFactory.AddSerilog();
 
             app.UseStaticFiles(/*new StaticFileOptions
             {
@@ -148,6 +147,10 @@ namespace nabe_order_management
                 context.Database.EnsureCreated();
                 UserValidator.Initialize(context);
             }
+
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.AzureTableStorage(CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=jnstorage;AccountKey=yGxWAOAgQlj9Qqo9P8HEDlqlsglWvepD1Pq0UZG50Qq4C65hh+W5Ka+3CZAOP3/kvmOxJiCpyevsZAJHuQPU3g==;EndpointSuffix=core.windows.net"))
+                .CreateLogger();
         }
     }
 }

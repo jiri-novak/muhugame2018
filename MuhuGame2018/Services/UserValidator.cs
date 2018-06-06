@@ -11,8 +11,8 @@ namespace MuhuGame2018.Services
         private static ConcurrentDictionary<int, User> _users;
         private static object _lock;
 
-        private static readonly int Chatek = 28;
-        private static readonly int Pokoju = 16;
+        private static readonly int Chatek = 22;
+        private static readonly int Pokoju = 14;
 
         private static int UsedChatek = 0;
         private static int UsedPokoju = 0;
