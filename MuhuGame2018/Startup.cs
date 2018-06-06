@@ -95,7 +95,7 @@ namespace nabe_order_management
               }
             );
 
-            app.UseStaticFiles(new StaticFileOptions
+            app.UseStaticFiles(/*new StaticFileOptions
             {
                 OnPrepareResponse = ctx =>
                 {
@@ -103,7 +103,7 @@ namespace nabe_order_management
                     ctx.Context.Response.Headers[HeaderNames.CacheControl] =
                         "public,max-age=" + durationInSeconds;
                 }
-            });
+            }*/);
 
             app.UseAuthentication();
 
