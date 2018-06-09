@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { User } from '../../_models';
-import { MessageService } from '../../_services';
+import { User, MessageType } from '../../_models';
+import { MessageService, AuthenticationService } from '../../_services';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -10,16 +10,25 @@ import { Subscription } from 'rxjs';
 })
 export class AppLayoutHeaderComponent implements OnInit, OnDestroy {
     isCollapsed: boolean = true;
-    currentUser: User;
+    isAdmin: boolean = false;
+    currentUser: User = null;
     subscription: Subscription;
 
-    constructor(private messageService: MessageService) {
+    constructor(private messageService: MessageService, private authService: AuthenticationService) {
     }
 
     ngOnInit(): void {
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser')); 
+        this.currentUser = this.authService.getUser();
+        this.isAdmin = this.authService.isAdmin();
+
         this.subscription = this.messageService.getMessage().subscribe(message => { 
-            this.currentUser = JSON.parse(localStorage.getItem('currentUser'));    
+            if (message.type == MessageType.LoggedIn) {
+                this.currentUser = this.authService.getUser();
+                this.isAdmin = this.authService.isAdmin();
+            } else if (message.type == MessageType.LoggedOut) {
+                this.currentUser = null;
+                this.isAdmin = false;
+            }
         });
     }
 

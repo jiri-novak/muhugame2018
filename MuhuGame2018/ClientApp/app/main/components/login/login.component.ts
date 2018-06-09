@@ -10,7 +10,7 @@ import { AlertService, AuthenticationService } from '../../../shared/_services';
 export class LoginComponent implements OnInit {
     model: any = {};
     loading = false;
-    //returnUrl: string;
+    returnUrl: string;
 
     constructor(
         private route: ActivatedRoute,
@@ -20,10 +20,10 @@ export class LoginComponent implements OnInit {
 
     ngOnInit() {
         // reset login status
-        this.authenticationService.logout();
+        //this.authenticationService.logout();
 
         // get return url from route parameters or default to '/'
-        //this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
 
         if (this.route.snapshot.routeConfig.path === "logout") {
             this.logout();
@@ -35,7 +35,12 @@ export class LoginComponent implements OnInit {
         this.authenticationService.login(this.model.username, this.model.password)
             .subscribe(
                 data => {
-                    this.router.navigate([`/registration/${data.id}`]);
+                    if (this.authenticationService.isAdmin()) {
+                        this.router.navigate(['/admin']);
+                    }
+                    else {
+                        this.router.navigate([`/registration/${data.id}`]);
+                    }
                 },
                 error => {
                     this.alertService.error('Zadaná kombinace jména a hesla není správná!');
@@ -45,7 +50,6 @@ export class LoginComponent implements OnInit {
 
     logout() {
         this.authenticationService.logout();
-        //this.router.navigate([this.returnUrl]);
-        this.router.navigate(['']);
+        this.router.navigate([this.returnUrl]);
     }
 }

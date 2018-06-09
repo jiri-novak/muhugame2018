@@ -18,7 +18,11 @@ export class AlertsComponent implements OnInit, OnDestroy {
     constructor(private alertService: AlertService) { }
 
     ngOnInit(): void {
-        this.subscription = this.alertService.getMessage().subscribe(message => { this.alerts.push(message); });
+        this.subscription = this.alertService.getMessage().subscribe(message => { 
+            if (!this.alerts.find(x => x && x.text == message.text)) {
+                this.alerts.push(message); 
+            }
+        });
     }
 
     ngOnDestroy(): void {

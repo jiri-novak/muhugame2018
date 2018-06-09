@@ -20,6 +20,7 @@ const routes: Routes = [
     { path: 'contact', component: fromComponents.ContactComponent },
     { path: 'registration', component: fromComponents.RegistrationComponent },
     { path: 'registration/:id', component: fromComponents.RegistrationComponent, canActivate: [AuthGuard] },
+    { path: 'admin', component: fromComponents.AdminComponent },
     { path: '**', redirectTo: 'news' }
 ];
 

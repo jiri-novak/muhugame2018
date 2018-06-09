@@ -16,6 +16,8 @@ using MuhuGame2018.Services;
 using Microsoft.Extensions.Logging.AzureAppServices;
 using Serilog;
 using Microsoft.WindowsAzure.Storage;
+using MuhuGame2018.Services.Interfaces;
+using Microsoft.Extensions.Options;
 
 namespace nabe_order_management
 {
@@ -36,14 +38,7 @@ namespace nabe_order_management
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddDbContext<DataContext>(x => x.UseInMemoryDatabase("TestDb"));
             services.AddDbContext<DataContext>(x => x.UseSqlite("DataSource=muhugame2018.db"));
-
-            //services.AddDbContext<DataContext>(x => x.UseNpgsql("Host=pgsql.pipni.cz;Database=muhugame2018.cestuje.net;Username=muhugame2018.cestuje.net;Password=Mdmfced60"));
-            //services.AddDbContext<DataContext>(x => x.UseMySql("Host=sql20.pipni.cz;Database=muhugame2018_cestuje_net;Username=muhugame2018.cestuje.net;Password=Mdmfced60"));
-            //services.AddDbContext<DataContext>(x => x.UseMySql("server=sql20.pipni.cz;database=muhugame2018_cestuje_net;uid=muhugame2018.cestuje.net;pwd=Mdmfced60;"));
-            //services.AddDbContext<DataContext>(x => x.UseMySql("server=localhost;database=;uid=muhugame2018.cestuje.net;pwd=Mdmfced60;"));
-
             services.AddMvc();
             services.AddAutoMapper();
 
@@ -72,9 +67,17 @@ namespace nabe_order_management
                 };
             });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminsOnly", policy => policy.RequireClaim("Role", "Admin"));
+            });
+
             // configure DI for application services
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IPasswordService, PasswordService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMailService, MailService>();
+            services.AddScoped<ILodgingService, LodgingService>();
 
             services.AddSwaggerGen(c =>
             {
@@ -82,7 +85,12 @@ namespace nabe_order_management
             });
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+        public void Configure(
+            IApplicationBuilder app, 
+            IHostingEnvironment env, 
+            ILoggerFactory loggerFactory,
+            UserRepository userRepository,
+            IOptions<AppSettings> appSettings)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -135,15 +143,9 @@ namespace nabe_order_management
                 });
             });
 
-            using (var context = serviceProvider.GetService<DataContext>())
-            {
-                context.Database.EnsureCreated();
-                UserValidator.Initialize(context);
-            }
-
-            Log.Logger = new LoggerConfiguration()
-                .WriteTo.AzureTableStorage(CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=jnstorage;AccountKey=yGxWAOAgQlj9Qqo9P8HEDlqlsglWvepD1Pq0UZG50Qq4C65hh+W5Ka+3CZAOP3/kvmOxJiCpyevsZAJHuQPU3g==;EndpointSuffix=core.windows.net"))
-                .CreateLogger();
+            //Log.Logger = new LoggerConfiguration()
+            //    .WriteTo.AzureTableStorage(CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=jnstorage;AccountKey=yGxWAOAgQlj9Qqo9P8HEDlqlsglWvepD1Pq0UZG50Qq4C65hh+W5Ka+3CZAOP3/kvmOxJiCpyevsZAJHuQPU3g==;EndpointSuffix=core.windows.net"))
+            //    .CreateLogger();
         }
     }
 }

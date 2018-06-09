@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace MuhuGame2018.DTO
 {
+
     public class UserDto
     {
         public int Id { get; set; }

@@ -4,10 +4,11 @@ import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { AppConfig } from '../../app.config';
 import { User } from '../_models/index';
 import { map } from 'rxjs/operators';
+import { AuthenticationService } from './authentication.service';
 
 @Injectable()
 export class UserService {
-    constructor(private http: Http, private config: AppConfig) { }
+    constructor(private http: Http, private config: AppConfig, private authService: AuthenticationService) { }
 
     getAll() {
         return this.http
@@ -39,9 +40,9 @@ export class UserService {
 
     private jwt() {
         // create authorization header with jwt token
-        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if (currentUser && currentUser.token) {
-            let headers = new Headers({ 'Authorization': 'Bearer ' + currentUser.token });
+        let token = this.authService.getToken();
+        if (token) {
+            let headers = new Headers({ 'Authorization': 'Bearer ' + token });
             return new RequestOptions({ headers: headers });
         }
     }

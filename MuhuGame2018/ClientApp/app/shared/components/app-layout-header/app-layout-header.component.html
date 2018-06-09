@@ -61,6 +61,9 @@
                             <li [routerLinkActive]="['active']">
                                 <a [routerLink]="['/contact']">KONTAKT</a>
                             </li>
+                            <li [routerLinkActive]="['active']">
+                                <a *ngIf="currentUser && isAdmin" [routerLink]="['/admin']">ADMINISTRACE</a>
+                            </li>
                         </ul>
                     </div>
                 </div>

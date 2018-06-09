@@ -6,7 +6,7 @@ import { Message, MessageType } from "../_models";
 export class MessageService {
     private subject = new Subject<Message>();
  
-    sendMessage(type: MessageType, message?: any) {
+    sendMessage<T>(type: MessageType, message?: T) {
         this.subject.next({ type: type, message: message });
     }
  
@@ -14,7 +14,7 @@ export class MessageService {
         this.subject.next();
     }
  
-    getMessage(): Observable<any> {
+    getMessage(): Observable<Message> {
         return this.subject.asObservable();
     }
 }

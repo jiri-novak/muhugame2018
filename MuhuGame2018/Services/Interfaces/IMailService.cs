@@ -1,4 +1,4 @@
-﻿namespace MuhuGame2018.Services
+﻿namespace MuhuGame2018.Services.Interfaces
 {
     public interface IMailService
     {

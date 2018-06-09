@@ -1,26 +1,30 @@
-﻿using System.Net;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using MuhuGame2018.Helpers;
+using MuhuGame2018.Services.Interfaces;
+using System.Net;
 using System.Net.Mail;
 
 namespace MuhuGame2018.Services
 {
     public class MailService : IMailService
     {
-        private readonly string _smtpServer;
+        private readonly string _smtpHost;
         private readonly int _smtpPort;
         private readonly string _smtpUser;
         private readonly string _smtpPasswd;
 
-        public MailService()
+        public MailService(IOptions<AppSettings> appSettings)
         {
-            _smtpServer = "smtp.gmail.com";
-            _smtpPort = 587;
-            _smtpUser = "muhugame2018@gmail.com";
-            _smtpPasswd = "velkavikuna";
+            _smtpHost = appSettings.Value.SmtpSettings.Host;
+            _smtpPort = appSettings.Value.SmtpSettings.Port;
+            _smtpUser = appSettings.Value.SmtpSettings.User;
+            _smtpPasswd = appSettings.Value.SmtpSettings.Password;
         }
 
         public void SendMail(string[] tos, string subject, string body)
         {
-            SmtpClient client = new SmtpClient(_smtpServer, _smtpPort)
+            SmtpClient client = new SmtpClient(_smtpHost, _smtpPort)
             {
                 EnableSsl = true,
                 DeliveryMethod = SmtpDeliveryMethod.Network,

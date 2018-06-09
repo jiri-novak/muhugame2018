@@ -49,7 +49,8 @@ namespace MuhuGame2018.Controllers.API
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Id.ToString())
+                    new Claim(ClaimTypes.Name, user.Id.ToString()),
+                    new Claim(ClaimTypes.Role, _appSettings.AdminEmails.Contains(user.Email) ? "Admin" : "Registrant")
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -67,15 +68,6 @@ namespace MuhuGame2018.Controllers.API
             });
         }
 
-        private bool HasClaimForUser(int id)
-        {
-            var nameClaim = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name);
-            if (nameClaim == null)
-                return false;
-
-            return id == int.Parse(nameClaim.Value);
-        }
-
         [AllowAnonymous]
         [HttpPost]
         public IActionResult Register([FromBody]UserDto userDto)
@@ -83,17 +75,9 @@ namespace MuhuGame2018.Controllers.API
             // map dto to entity
             var user = _mapper.Map<User>(userDto);
 
-            try
-            {
-                // save 
-                _userService.Create(user, userDto.Password);
-                return Ok();
-            }
-            catch (AppException ex)
-            {
-                // return error message if there was an exception
-                return BadRequest(ex.Message);
-            }
+            // save 
+            _userService.Create(user, userDto.Password);
+            return Ok();
         }
 
         [AllowAnonymous]
@@ -108,7 +92,7 @@ namespace MuhuGame2018.Controllers.API
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            if (!HasClaimForUser(id))
+            if (!HasClaimForUserOrIsAdmin(id))
                 return Unauthorized();
 
             var user = _userService.GetById(id);
@@ -119,34 +103,47 @@ namespace MuhuGame2018.Controllers.API
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody]UserDto userDto)
         {
-            if (!HasClaimForUser(id))
+            if (!HasClaimForUserOrIsAdmin(id))
                 return Unauthorized();
 
             // map dto to entity and set id
             var user = _mapper.Map<User>(userDto);
             user.Id = id;
 
-            try
-            {
-                // save 
-                _userService.Update(user, userDto.Password);
-                return Ok();
-            }
-            catch (AppException ex)
-            {
-                // return error message if there was an exception
-                return BadRequest(ex.Message);
-            }
+            // save 
+            _userService.Update(user, userDto.Password);
+            return Ok();
         }
 
-        //[HttpDelete("{id}")]
-        //public IActionResult Delete(int id)
-        //{
-        //    if (CheckUser(id))
-        //        return Unauthorized();
+        [HttpPost("{id}/reset-password")]
+        public IActionResult ResetPassword(int id, [FromBody] PasswordResetDto passwordReset)
+        {
+            if (!HasClaimForUserOrIsAdmin(id))
+                return Unauthorized();
 
-        //    _userService.Delete(id);
-        //    return Ok();
-        //}
+            _userService.ResetPassword(id, passwordReset.NewPassword);
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            if (!HasClaimForUserOrIsAdmin(id))
+                return Unauthorized();
+
+            _userService.Delete(id);
+            return Ok();
+        }
+
+        private bool HasClaimForUserOrIsAdmin(int id)
+        {
+            var nameClaim = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name);
+            var roleClaim = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role);
+
+            if (nameClaim == null || roleClaim == null)
+                return false;
+
+            return id == int.Parse(nameClaim.Value) || roleClaim.Value == "Admin";
+        }
     }
 }

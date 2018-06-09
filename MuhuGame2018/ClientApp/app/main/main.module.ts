@@ -29,7 +29,8 @@ const allComponents = [
     components.ParticipantsComponent,
     components.RegistrationComponent,
     components.ResultsComponent,
-    components.VideoComponent
+    components.VideoComponent,
+    components.AdminComponent
 ];
 
 @NgModule({
