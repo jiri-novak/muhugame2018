@@ -1,5 +1,4 @@
 @import '../../../../assets/sass/_variables';
-
 .green {
     color: $color-green;
     font-weight: bold;
@@ -8,4 +7,35 @@
 .red {
     color: red;
     font-weight: bold;
+}
+
+.limit {
+    border-bottom: 2px solid red !important;
+}
+
+.borderless td,
+.borderless th {
+    border: none;
+}
+
+table tr:nth-child(odd) td {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+table tr:nth-child(even) td {
+    background-color: rgba($color: gray, $alpha: 0.1);
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.table-hover tbody tr:hover td,
+.table-hover tbody tr:hover th {
+    background-color: darkslategrey;
+    color: white;
+}
+
+.table tr.active td {
+    background-color: darkorange !important;
+    color: white;
 }

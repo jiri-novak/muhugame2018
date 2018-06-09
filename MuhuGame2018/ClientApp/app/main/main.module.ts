@@ -32,7 +32,6 @@ const allComponents = [
     components.VideoComponent,
     components.AdminComponent
 ];
-
 @NgModule({
     declarations: allComponents,
     imports: [
@@ -41,7 +40,7 @@ const allComponents = [
         FormsModule,
         ReactiveFormsModule,
         RouterModule,
-
+        
         NgSelectModule,
 
         VgCoreModule,

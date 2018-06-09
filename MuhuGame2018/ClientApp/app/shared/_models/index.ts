@@ -1,8 +1,9 @@
 export * from './message';
 export * from './message.type';
 export * from './alert';
-
 export * from './user';
+export * from './user.login';
+export * from './user.info';
 export * from './members';
 export * from './tshirt';
 export * from './tshirt.type';

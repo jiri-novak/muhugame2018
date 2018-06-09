@@ -53,7 +53,7 @@
                             </li>
                             <li [routerLinkActive]="['active']">
                                 <a *ngIf="!currentUser" [routerLink]="['/registration']">REGISTRACE</a>
-                                <a *ngIf="currentUser" [routerLink]="['/registration/'+currentUser.id]">VÁŠ TÝM</a>
+                                <a *ngIf="currentUser && !isAdmin" [routerLink]="['/registration']">VÁŠ TÝM</a>
                             </li>
                             <li *ngIf="!currentUser" [routerLinkActive]="['active']">
                                 <a [routerLink]="['/login']">LOGIN TÝMU</a>

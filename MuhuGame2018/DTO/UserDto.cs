@@ -17,6 +17,7 @@ namespace MuhuGame2018.DTO
         public string Variant { get; set; }
 
         public string Note { get; set; }
+        public bool Paid { get; set; }
 
         public DateTime RegistrationDate { get; set; }
 

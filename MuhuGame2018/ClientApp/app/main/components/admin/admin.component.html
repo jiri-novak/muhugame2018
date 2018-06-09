@@ -1,1 +1,12 @@
 <h1>Admin sekce:</h1>
+
+<h3></h3>
+
+<div class="row">
+    <div class="col-md-3">
+        <participants [simplified]="true" [isReadOnly]="false" (selected)="teamSelected($event)"></participants>
+    </div>
+    <div class="col-md-9">
+        <registration [simplified]="true" [user]="selected"></registration>
+    </div>
+</div>

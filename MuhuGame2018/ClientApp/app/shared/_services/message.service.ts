@@ -7,7 +7,7 @@ export class MessageService {
     private subject = new Subject<Message>();
  
     sendMessage<T>(type: MessageType, message?: T) {
-        this.subject.next({ type: type, message: message });
+        this.subject.next({ type: type, payload: message });
     }
  
     clearMessage() {

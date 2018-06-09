@@ -2,12 +2,10 @@ import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import * as jwt_decode from 'jwt-decode';
 
-import { AppConfig } from '../../app.config';
-import { MessageType, User } from '../_models';
+import { MessageType, UserInfo, UserLogin } from '../_models';
 import { MessageService } from './message.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { decode } from 'punycode';
 
 export const JWT_TOKEN: string = 'jwt_token';
 export const CURRENT_USER: string = 'current_user';
@@ -16,7 +14,6 @@ export const CURRENT_USER: string = 'current_user';
 export class AuthenticationService {
     constructor(
         private http: Http,
-        private config: AppConfig,
         private messageService: MessageService
     ) { }
 
@@ -29,23 +26,38 @@ export class AuthenticationService {
         return !(date.valueOf() > new Date().valueOf());
     }
 
-    public getUser(): User {
+    public getUserInfo(): UserInfo {
         let item: string = localStorage.getItem(CURRENT_USER);
-        if (!!item)
-            return JSON.parse(item);
+        if (!!item) {
+            let userInfo: UserInfo = JSON.parse(item);
+            return userInfo;
+        }
         return null;
+    }
+
+
+    public getUserId(): number {
+        let userInfo: UserInfo = this.getUserInfo();
+        if (!!userInfo) {
+            return userInfo.id;
+        }
+        return null;
+    }
+
+    public isAdmin(): boolean {
+        let role = this.getRole();
+        if (!role)
+            return false;
+        return role === "Admin";
     }
 
     public getToken(): string {
         return localStorage.getItem(JWT_TOKEN);
     }
-
-    public isAdmin(): boolean {
-        return this.getRole() === "admin";
-    }
     
-    public login(email: string, password: string): Observable<User> {
-        return this.http.post(this.config.apiUrl + '/users/authenticate', { email: email, password: password })
+    public login(email: string, password: string): Observable<UserInfo> {
+        let userLogin: UserLogin = { email: email, password: password };
+        return this.http.post('/users/authenticate', userLogin)
             .pipe(
                 map((response: Response) => {
                     // login successful if there's a jwt token in the response
@@ -55,7 +67,7 @@ export class AuthenticationService {
                         // store user details and jwt token in local storage to keep user logged in between page refreshes
                         this.setUser(user);
                         this.setToken(user.token);
-                        this.messageService.sendMessage(MessageType.LoggedIn, user);
+                        this.messageService.sendMessage(MessageType.LoggedIn);
                     }
 
                     return user;
@@ -71,11 +83,14 @@ export class AuthenticationService {
 
     private getRole() {
         let token = this.getToken();
-        const decoded = jwt_decode(token);
-        return decoded.role;
+        if (!!token) {
+            const decoded = jwt_decode(token);
+            return decoded.role;
+        }
+        return null;
     }
 
-    private setUser(user: User): void {
+    private setUser(user: UserInfo): void {
         localStorage.setItem(CURRENT_USER, JSON.stringify(user));
     }
 

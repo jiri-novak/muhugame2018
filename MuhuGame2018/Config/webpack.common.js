@@ -8,9 +8,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const clientAppRoot = Helpers.root('ClientApp');
 const clientAppSrc = Helpers.root('ClientApp', 'app');
 
+const APP_CONFIG = {
+    "maxTeams": "36"
+};
+
 module.exports = {
     target: 'web',
-    
+
     entry: {
         'app': [`./ClientApp/polyfills.ts`, `./ClientApp/main.ts`]
     },
@@ -114,14 +118,6 @@ module.exports = {
                     failOnHint: false
                 },
 				/**
-				 * Sass
-				 * Reference: https://github.com/jtangelder/sass-loader
-				 * Transforms .scss files to .css
-				 */
-                sassLoader: {
-                    //includePaths: [path.resolve(__dirname, "node_modules/foundation-sites/scss")]
-                },
-				/**
 				 * PostCSS
 				 * Reference: https://github.com/postcss/autoprefixer-core
 				 * Add vendor prefixes to your css
@@ -153,6 +149,6 @@ module.exports = {
             inject: 'body',
             xhtml: true,
             minify: false
-          }),
+        }),
     ]
 };

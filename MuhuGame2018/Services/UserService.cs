@@ -12,22 +12,22 @@ namespace MuhuGame2018.Services
 {
     public class UserService : IUserService
     {
-        private readonly IMailService _mailService;
+        private readonly ILodgingService _lodgingService;
         private readonly IPasswordService _passwordService;
         private readonly IUserRepository _userRepository;
         private readonly IOptions<AppSettings> _appSettings;
         private readonly ILogger<UserService> _logger;
 
         public UserService(
-            IMailService mailService, 
             IPasswordService passwordService,
             IUserRepository userRepository,
+            ILodgingService lodgingService,
             IOptions<AppSettings> appSettings,
             ILogger<UserService> logger)
         {
-            _mailService = mailService;
             _passwordService = passwordService;
             _userRepository = userRepository;
+            _lodgingService = lodgingService;
             _appSettings = appSettings;
             _logger = logger;
         }
@@ -37,7 +37,24 @@ namespace MuhuGame2018.Services
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
                 return null;
 
-            var user = _userRepository.Get(x => x.Email == email);
+            User user;
+            var adminUser = _appSettings.Value.AdminUsers.FirstOrDefault(x => x.Email == email);
+            if (adminUser != null)
+            {
+                _passwordService.CreatePasswordHash(adminUser.Password, out var hash, out var salt);
+                user = new User
+                {
+                    Id = int.MaxValue,
+                    Name = adminUser.Name,
+                    Email = adminUser.Email,
+                    PasswordHash = hash,
+                    PasswordSalt = salt
+                };
+            }
+            else
+            {
+                user = _userRepository.Get(x => x.Email == email);
+            }
 
             // check if username exists
             if (user == null)
@@ -80,110 +97,18 @@ namespace MuhuGame2018.Services
 
             _userRepository.Add(user);
 
-            TrySendMails(user, password);
+            var validationResult = LodgingValidator.Validate(_userRepository, _appSettings, user);
+
+            TrySendMails(user, password, validationResult);
 
             return user;
         }
 
-        private void TrySendMails(User user, string password)
+        private void TrySendMails(User user, string password, LodgingValidator.LodgingValidationResult validationResult)
         {
             try
             {
-                string emailBody = null;
-                bool updateNeeded = false;
-
-                var validationResult = LodgingValidator.Validate(_userRepository, _appSettings, user);
-
-                StringBuilder sb = new StringBuilder();
-
-                if (!validationResult.OverLimit)
-                {
-                    sb.AppendLine("Vaše registrace na Víkendový pobyt v Zóně proběhla úspěšně.");
-                }
-                else
-                {
-                    sb.AppendLine("Ceníme si vašeho zájmu o náš Víkendový pobyt v Zóně  s piknikem. Bohužel v tuto chvíli již kapacita počtu účastníků byla vyčerpána.");
-                    sb.AppendLine("Registrace proběhla, Váš tým byl zařazen mezi náhradníky. V případě rozšíření kapacity či odhlášení některého z týmů budete kontaktováni organizátorem.");
-                }
-
-                sb.AppendLine();
-                sb.AppendLine($"Jméno týmu: {user.Name}");
-                sb.AppendLine($"Login: {user.Email}");
-                sb.AppendLine($"Heslo: {password}");
-                sb.AppendLine($"Pořadí přihlášení: {validationResult.Order} ({user.RegistrationDate.ToString("dd.MM.yyyy HH:mm:ss")})");
-                sb.AppendLine();
-
-                if (!validationResult.OverLimit)
-                {
-                    int memberCount = user.Members.Count;
-                    int memberLodging = validationResult.HutAssigned ? 850 : 1000;
-
-                    if (!validationResult.DesiredLodgingAssigned)
-                    {
-                        if (validationResult.HutAssigned)
-                        {
-                            sb.AppendLine("Vámi vybrané ubytování v budově již bohužel není k dispozici! Bylo vám přiřazeno ubytování v chatce.");
-                            sb.AppendLine();
-
-                            user.Variant = memberCount == 3 ? "Chatka3" : "Chatka4";
-                        }
-                        else
-                        {
-                            sb.AppendLine("Vámi vybrané ubytování v chatce již bohužel není k dispozici! Bylo vám přiřazeno ubytování v budově.");
-                            sb.AppendLine();
-
-                            user.Variant = memberCount == 3 ? "Budova3" : "Budova4";
-                        }
-
-                        foreach (var m in user.Members)
-                            m.Cost = memberLodging + 250 * (m.Tshirt == null ? 0 : 1);
-
-                        updateNeeded = true;
-                    }
-
-                    int start = 1200;
-                    int shirts = user.Members.Count(x => x.Tshirt != null) * 250;
-                    int lodging = memberCount * memberLodging;
-                    int total = start + lodging + shirts;
-
-                    sb.AppendLine($"Rekapitulace platby: ");
-                    sb.AppendLine($"  Počet účastníků: {memberCount}");
-                    sb.AppendLine($"  Startovné: {start},- Kč");
-                    sb.AppendLine($"  Ubytování: {lodging},- Kč");
-                    sb.AppendLine($"  Trička: {shirts},- Kč");
-                    sb.AppendLine($"  Celková cena: {total},- Kč");
-                    sb.AppendLine();
-                    sb.AppendLine("Částku prosím uhraďte na číslo účtu: 670100 - 2215359802 / 6210 (Mbank) nejpozději do 25.7. 2018. Do zprávy pro příjemce vždy uveďte název týmu.");
-                    sb.AppendLine();
-                    sb.AppendLine("Těšíme se na vás!");
-                }
-                else
-                {
-                    sb.AppendLine("Hodně štěstí!");
-                }
-
-                sb.AppendLine();
-                sb.AppendLine("Za kolektiv CK MUHUGAMES");
-                sb.AppendLine();
-                sb.AppendLine("Lamy");
-
-                emailBody = sb.ToString();
-
-                if (updateNeeded)
-                {
-                    _userRepository.Update(user);
-                }
-
-                _mailService.SendMail(new[] { user.Email }, "MUHUGAME 2018 - Výsledek registrace", emailBody);
-
-                var sb2 = new StringBuilder();
-                sb2.AppendLine("Právě proběhla registrace týmu:");
-                sb2.AppendLine();
-                sb2.AppendLine("===============================");
-                sb2.AppendLine(emailBody);
-                var emailBody2 = sb2.ToString();
-
-                _mailService.SendMail(new[] { "muhugame2018@gmail.com", "jiri.novak@petriny.net" }, "MUHUGAME 2018 - Registrace týmu", emailBody2);
+                _lodgingService.SendConfirmationEmails(user, password, validationResult);
             }
             catch (Exception ex)
             {
@@ -211,6 +136,7 @@ namespace MuhuGame2018.Services
             user.Telephone = userParam.Telephone;
             user.Variant = userParam.Variant;
             user.Note = userParam.Note;
+            user.Paid = userParam.Paid;
 
             for (var i = 0; i < userParam.Members.Count(); ++i)
             {

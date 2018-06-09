@@ -22,12 +22,11 @@ namespace MuhuGame2018.Services
         private static int BuildingCost;
 
         private static ConcurrentDictionary<int, User> _users;
-        private static object _lock;
+        private static object _lock = new object();
 
         private static void Initialize(IUserRepository userRepository, IOptions<AppSettings> appSettings)
         {
             _users = new ConcurrentDictionary<int, User>(userRepository.GetAll().ToDictionary(x => x.Id, x => x));
-            _lock = new object();
 
             UsedHuts = _users.Count(x => x.Value.Variant.StartsWith("Chatka"));
             UsedBuildings = _users.Count(x => x.Value.Variant.StartsWith("Budova"));

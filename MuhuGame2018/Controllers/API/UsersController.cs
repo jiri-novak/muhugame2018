@@ -16,6 +16,7 @@ using System.Linq;
 
 namespace MuhuGame2018.Controllers.API
 {
+
     [Authorize]
     [Route("[controller]")]
     public class UsersController : Controller
@@ -36,7 +37,7 @@ namespace MuhuGame2018.Controllers.API
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody]UserDto userDto)
+        public IActionResult Authenticate([FromBody]UserLoginDto userDto)
         {
             var user = _userService.Authenticate(userDto.Email, userDto.Password);
 
@@ -50,7 +51,7 @@ namespace MuhuGame2018.Controllers.API
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, user.Id.ToString()),
-                    new Claim(ClaimTypes.Role, _appSettings.AdminEmails.Contains(user.Email) ? "Admin" : "Registrant")
+                    new Claim(ClaimTypes.Role, _appSettings.AdminUsers.Any(x => x.Email == user.Email) ? "Admin" : "Team")
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -59,11 +60,10 @@ namespace MuhuGame2018.Controllers.API
             var tokenString = tokenHandler.WriteToken(token);
 
             // return basic user info (without password) and token to store client side
-            return Ok(new
+            return Ok(new UserInfoDto
             {
-                user.Id,
-                user.Email,
-                user.Name,
+                Id = user.Id,
+                Name = user.Name,
                 Token = tokenString
             });
         }

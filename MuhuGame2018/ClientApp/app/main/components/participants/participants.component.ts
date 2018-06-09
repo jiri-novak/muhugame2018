@@ -1,7 +1,8 @@
-import { Component, OnInit, ViewChild, TemplateRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { UserService } from '../../../shared/_services';
 import { Subscription } from 'rxjs';
 import { User } from '../../../shared/_models';
+import { AppSettings } from '../../../app.settings';
 
 @Component({
     selector: 'participants',
@@ -9,30 +10,53 @@ import { User } from '../../../shared/_models';
     styleUrls: ['./participants.component.scss']
 })
 export class ParticipantsComponent implements OnInit, OnDestroy {
-    private users: User[];
-    private teams: number;
-    private members: number;
+    @Input() simplified: boolean = false;
+    @Input() isReadOnly: boolean = true;
 
-    constructor(private userService: UserService) {
+    @Output() selected = new EventEmitter<User>();
+
+    isBusy: boolean = false;
+    users: User[];
+    teams: number;
+    members: number;
+
+    subscription: Subscription;
+
+    selectedRow: number;
+    setClickedRow: Function;
+
+    constructor(private userService: UserService, private appSettings: AppSettings) {
+        this.setClickedRow = function (index) {
+            this.selectedRow = index;
+            this.selected.emit(this.users[index]);
+        }
     }
 
     ngOnInit(): void {
-        let s = this.userService.getAll().subscribe(next => {
+        this.isBusy = true;
+        this.subscription = this.userService.getAll().subscribe(next => {
             this.users = next;
+
+            if (this.users.length > 0)
+                this.setClickedRow(0);
 
             this.teams = this.users.length;
             this.members = 0;
-            
+
             for (let user of this.users) {
                 for (let member of user.members) {
                     this.members += 1;
                 }
             }
 
-            s.unsubscribe();
+            this.isBusy = false;
+        }, err => { 
+            this.isBusy = false; 
         });
     }
 
     ngOnDestroy(): void {
+        if (this.subscription)
+            this.subscription.unsubscribe();
     }
 }

@@ -1,12 +1,13 @@
-<div class="container">
-
-    <div class="row">
-        <div class="col-lg-12">
-            <h1>Týmy:</h1>
-        </div>
+<div class="row" *ngIf="!simplified">
+    <div class="col-lg-12">
+        <h1>Týmy:</h1>
     </div>
+</div>
 
-    <div class="row">
+<busy-indicator [isBusy]="isBusy"></busy-indicator>
+
+<div *ngIf="!isBusy">
+    <div class="row" *ngIf="!simplified">
         <div class="col-lg-12">
             <h3>Je přihlášeno celkem
                 <b>{{members}}</b> účastníků v
@@ -14,52 +15,36 @@
 
             <p>Maximální počet registrací je
                 <b>36</b>, týmy nad tento počet se mohou registrovat jako náhradníci.</p>
+
+            <p>Týmy označené
+                <span style="color: green">
+                    <b>zeleně</b>
+                </span> již uhradily startovné.</p>
             <br/>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-1">
-            <b>Pořadí:</b>
-        </div>
-        <div class="col-md-2">
-            <b>Název týmu:</b>
-        </div>
-        <div class="col-md-1">
-            <b>Členů:</b>
-        </div>
-        <div class="col-md-4">
-            <b>Seznam členů:</b>
-        </div>
-        <div class="col-md-2">
-            <b>Čas registrace:</b>
-        </div>
-        <div class="col-md-1">
-            <b>Zaplaceno:</b>
-        </div>
-    </div>
-
-    <div *ngFor="let user of users">
-        <div class="row">
-            <div class="col-md-1" [ngClass]="{ 'green': user.id <= 36, 'red': user.id > 36 }">
-                {{user.id}}
-            </div>
-            <div class="col-md-2">
-                {{user.name}}
-            </div>
-            <div class="col-md-1">
-                {{user.members | arrayLength }}
-            </div>
-            <div class="col-md-4">
-                {{user.members | memberNames }}
-            </div>
-            <div class="col-md-2">
-                {{user.registrationDate | date:'dd.MM.yyyy HH:mm:ss' }}
-            </div>
-            <div class="col-md-1">
-                {{user.paid | questionableBoolean}}
-            </div>
-        </div>
-    </div>
-
+    <table class="table borderless" [class.table-hover]="!isReadOnly">
+        <thead>
+            <tr>
+                <th class="text-center" style="padding-right: 10px">#</th>
+                <th>NÁZEV TÝMU</th>
+                <th *ngIf="!simplified">POČET ČLENŮ</th>
+                <th *ngIf="!simplified">SEZNAM ČLENŮ</th>
+                <th *ngIf="!simplified">ČAS REGISTRACE</th>
+                <th>ZAPLACENO</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let user of users let i = index" (click)="setClickedRow(i)" [class.active]="!isReadOnly && i == selectedRow"
+                [ngClass]="{ 'limit': user.id == appSettings.maxTeams }">
+                <td class="text-center" style="padding-right: 10px" [ngClass]="{ 'green': user.id <= appSettings.maxTeams, 'red': user.id > appSettings.maxTeams }">{{user.id}}</td>
+                <td [ngClass]="{ 'green': user.paid }">{{user.name}}</td>
+                <td *ngIf="!simplified">{{user.members | arrayLength }}</td>
+                <td *ngIf="!simplified">{{user.members | memberNames }}</td>
+                <td *ngIf="!simplified">{{user.registrationDate | date:'dd.MM.yyyy HH:mm:ss' }}</td>
+                <td class="text-center" [class.green]="user.paid">{{user.paid | questionableBoolean}}</td>
+            </tr>
+        </tbody>
+    </table>
 </div>

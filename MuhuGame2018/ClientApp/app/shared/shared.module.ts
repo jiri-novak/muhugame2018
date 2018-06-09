@@ -20,7 +20,7 @@ const allComponents = [
     fromComponents.AlertsComponent,
     fromComponents.AppLayoutHeaderComponent,
     fromComponents.AppLayoutFooterComponent,
-    fromComponents.ValidatingInputComponent
+    fromComponents.BusyIndicatorComponent
 ];
 
 @NgModule({

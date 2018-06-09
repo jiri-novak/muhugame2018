@@ -36,7 +36,6 @@ export class MediaComponent implements OnInit, OnDestroy {
         this.subscription = this.route.params.subscribe(params => {
             let id = params['id'];
 
-            console.log(id);
             switch (id) {
                 case 'press-conference':
                     this.sources = [
@@ -59,6 +58,7 @@ export class MediaComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.subscription.unsubscribe();
+        if (this.subscription)
+            this.subscription.unsubscribe();
     }
 }

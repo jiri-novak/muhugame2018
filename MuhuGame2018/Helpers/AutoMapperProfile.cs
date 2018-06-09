@@ -13,6 +13,13 @@ namespace MuhuGame2018.Helpers
 
             CreateMap<UserDto, User>();
             CreateMap<MemberDto, Member>();
+
+            CreateMap<AppSettings, AppSettingsDto>()
+                .ForMember(d => d.BuildingCost, s => s.MapFrom(f => f.Costs.Building))
+                .ForMember(d => d.HutCost, s => s.MapFrom(f => f.Costs.Hut))
+                .ForMember(d => d.StartingCost, s => s.MapFrom(f => f.Costs.Starting))
+                .ForMember(d => d.TshirtCost, s => s.MapFrom(f => f.Costs.Tshirt))
+                .ForMember(d => d.MaxTeams, s => s.MapFrom(f => f.LodgingCounts.Total));
         }
     }
 }

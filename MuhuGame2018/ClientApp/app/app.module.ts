@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common'
-import { HttpClientModule, HttpClient } from '@angular/common/http'
-import { APP_INITIALIZER, ApplicationRef, NgModule } from '@angular/core'
+import { HttpClientModule } from '@angular/common/http'
+import { NgModule } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-import { createNewHosts, removeNgStyles } from '@angularclass/hmr'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -14,9 +13,9 @@ import { MainModule } from './main';
 
 import { AppComponent } from './app.component';
 import { RoutesConfig } from './app.routes';
-import { AppConfig } from './app.config';
+import { AppSettings } from './app.settings';
 
-export function getBaseUrl() {
+export function getBaseUrl(): string {
     return document.getElementsByTagName('base')[0].href;
 }
 
@@ -38,7 +37,7 @@ export function getBaseUrl() {
         MainModule
     ],
     providers: [
-        AppConfig,
+        AppSettings,
         { provide: 'BASE_URL', useFactory: getBaseUrl }
     ]
 })

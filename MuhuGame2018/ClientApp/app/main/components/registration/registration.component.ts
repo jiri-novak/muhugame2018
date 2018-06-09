@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { AlertService, UserService } from '../../../shared/_services';
-import { Variant, User, VariantType, TShirt, TShirtType, Dinner, DinnerType, Member } from '../../../shared/_models';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Router } from '@angular/router';
+import { AlertService, UserService, MessageService, AuthenticationService } from '../../../shared/_services';
+import { Variant, User, VariantType, TShirt, TShirtType, Dinner, DinnerType, Member, MessageType } from '../../../shared/_models';
 import { Subscription } from 'rxjs';
+import { AppSettings } from '../../../app.settings';
 
 @Component({
     selector: 'registration',
@@ -10,15 +11,31 @@ import { Subscription } from 'rxjs';
     styleUrls: ['./registration.component.scss']
 })
 export class RegistrationComponent implements OnInit, OnDestroy {
+    private _user: User = new User();
+
+    @Input('user')
+    get user(): User {
+        return this._user;
+    }
+    set user(value: User) {
+        this._user = value;
+        this.existingUser = !!value && !!value.id && value.id != 0;
+        this.isAdmin = this.authService.isAdmin();
+        if (value) {
+            this.updateParticipants(value.variant);
+        }
+        this.initVariants();
+    }
+
+    @Input() simplified: boolean = false;
+
     loading: boolean = false;
+    isBusy: boolean = false;
+    isAdmin: boolean = false;
     temporaryDisabled: boolean = false;
     existingUser: boolean = false;
+
     subscription: Subscription;
-
-    user: User;
-
-    startingCost: number = 1200;
-    tshirtCost: number = 250;
 
     lodgingCost: number;
     tshirtsCost: number;
@@ -50,31 +67,53 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
     constructor(
         private router: Router,
-        private route: ActivatedRoute,
         private userService: UserService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private appSettings: AppSettings,
+        private messageService: MessageService,
+        private authService: AuthenticationService
     ) {
-        this.user = new User();
     }
 
     ngOnInit(): void {
-        this.initVariants();
+        if (!this.simplified) {
+            this.UpdateUser();
+        }
 
-        this.subscription = this.route.params.subscribe(params => {
-            let id = params['id'];
-
-            if (id) {
-                let s = this.userService.getById(id).subscribe(next => {
-                    this.user = next;
-                    this.existingUser = this.user != null;
-                    this.updateParticipants(this.user.variant);
-
-                    s.unsubscribe();
-                });
+        this.subscription = this.messageService.getMessage().subscribe(message => {
+            if (message.type == MessageType.LoggedIn) {
+                this.UpdateUser();
+            } else if (message.type == MessageType.LoggedOut) {
+                this.UpdateUser();
             }
-
-            this.initVariants();
         });
+    }
+    
+    ngOnDestroy(): void {
+        if (this.subscription)
+            this.subscription.unsubscribe();
+    }
+
+    private UpdateUser(): void {
+        this.isBusy = true;
+
+        let userId: number = this.authService.getUserId();
+
+        if (!!userId && userId != 0) {
+            let s = this.userService.getById(userId).subscribe(x => {
+                if (!x) {
+                    this.user = new User();
+                } else {
+                    this.user = x;
+                }
+                this.isBusy = false;
+                s.unsubscribe();
+            });
+        }
+        else {
+            this.user = new User();
+            this.isBusy = false;
+        }
     }
 
     private initVariants(): void {
@@ -85,10 +124,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         }
         this.variants.push(new Variant(VariantType.Chatka4, "V chatce (4 účastníci)"));
         this.variants.push(new Variant(VariantType.Chatka3, "V chatce (3 účastníci)"));
-    }
-
-    ngOnDestroy(): void {
-        this.subscription.unsubscribe();
     }
 
     updateParticipants(event: VariantType): void {
@@ -110,13 +145,11 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     }
 
     updateTShirt(member: Member, event: TShirtType): void {
-        console.log(TShirtType);
-
         if (event) {
-            member.cost += this.tshirtCost;
+            member.cost += this.appSettings.tshirtCost;
         }
         else {
-            member.cost -= this.tshirtCost;
+            member.cost -= this.appSettings.tshirtCost;
         }
 
         this.recalculateExpenses(this.user.variant);
@@ -125,19 +158,19 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     private recalculateExpenses(event: VariantType) {
         let memberCount = this.user.members.length;
         let chatka = event == VariantType.Chatka3 || event == VariantType.Chatka4;
-        let perMember = chatka ? 850 : 1000;
+        let perMember = chatka ? this.appSettings.hutCost : this.appSettings.buildingCost;
 
         this.user.members.forEach(m => {
             m.cost = perMember;
 
             if (m.tshirt) {
-                m.cost += this.tshirtCost;
+                m.cost += this.appSettings.tshirtCost;
             }
         });
 
         this.lodgingCost = memberCount * perMember;
-        this.tshirtsCost = this.user.members.reduce((sum, current) => sum + (current.tshirt ? 1 : 0) * this.tshirtCost, 0);
-        this.totalCost = this.lodgingCost + this.tshirtsCost + this.startingCost;
+        this.tshirtsCost = this.user.members.reduce((sum, current) => sum + (current.tshirt ? 1 : 0) * this.appSettings.tshirtCost, 0);
+        this.totalCost = this.lodgingCost + this.tshirtsCost + this.appSettings.startingCost;
     }
 
     register(): void {
@@ -161,7 +194,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
             let s = this.userService.update(this.user)
                 .subscribe(
                     data => {
-                        this.alertService.success('Údaje o vašem týmu byly úspěšně aktualizovány!', true);
+                        this.alertService.success(`Údaje o týmu ${this.user.name} byly úspěšně aktualizovány!`, true);
                         this.loading = false;
                         s.unsubscribe();
                     },

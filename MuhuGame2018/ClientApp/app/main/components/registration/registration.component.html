@@ -1,233 +1,242 @@
-<div class="container">
-
-    <div class="row">
-        <div class="col-lg-12">
-            <h1>Registrace:</h1>
-        </div>
+<div class="row" *ngIf="!simplified">
+    <div class="col-lg-12">
+        <h1>Registrace:</h1>
     </div>
+</div>
 
-    <div class="row" *ngIf="temporaryDisabled">
+<busy-indicator [isBusy]="isBusy"></busy-indicator>
+
+<div *ngIf="!isBusy">
+    <div class="row" *ngIf="!simplified && temporaryDisabled">
         <div class="col-lg-12">
             <h3></h3>
-            <p>Registrace budou spuštěny <b>6.6. 2018 20:00</b>!</p>
+            <p>Registrace budou spuštěny
+                <b>6.6. 2018 20:00</b>!</p>
             <p>Do té doby vydržte a obnovujte pomocí CTRL+F5 :-)</p>
         </div>
     </div>
 
-    <div class="row" *ngIf="!temporaryDisabled">
-        <div class="col-lg-12">
-            <form class="form-horizontal" name="form" (ngSubmit)="register()" #teamForm="ngForm" novalidate>
+    <form class="form-horizontal" name="form" (ngSubmit)="register()" #teamForm="ngForm" novalidate *ngIf="!temporaryDisabled">
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <h3>Registrační údaje týmu:</h3>
+        <div class="row">
+            <div class="col-md-8">
+                <h3 *ngIf="!simplified">Registrační údaje týmu:</h3>
 
-                        <div class="col-md-12">
-                            <div class="form-group required">
-                                <label class="col-md-4 control-label" for="name">Název týmu:</label>
-                                <div class="col-md-6">
-                                    <input type="text" class="form-control" name="name" [(ngModel)]="user.name" #name="ngModel" required [disabled]="existingUser">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-12">
-                            <div class="form-group required">
-                                <label class="col-md-4 control-label" for="email">Email / login:</label>
-                                <div class="col-md-6">
-                                    <input type="email" class="form-control" name="email" [(ngModel)]="user.email" #email="ngModel" required email
-                                    [disabled]="existingUser"/>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-12">
-                            <div class="form-group required">
-                                <label class="col-md-4 control-label" for="tel">Telefon:</label>
-                                <div class="col-md-6">
-                                    <input type="tel" class="form-control" name="tel" [(ngModel)]="user.telephone" #telephone="ngModel" required tel pattern='^\+?\d{0,13}'/>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-12" *ngIf="!existingUser">
-                            <div class="form-group required">
-                                <label class="col-md-4 control-label" for="password">Heslo:</label>
-                                <div class="col-md-6">
-                                    <input type="password" class="form-control" name="password" [(ngModel)]="user.password" #password="ngModel" minlength="5"
-                                        required/>
-                                </div>
-                                <div class="col-md-2 vertical-align">
-                                    >= 5 znaků
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-12" *ngIf="existingUser">
-                            <div class="form-group">
-                                <label class="col-md-4 control-label" for="password">Heslo (chcete-li ho změnit):</label>
-                                <div class="col-md-6">
-                                    <input type="password" class="form-control" name="password" [(ngModel)]="user.password" #password="ngModel" minlength="5"
-                                    />
-                                </div>
-                                <div class="col-md-2 vertical-align">
-                                    >= 5 znaků
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <h3>Platba:</h3>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label class="control-label" for="startovne">Startovné:</label>
-                            </div>
-                            <div class="col-md-2 text-right">
-                                <b name="startovne">{{startingCost}},- Kč</b>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label class="control-label" for="ubytovani">Ubytování:</label>
-                            </div>
-                            <div class="col-md-2 text-right">
-                                <b name="ubytovani">{{lodgingCost}},- Kč</b>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label class="control-label" for="tricka">Trička:</label>
-                            </div>
-                            <div class="col-md-2 text-right">
-                                <b name="tricka">{{tshirtsCost}},- Kč</b>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4 red">
-                                <label class="control-label" for="celkovacena">Celková cena:</label>
-                            </div>
-                            <div class="col-md-2 red text-right">
-                                <b name="celkovacena">{{totalCost}},- Kč</b>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <br/>
-                            <div class="col-md-4">
-                                Číslo účtu:
-                            </div>
-                            <div class="col-md-8">
-                                <b>670100-2215359802/6210 (MBank)</b>
-                                <br/> Do zprávy pro příjemce vždy uveďte název týmu!
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <br/>
-                            <label class="col-md-2 control-label" for="note">Poznámka:</label>
-                            <div class="col-md-8">
-                                <textarea name="note" [(ngModel)]="user.note" rows="4" style="min-width: 100%"></textarea>
-                            </div>
+                <div class="col-md-12">
+                    <div class="form-group required">
+                        <label class="col-md-4 control-label" for="name">Název týmu:</label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" name="name" [(ngModel)]="user.name" #name="ngModel" required [disabled]="!isAdmin && existingUser">
                         </div>
                     </div>
                 </div>
 
-                <h3></h3>
-                <h3>Účastníci:</h3>
+                <div class="col-md-12">
+                    <div class="form-group required">
+                        <label class="col-md-4 control-label" for="email">Email / login:</label>
+                        <div class="col-md-6">
+                            <input type="email" class="form-control" name="email" [(ngModel)]="user.email" #email="ngModel" required email [disabled]="!isAdmin && existingUser"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group required">
+                        <label class="col-md-4 control-label" for="tel">Telefon:</label>
+                        <div class="col-md-6">
+                            <input type="tel" class="form-control" name="tel" [(ngModel)]="user.telephone" #telephone="ngModel" required tel pattern='^\+?\d{0,13}'
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12" *ngIf="!existingUser">
+                    <div class="form-group required">
+                        <label class="col-md-4 control-label" for="password">Heslo:</label>
+                        <div class="col-md-6">
+                            <input type="password" class="form-control" name="password" [(ngModel)]="user.password" #password="ngModel" minlength="5"
+                                required/>
+                        </div>
+                        <div class="col-md-2">
+                            >= 5 znaků
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12" *ngIf="existingUser">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="password">Heslo (chcete-li ho změnit):</label>
+                        <div class="col-md-6">
+                            <input type="password" class="form-control" name="password" [(ngModel)]="user.password" #password="ngModel" minlength="5"
+                            />
+                        </div>
+                        <div class="col-md-2">
+                            >= 5 znaků
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <br/>
+                        <label class="col-md-4 control-label" for="note">Poznámka:</label>
+                        <div class="col-md-8">
+                            <textarea name="note" [(ngModel)]="user.note" rows="6" style="min-width: 100%"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <h3 *ngIf="!simplified">Platba:</h3>
 
                 <div class="row">
-                    <div class="col-md-12">
-                        <ul>
-                            <li>Každý tým bude ubytován dle svého výběru ve vlastním pokoji v budově (přednost mají čtyřčlenné
-                                týmy) či v chatce v areálu poblíž Zóny. V pokojích v budově je možnost (v případě zájmu)
-                                ubytovat navíc až 2 členy doprovodu týmu (bude řešeno dodatečně s orgy).
-                            </li>
-                            <li>Pokud má tým speciální požadavek na zajištění stravy / ubytování napište tento požadavek do poznámky
-                                při registraci, případně kontaktujte organizátory. Dle možností se ho pokusíme vyřešit.</li>
-                        </ul>
-                        <br/>
+                    <div class="col-md-6">
+                        <label class="control-label" for="startovne">Startovné:</label>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <b name="startovne">{{appSettings.startingCost}},- Kč</b>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group required">
-                            <label class="col-md-4 control-label" for="variant">Typ ubytování:</label>
-                            <div class="col-md-8">
-                                <ng-select [selectOnTab]="true" [items]="variants" [selectOnTab]="true" [clearable]="false" (ngModelChange)="updateParticipants($event)"
-                                    bindLabel="name" bindValue="id" name="variant" [(ngModel)]="user.variant" #variant="ngModel"
-                                    [disabled]="existingUser" required>
-                                </ng-select>
-                            </div>
-                        </div>
+                        <label class="control-label" for="ubytovani">Ubytování:</label>
                     </div>
-                </div>
-
-                <h3></h3>
-
-                <div class="row">
-                    <div class="col-md-2">
-                        <b>Jméno:</b>
-                    </div>
-                    <div class="col-md-2">
-                        <b>Tričko:</b>
-                    </div>
-                    <div class="col-md-3">
-                        <b>Večeře (pátek):</b>
-                    </div>
-                    <div class="col-md-3">
-                        <b>Večeře (sobota):</b>
-                    </div>
-                    <div class="col-md-2">
-                        <b>Cena:</b>
-                    </div>
-                </div>
-
-                <div class="row" *ngFor="let member of user.members">
-                    <div class="col-md-2">
-                        <input type="text" class="form-control" [(ngModel)]="member.name" name="{{'name-member' + member.order}}" required/>
-                    </div>
-                    <div class="col-md-2">
-                        <ng-select [selectOnTab]="true" [items]="tshirts" [clearable]="true" bindLabel="name" bindValue="id" [(ngModel)]="member.tshirt"
-                            (ngModelChange)="updateTShirt(member, $event)" name="{{'tshirt-member' + member.order}}">
-                        </ng-select>
-                    </div>
-                    <div class="col-md-3">
-                        <ng-select [selectOnTab]="true" [items]="dinner1" [clearable]="false" bindLabel="name" bindValue="id" [(ngModel)]="member.dinner1"
-                            name="{{'dinner1-member' + member.order}}">
-                        </ng-select>
-                    </div>
-                    <div class="col-md-3">
-                        <ng-select [selectOnTab]="true" [items]="dinner2" [clearable]="false" bindLabel="name" bindValue="id" [(ngModel)]="member.dinner2"
-                            name="{{'dinner2-member' + member.order}}">
-                        </ng-select>
-                    </div>
-                    <div class="col-md-1 text-right">
-                        <b>{{member.cost}},- Kč</b>
+                    <div class="col-md-6 text-right">
+                        <b name="ubytovani">{{lodgingCost}},- Kč</b>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-2">
-                        <br/>
-                        <button *ngIf="!existingUser" style="min-width: 100%;" class="btn btn-primary" [disabled]="!teamForm.form.valid && !loading">Zaregistrovat</button>
-                        <button *ngIf="existingUser" style="min-width: 100%;" class="btn btn-primary" [disabled]="!teamForm.form.valid && !loading">Aktualizovat</button>
+                    <div class="col-md-6">
+                        <label class="control-label" for="tricka">Trička:</label>
                     </div>
-                    <div class="col-md-2">
-                        <br/>
-                        <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
-                        />
+                    <div class="col-md-6 text-right">
+                        <b name="tricka">{{tshirtsCost}},- Kč</b>
                     </div>
                 </div>
 
-            </form>
+                <div class="row">
+                    <div class="col-md-6 red">
+                        <label class="control-label" for="celkovacena">Celková cena:</label>
+                    </div>
+                    <div class="col-md-6 red text-right">
+                        <b name="celkovacena">{{totalCost}},- Kč</b>
+                    </div>
+                </div>
+
+                <div class="row" *ngIf="existingUser">
+                    <div class="col-md-6">
+                        <label class="control-label" for="celkovacena">Zaplaceno:</label>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <input type="checkbox" [checked]="user.paid" (change)="user.paid = !user.paid" [disabled]="!isAdmin"/>
+                    </div>
+                </div>
+
+                <div class="row" *ngIf="!simplified">
+                    <br/>
+                    <div class="col-md-4">
+                        Číslo účtu:
+                    </div>
+                    <div class="col-md-8">
+                        <b>670100-2215359802/6210 (MBank)</b>
+                        <br/> Do zprávy pro příjemce vždy uveďte název týmu!
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+
+        <div class="row" *ngIf="!simplified">
+            <h3></h3>
+            <h3>Účastníci:</h3>
+
+            <div class="col-md-12">
+                <ul>
+                    <li>Každý tým bude ubytován dle svého výběru ve vlastním pokoji v budově (přednost mají čtyřčlenné týmy)
+                        či v chatce v areálu poblíž Zóny. V pokojích v budově je možnost (v případě zájmu) ubytovat navíc
+                        až 2 členy doprovodu týmu (bude řešeno dodatečně s orgy).
+                    </li>
+                    <li>Pokud má tým speciální požadavek na zajištění stravy / ubytování napište tento požadavek do poznámky
+                        při registraci, případně kontaktujte organizátory. Dle možností se ho pokusíme vyřešit.</li>
+                </ul>
+                <br/>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="col-md-12">
+                    <div class="form-group required">
+                        <label class="col-md-4 control-label" for="variant">Typ ubytování:</label>
+                        <div class="col-md-8">
+                            <ng-select [selectOnTab]="true" [items]="variants" [selectOnTab]="true" [clearable]="false" (ngModelChange)="updateParticipants($event)"
+                                bindLabel="name" bindValue="id" name="variant" [(ngModel)]="user.variant" #variant="ngModel"
+                                [disabled]="!isAdmin && existingUser" required>
+                            </ng-select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3></h3>
+
+        <div class="row">
+            <div class="col-md-2">
+                <b>Jméno:</b>
+            </div>
+            <div class="col-md-2">
+                <b>Tričko:</b>
+            </div>
+            <div class="col-md-3">
+                <b>Večeře (pátek):</b>
+            </div>
+            <div class="col-md-3">
+                <b>Večeře (sobota):</b>
+            </div>
+            <div class="col-md-2">
+                <!-- <b>Cena:</b> -->
+            </div>
+        </div>
+
+        <div class="row" *ngFor="let member of user.members">
+            <div class="col-md-2">
+                <input type="text" class="form-control" [(ngModel)]="member.name" name="{{'name-member' + member.order}}" required/>
+            </div>
+            <div class="col-md-2">
+                <ng-select [selectOnTab]="true" [items]="tshirts" [clearable]="true" bindLabel="name" bindValue="id" [(ngModel)]="member.tshirt"
+                    (ngModelChange)="updateTShirt(member, $event)" name="{{'tshirt-member' + member.order}}">
+                </ng-select>
+            </div>
+            <div class="col-md-3">
+                <ng-select [selectOnTab]="true" [items]="dinner1" [clearable]="false" bindLabel="name" bindValue="id" [(ngModel)]="member.dinner1"
+                    name="{{'dinner1-member' + member.order}}">
+                </ng-select>
+            </div>
+            <div class="col-md-3">
+                <ng-select [selectOnTab]="true" [items]="dinner2" [clearable]="false" bindLabel="name" bindValue="id" [(ngModel)]="member.dinner2"
+                    name="{{'dinner2-member' + member.order}}">
+                </ng-select>
+            </div>
+            <div class="col-md-2 text-right">
+                <b>{{member.cost}},- Kč</b>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-2">
+                <br/>
+                <button *ngIf="!existingUser" style="min-width: 100%;" class="btn btn-primary" [disabled]="!teamForm.form.valid && !loading">Zaregistrovat</button>
+                <button *ngIf="existingUser" style="min-width: 100%;" class="btn btn-primary" [disabled]="!teamForm.form.valid && !loading">Aktualizovat</button>
+            </div>
+            <div class="col-md-2">
+                <br/>
+                <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
+                />
+            </div>
+        </div>
+    </form>
 </div>

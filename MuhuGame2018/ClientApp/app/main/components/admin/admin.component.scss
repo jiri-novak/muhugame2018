@@ -1,0 +1,26 @@
+@import '../../../../assets/sass/_variables';
+
+.green {
+    color: $color-green;
+    font-weight: bold;
+}
+
+.red {
+    color: red;
+    font-weight: bold;
+}
+
+.limit {
+    border-bottom: 1px solid red;
+}
+
+table tr:nth-child(odd) td {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+table tr:nth-child(even) td {
+    background-color: rgba($color: gray, $alpha: 0.1);
+    padding-top: 10px;
+    padding-bottom: 10px;
+}

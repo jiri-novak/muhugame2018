@@ -15,11 +15,10 @@ using System.Text;
 using MuhuGame2018.Services;
 using Microsoft.Extensions.Logging.AzureAppServices;
 using Serilog;
-using Microsoft.WindowsAzure.Storage;
 using MuhuGame2018.Services.Interfaces;
 using Microsoft.Extensions.Options;
 
-namespace nabe_order_management
+namespace MuhuGame2018
 {
     public class Startup
     {
@@ -89,7 +88,7 @@ namespace nabe_order_management
             IApplicationBuilder app, 
             IHostingEnvironment env, 
             ILoggerFactory loggerFactory,
-            UserRepository userRepository,
+            IUserRepository userRepository,
             IOptions<AppSettings> appSettings)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));

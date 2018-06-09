@@ -5,10 +5,10 @@ namespace MuhuGame2018.Helpers
     public class AppSettings
     {
         public string Secret { get; set; }
-        public IEnumerable<string> AdminEmails { get; set; }
         public _SmtpSettings SmtpSettings { get; set; }
         public _LodgingCounts LodgingCounts { get; set; }
         public _Costs Costs { get; set; }
+        public IEnumerable<_AdminUser> AdminUsers { get; set; }
 
         public class _SmtpSettings
         {
@@ -31,6 +31,13 @@ namespace MuhuGame2018.Helpers
             public int Tshirt { get; set; }
             public int Hut { get; set; }
             public int Building { get; set; }
+        }
+
+        public class _AdminUser
+        {
+            public string Name { get; set; }
+            public string Email { get; set; }
+            public string Password { get; set; }
         }
     }
 }
