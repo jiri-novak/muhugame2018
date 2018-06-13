@@ -1,10 +1,113 @@
 <h1>Admin sekce:</h1>
 
-<h3></h3>
+<h3>Souhrná data:</h3>
+
+<busy-indicator [isBusy]="!summary"></busy-indicator>
+
+<div *ngIf="summary">
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Obecné:</h4>
+
+            <div class="row">
+                <div class="col-md-10">Zaregistrovaných týmů:</div>
+                <div class="col-md-2 text-right">{{summary.teamsRegistered}}</div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-10">Limit týmů:</div>
+                <div class="col-md-2 text-right">{{summary.teamsLimit}}</div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-10">Týmů přes limit:</div>
+                <div class="col-md-2 text-right">{{summary.teamsOverLimit}}</div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-10">Týmy, které zaplatily:</div>
+                <div class="col-md-2 text-right">{{summary.teamsPaid}}</div>
+            </div>
+
+            <br/>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h4>V limitu:</h4>
+
+            <div class="row">
+                <div class="col-md-10">Počet účastníků:</div>
+                <div class="col-md-2 text-right">{{summary.inLimitMemberCount}}</div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">Večeře (pátek):</div>
+            </div>
+            <div class="row" *ngFor="let item of summary.inLimitDinner1Counts">
+                <div class="col-md-9 col-md-offset-1">{{item[0]}}</div>
+                <div class="col-md-2 text-right">{{item[1]}}</div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">Večeře (sobota):</div>
+            </div>
+            <div class="row" *ngFor="let item of summary.inLimitDinner2Counts">
+                <div class="col-md-9 col-md-offset-1">{{item[0]}}</div>
+                <div class="col-md-2 text-right">{{item[1]}}</div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">Trička:</div>
+            </div>
+            <div class="row" *ngFor="let item of summary.inLimitTshirtCounts">
+                <div class="col-md-9 col-md-offset-1">{{item[0]}}</div>
+                <div class="col-md-2 text-right">{{item[1]}}</div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <h4>Přes limit:</h4>
+
+            <div class="row">
+                <div class="col-md-10">Počet účastníků:</div>
+                <div class="col-md-2 text-right">{{summary.overLimitMemberCount}}</div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">Večeře (pátek):</div>
+            </div>
+            <div class="row" *ngFor="let item of summary.overLimitDinner1Counts">
+                <div class="col-md-9 col-md-offset-1">{{item[0]}}</div>
+                <div class="col-md-2 text-right">{{item[1]}}</div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">Večeře (sobota):</div>
+            </div>
+            <div class="row" *ngFor="let item of summary.overLimitDinner2Counts">
+                <div class="col-md-9 col-md-offset-1">{{item[0]}}</div>
+                <div class="col-md-2 text-right">{{item[1]}}</div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">Trička:</div>
+            </div>
+            <div class="row" *ngFor="let item of summary.overLimitTshirtCounts">
+                <div class="col-md-9 col-md-offset-1">{{item[0]}}</div>
+                <div class="col-md-2 text-right">{{item[1]}}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br/>
+<h3>Individuální data:</h3>
 
 <div class="row">
     <div class="col-md-3">
-        <participants [simplified]="true" [isReadOnly]="false" (selected)="teamSelected($event)"></participants>
+        <participants [simplified]="true" [isReadOnly]="false" (selected)="teamSelected($event)" #participants></participants>
     </div>
     <div class="col-md-9">
         <registration [simplified]="true" [user]="selected"></registration>

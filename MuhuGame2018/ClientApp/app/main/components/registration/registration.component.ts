@@ -43,27 +43,9 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
     variants: Variant[] = [];
 
-    tshirts: TShirt[] = [
-        new TShirt(TShirtType.MenS, "Pánské S"),
-        new TShirt(TShirtType.MenM, "Pánské M"),
-        new TShirt(TShirtType.MenL, "Pánské L"),
-        new TShirt(TShirtType.MenXL, "Pánské XL"),
-        new TShirt(TShirtType.MenXXL, "Pánské XXL"),
-        new TShirt(TShirtType.WomenS, "Dámské S"),
-        new TShirt(TShirtType.WomenM, "Dámské M"),
-        new TShirt(TShirtType.WomenL, "Dámské L"),
-        new TShirt(TShirtType.WomenXL, "Dámské XL")
-    ];
-
-    dinner1: Dinner[] = [
-        new Dinner(DinnerType.Rizek, "vepřový/kuřecí řízek, brambory"),
-        new Dinner(DinnerType.OvocneKnedliky, "ovocné knedlíky se smetanovou polevou")
-    ];
-
-    dinner2: Dinner[] = [
-        new Dinner(DinnerType.KnedloVepro, "knedlo-vepřo-zelo/špenát"),
-        new Dinner(DinnerType.FrancouzskeBrambory, "francouzské brambory se zeleninou")
-    ];
+    tshirts: TShirt[] = TShirt.available();
+    dinner1: Dinner[] = Dinner.available().filter(x => x.id == DinnerType.Rizek || x.id == DinnerType.OvocneKnedliky);
+    dinner2: Dinner[] = Dinner.available().filter(x => x.id == DinnerType.KnedloVepro || x.id == DinnerType.FrancouzskeBrambory);
 
     constructor(
         private router: Router,

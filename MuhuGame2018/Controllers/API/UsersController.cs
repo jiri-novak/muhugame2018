@@ -16,7 +16,6 @@ using System.Linq;
 
 namespace MuhuGame2018.Controllers.API
 {
-
     [Authorize]
     [Route("[controller]")]
     public class UsersController : Controller

@@ -1,7 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UserService } from '../../../shared/_services';
-import { Subscription } from 'rxjs';
+import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { User } from '../../../shared/_models';
+import { ParticipantsComponent } from '../participants/participants.component';
+import { Subject, Subscription } from 'rxjs';
+import { ParticipantsSummary } from '../../_models';
 
 @Component({
     selector: 'admin',
@@ -10,8 +11,12 @@ import { User } from '../../../shared/_models';
 })
 export class AdminComponent implements OnInit, OnDestroy {
     selected: User = new User();
+    summarySubscription: Subscription;
+    summary: ParticipantsSummary;
 
-    constructor(private userService: UserService) {
+    @ViewChild('participants') participants: ParticipantsComponent;
+
+    constructor() {
     }
 
     teamSelected(user: User) {
@@ -19,10 +24,19 @@ export class AdminComponent implements OnInit, OnDestroy {
         this.selected = user;
     }
 
+    ngAfterViewInit() {
+
+    }
+
     ngOnInit(): void {
+        this.summarySubscription = this.participants.summary.subscribe(x => {
+            this.summary = x;
+        });
     }
 
     ngOnDestroy(): void {
-        
+        if (this.summarySubscription) {
+            this.summarySubscription.unsubscribe();
+        }
     }
 }
