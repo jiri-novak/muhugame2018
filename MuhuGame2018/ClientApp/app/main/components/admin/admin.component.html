@@ -45,6 +45,10 @@
             <div class="row">
                 <div class="col-md-12">Večeře (pátek):</div>
             </div>
+            <div class="row">
+                <div class="col-md-9 col-md-offset-1">celkem objednáno:</div>
+                <div class="col-md-2 text-right">{{summary.inLimitDinner1Total}}</div>
+            </div>
             <div class="row" *ngFor="let item of summary.inLimitDinner1Counts">
                 <div class="col-md-9 col-md-offset-1">{{item[0]}}</div>
                 <div class="col-md-2 text-right">{{item[1]}}</div>
@@ -53,6 +57,10 @@
             <div class="row">
                 <div class="col-md-12">Večeře (sobota):</div>
             </div>
+            <div class="row">
+                <div class="col-md-9 col-md-offset-1">celkem objednáno:</div>
+                <div class="col-md-2 text-right">{{summary.inLimitDinner2Total}}</div>
+            </div>
             <div class="row" *ngFor="let item of summary.inLimitDinner2Counts">
                 <div class="col-md-9 col-md-offset-1">{{item[0]}}</div>
                 <div class="col-md-2 text-right">{{item[1]}}</div>
@@ -60,6 +68,10 @@
 
             <div class="row">
                 <div class="col-md-12">Trička:</div>
+            </div>
+            <div class="row">
+                <div class="col-md-9 col-md-offset-1">celkem objednáno:</div>
+                <div class="col-md-2 text-right">{{summary.inLimitTshirtTotal}}</div>
             </div>
             <div class="row" *ngFor="let item of summary.inLimitTshirtCounts">
                 <div class="col-md-9 col-md-offset-1">{{item[0]}}</div>
@@ -78,6 +90,10 @@
             <div class="row">
                 <div class="col-md-12">Večeře (pátek):</div>
             </div>
+            <div class="row">
+                <div class="col-md-9 col-md-offset-1">celkem objednáno:</div>
+                <div class="col-md-2 text-right">{{summary.overLimitDinner1Total}}</div>
+            </div>
             <div class="row" *ngFor="let item of summary.overLimitDinner1Counts">
                 <div class="col-md-9 col-md-offset-1">{{item[0]}}</div>
                 <div class="col-md-2 text-right">{{item[1]}}</div>
@@ -86,6 +102,10 @@
             <div class="row">
                 <div class="col-md-12">Večeře (sobota):</div>
             </div>
+            <div class="row">
+                <div class="col-md-9 col-md-offset-1">celkem objednáno:</div>
+                <div class="col-md-2 text-right">{{summary.overLimitDinner2Total}}</div>
+            </div>
             <div class="row" *ngFor="let item of summary.overLimitDinner2Counts">
                 <div class="col-md-9 col-md-offset-1">{{item[0]}}</div>
                 <div class="col-md-2 text-right">{{item[1]}}</div>
@@ -93,6 +113,10 @@
 
             <div class="row">
                 <div class="col-md-12">Trička:</div>
+            </div>
+            <div class="row">
+                <div class="col-md-9 col-md-offset-1">celkem objednáno:</div>
+                <div class="col-md-2 text-right">{{summary.overLimitTshirtTotal}}</div>
             </div>
             <div class="row" *ngFor="let item of summary.overLimitTshirtCounts">
                 <div class="col-md-9 col-md-offset-1">{{item[0]}}</div>

@@ -56,8 +56,11 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
 
         summary.inLimitMemberCount = inLimitMembers.length;
         summary.inLimitDinner1Counts = this.getMap(_(inLimitMembers).countBy(x => this.dinners(x.dinner1)).value());
+        summary.inLimitDinner1Total = this.getSelectedCount(summary.inLimitDinner1Counts);
         summary.inLimitDinner2Counts = this.getMap(_(inLimitMembers).countBy(x => this.dinners(x.dinner2)).value());
-        summary.inLimitTshirtCounts  = this.getMap(_(inLimitMembers).countBy(x => this.tshirts(x.tshirt)).value());
+        summary.inLimitDinner2Total = this.getSelectedCount(summary.inLimitDinner2Counts);
+        summary.inLimitTshirtCounts = this.getMap(_(inLimitMembers).countBy(x => this.tshirts(x.tshirt)).value());
+        summary.inLimitTshirtTotal = this.getSelectedCount(summary.inLimitTshirtCounts);
 
         let overLimitMembers = new Array<Member>();
         for (let team of this.users.filter(x => x.id > this.appSettings.maxTeams)) {
@@ -68,17 +71,22 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
 
         summary.overLimitMemberCount = overLimitMembers.length;
         summary.overLimitDinner1Counts = this.getMap(_(overLimitMembers).countBy(x => this.dinners(x.dinner1)).value());
+        summary.overLimitDinner1Total = this.getSelectedCount(summary.overLimitDinner1Counts);
         summary.overLimitDinner2Counts = this.getMap(_(overLimitMembers).countBy(x => this.dinners(x.dinner2)).value());
-        summary.overLimitTshirtCounts  = this.getMap(_(overLimitMembers).countBy(x => this.tshirts(x.tshirt)).value());
+        summary.overLimitDinner2Total = this.getSelectedCount(summary.overLimitDinner2Counts);
+        summary.overLimitTshirtCounts = this.getMap(_(overLimitMembers).countBy(x => this.tshirts(x.tshirt)).value());
+        summary.overLimitTshirtTotal = this.getSelectedCount(summary.overLimitTshirtCounts);
 
         return summary;
     }
+
+    private notSelected: string = '<nevybráno>';
 
     private dinners(short: string) {
         let found: Dinner =  Dinner.available().find(x => x.id == short);
         let long: string = found ? found.name : short;
         if (!long)
-            long = '<nevybráno>';
+            long = this.notSelected;
         return long;
     }
 
@@ -86,8 +94,12 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
         let found: TShirt = TShirt.available().find(x => x.id == short);
         let long: string = found ? found.name : short;
         if (!long)
-            long = '<nevybráno>';
+            long = this.notSelected;
         return long;
+    }
+
+    private getSelectedCount(counts: [string, number][]): number {
+        return counts.filter(x => x["0"] != this.notSelected).map(x => x["1"]).reduce((sum, current) => sum + current);
     }
 
     private getMap(dict: _.Dictionary<number>): [string, number][] {
