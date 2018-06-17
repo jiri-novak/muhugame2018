@@ -6,6 +6,45 @@
 
 <div class="row">
     <div class="col-lg-12">
+        <h4>17. června 2018</h4>
+        <p>
+            Zveřejněn design triček. Trička je stále možné přiobjednat v
+            <a [routerLink]="['/login']">autorizované sekci vašeho týmu</a>. Klikněte na obrázky pro zvětšení...
+        </p>
+
+        <div class="text-center">
+            <img class="rounded" src="/assets/images/tshirt-men.jpg" (click)="openModal(tshirtMen)" />
+            <img class="rounded" src="/assets/images/tshirt-women.jpg" (click)="openModal(tshirtWomen)" />
+        </div>
+    </div>
+
+    <ng-template #tshirtMen>
+        <div class="modal-header">
+            <h4 class="modal-title pull-left">Tričko pánské</h4>
+            <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <img class="rounded-modal" src="/assets/images/tshirt-men.jpg" (click)="modalRef.hide()" />
+        </div>
+    </ng-template>
+
+    <ng-template #tshirtWomen>
+        <div class="modal-header">
+            <h4 class="modal-title pull-left">Tričko dámské</h4>
+            <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <img class="rounded-modal" src="/assets/images/tshirt-women.jpg" (click)="modalRef.hide()" />
+        </div>
+    </ng-template>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
         <h4>6. června 2018</h4>
         <p>Registrace byla spuštěna
             <a [routerLink]="['/registration']">zde</a>, přehled již přihlášených týmů je k dispozici

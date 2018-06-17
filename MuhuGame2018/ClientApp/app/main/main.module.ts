@@ -41,8 +41,6 @@ const allComponents = [
         ReactiveFormsModule,
         RouterModule,
         
-        NgSelectModule,
-
         VgCoreModule,
         VgControlsModule,
         VgOverlayPlayModule,
@@ -51,6 +49,7 @@ const allComponents = [
         ModalModule.forRoot(),
         CollapseModule.forRoot(),
         AlertModule.forRoot(),
+        NgSelectModule,
 
         SharedModule
     ],
