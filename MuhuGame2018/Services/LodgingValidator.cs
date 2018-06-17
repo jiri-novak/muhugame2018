@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using MuhuGame2018.Entities;
 using MuhuGame2018.Helpers;
-using System;
 using System.Collections.Concurrent;
 using System.Linq;
 
@@ -24,7 +23,7 @@ namespace MuhuGame2018.Services
         private static ConcurrentDictionary<int, User> _users;
         private static object _lock = new object();
 
-        private static void Initialize(IUserRepository userRepository, IOptions<AppSettings> appSettings)
+        public static void Initialize(IUserRepository userRepository, IOptions<AppSettings> appSettings)
         {
             _users = new ConcurrentDictionary<int, User>(userRepository.GetAll().ToDictionary(x => x.Id, x => x));
 
@@ -59,17 +58,15 @@ namespace MuhuGame2018.Services
 
                 if (IsHutPreffered(user.Variant))
                 {
-                    if (UsedHuts + 1 <= HutsCount)
+                    if (UsedHuts + 1 <= HutsCount) // still have hut
                     {
-                        // mam jeste chatku
                         ++UsedHuts;
 
                         result.DesiredLodgingAssigned = true;
                         result.HutAssigned = true;
                     }
-                    else if (UsedBuildings + 1 <= BuildingsCount)
+                    else if (UsedBuildings + 1 <= BuildingsCount) // still have building
                     {
-                        // mam jeste pokoj
                         ++UsedBuildings;
 
                         result.DesiredLodgingAssigned = false;
@@ -78,17 +75,15 @@ namespace MuhuGame2018.Services
                 }
                 else
                 {
-                    if (UsedBuildings + 1 <= BuildingsCount)
+                    if (UsedBuildings + 1 <= BuildingsCount) // still have building
                     {
-                        // mam jeste pokoj
                         ++UsedBuildings;
 
                         result.DesiredLodgingAssigned = true;
                         result.HutAssigned = false;
                     }
-                    else if (UsedHuts + 1 <= HutsCount)
+                    else if (UsedHuts + 1 <= HutsCount) // still have hut
                     {
-                        // mam jeste chatku
                         ++UsedHuts;
 
                         result.DesiredLodgingAssigned = false;
@@ -115,19 +110,24 @@ namespace MuhuGame2018.Services
                     }
 
                     foreach (var m in user.Members)
-                        m.Cost = memberLodging + TshirtCost*(m.Tshirt == null ? 0 : 1);
+                        m.Cost = memberLodging + TshirtCost * (m.Tshirt == null ? 0 : 1);
 
                     userRepository.Update(user);
                 }
 
-                result.Costs = new LodgingValidationResult.CostsSummary(
-                    StartingCost,
-                    user.Members.Count * (IsBuildingPreffered(user.Variant) ? BuildingCost : HutCost),
-                    user.Members.Count(x => x.Tshirt != null) * TshirtCost
-                );
+                result.Costs = CalculateCosts(userRepository, appSettings, user);
 
                 return result;
             }
+        }
+
+        public static CostsSummary CalculateCosts(IUserRepository userRepository, IOptions<AppSettings> appSettings, User user)
+        {
+            return new CostsSummary(
+                StartingCost,
+                user.Members.Count * (IsBuildingPreffered(user.Variant) ? BuildingCost : HutCost),
+                user.Members.Count(x => x.Tshirt != null) * TshirtCost
+            );
         }
 
         private static bool IsBuildingPreffered(string variant)
@@ -139,29 +139,32 @@ namespace MuhuGame2018.Services
         {
             return variant.StartsWith("Chatka");
         }
+    }
 
-        public class LodgingValidationResult
+    public class LodgingValidationResult
+    {
+        public int Order { get; set; }
+        public bool OverLimit { get; set; }
+
+        public bool DesiredLodgingAssigned { get; set; }
+        public bool HutAssigned { get; set; }
+
+        public CostsSummary Costs { get; set; }
+    }
+
+    public class CostsSummary
+    {
+        public CostsSummary(int startingCost, int lodgingCost, int tshirtCost)
         {
-            public int  Order { get; set; }
-            public bool OverLimit { get; set; }
-
-            public bool DesiredLodgingAssigned { get; set; }
-            public bool HutAssigned { get; set; }
-
-            public CostsSummary Costs { get; set; }
-
-            public class CostsSummary
-            {
-                public CostsSummary(int startingCost, int lodgingCost, int tshirtCost)
-                {
-                }
-
-                public int StartingCost { get; }
-                public int LodgingCost { get; }
-                public int TshirtCost { get; }
-
-                public int TotalCost => StartingCost + LodgingCost + TshirtCost;
-            }
+            StartingCost = startingCost;
+            LodgingCost = lodgingCost;
+            TshirtCost = tshirtCost;
         }
+
+        public int StartingCost { get; }
+        public int LodgingCost { get; }
+        public int TshirtCost { get; }
+
+        public int TotalCost => StartingCost + LodgingCost + TshirtCost;
     }
 }

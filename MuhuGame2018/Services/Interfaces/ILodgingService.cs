@@ -4,6 +4,7 @@ namespace MuhuGame2018.Services.Interfaces
 {
     public interface ILodgingService
     {
-        void SendConfirmationEmails(User user, string password, LodgingValidator.LodgingValidationResult validationResult);
+        void SendConfirmationEmails(User user, string password, LodgingValidationResult validationResult);
+        void SendCostChangedEmails(User user, CostsSummary costsSummary);
     } 
 }

@@ -1,6 +1,5 @@
 ﻿using MuhuGame2018.Entities;
 using MuhuGame2018.Services.Interfaces;
-using System.Linq;
 using System.Text;
 
 namespace MuhuGame2018.Services
@@ -16,7 +15,7 @@ namespace MuhuGame2018.Services
             _mailService = mailService;
         }
 
-        public void SendConfirmationEmails(User user, string password, LodgingValidator.LodgingValidationResult validationResult)
+        public void SendConfirmationEmails(User user, string password, LodgingValidationResult validationResult)
         {
             var userEmail = GetUserConfirmationEmail(user, password, validationResult);
             _mailService.SendMail(new[] { user.Email }, "MUHUGAME 2018 - Výsledek registrace", userEmail);
@@ -25,7 +24,30 @@ namespace MuhuGame2018.Services
             _mailService.SendMail(new[] { "muhugame2018@gmail.com", "jiri.novak@petriny.net" }, "MUHUGAME 2018 - Registrace týmu", orgsEmail);
         }
 
-        private string GetUserConfirmationEmail(User user, string password, LodgingValidator.LodgingValidationResult validationResult)
+        public void SendCostChangedEmails(User user, CostsSummary costsSummary)
+        {
+            var userEmail = GetUserCostsChangedEmail(user, costsSummary);
+            _mailService.SendMail(new[] { user.Email }, "MUHUGAME 2018 - Změna výše platby", userEmail);
+        }
+
+        private string GetUserCostsChangedEmail(User user, CostsSummary costsSummary)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine("Zaznamenali jsme změnu ovlivňující výši platby.");
+
+            var costsSummaryText = GetCostsSummaryText(user, costsSummary);
+            sb.AppendLine();
+            sb.AppendLine(costsSummaryText);
+
+            var signatureText = GetSignatureText(false);
+            sb.AppendLine();
+            sb.AppendLine(signatureText);
+
+            return sb.ToString();
+        }
+
+        private string GetUserConfirmationEmail(User user, string password, LodgingValidationResult validationResult)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -44,38 +66,46 @@ namespace MuhuGame2018.Services
             sb.AppendLine($"Login: {user.Email}");
             sb.AppendLine($"Heslo: {password}");
             sb.AppendLine($"Pořadí přihlášení: {validationResult.Order} ({user.RegistrationDate.ToString("dd.MM.yyyy HH:mm:ss")})");
-            sb.AppendLine();
 
             if (!validationResult.OverLimit)
             {
                 if (!validationResult.DesiredLodgingAssigned)
                 {
+                    sb.AppendLine();
+
                     if (validationResult.HutAssigned)
                     {
                         sb.AppendLine("Vámi vybrané ubytování v budově již bohužel není k dispozici! Bylo vám přiřazeno ubytování v chatce.");
-                        sb.AppendLine();
                     }
                     else
                     {
                         sb.AppendLine("Vámi vybrané ubytování v chatce již bohužel není k dispozici! Bylo vám přiřazeno ubytování v budově.");
-                        sb.AppendLine();
                     }
                 }
-                
-                sb.AppendLine($"Rekapitulace platby: ");
-                sb.AppendLine($"  Počet účastníků: {user.Members.Count}");
-                sb.AppendLine($"  Startovné: {validationResult.Costs.StartingCost},- Kč");
-                sb.AppendLine($"  Ubytování: {validationResult.Costs.LodgingCost},- Kč");
-                sb.AppendLine($"  Trička: {validationResult.Costs.TshirtCost},- Kč");
-                sb.AppendLine($"  Celková cena: {validationResult.Costs.TotalCost},- Kč");
+
+                var costsSummaryText = GetCostsSummaryText(user, validationResult.Costs);
                 sb.AppendLine();
-                sb.AppendLine("Částku prosím uhraďte na číslo účtu: 670100 - 2215359802 / 6210 (Mbank) nejpozději do 25.7. 2018. Do zprávy pro příjemce vždy uveďte název týmu.");
-                sb.AppendLine();
-                sb.AppendLine("Těšíme se na vás!");
+                sb.AppendLine(costsSummaryText);
+            }
+
+            var signatureText = GetSignatureText(validationResult.OverLimit);
+            sb.AppendLine();
+            sb.AppendLine(signatureText);
+
+            return sb.ToString();
+        }
+
+        private string GetSignatureText(bool overLimit)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            if (overLimit)
+            {
+                sb.AppendLine("Hodně štěstí!");
             }
             else
             {
-                sb.AppendLine("Hodně štěstí!");
+                sb.AppendLine("Těšíme se na vás!");
             }
 
             sb.AppendLine();
@@ -86,7 +116,24 @@ namespace MuhuGame2018.Services
             return sb.ToString();
         }
 
-        private string GetOrgsConfirmationEmail(string emailToUser, LodgingValidator.LodgingValidationResult validationResult)
+        private string GetCostsSummaryText(User user, CostsSummary costsSummary)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine($"Rekapitulace platby: ");
+            sb.AppendLine($"  Počet účastníků: {user.Members.Count}");
+            sb.AppendLine($"  Startovné: {costsSummary.StartingCost},- Kč");
+            sb.AppendLine($"  Ubytování: {costsSummary.LodgingCost},- Kč");
+            sb.AppendLine($"  Trička: {costsSummary.TshirtCost},- Kč");
+            sb.AppendLine($"  Celková cena: {costsSummary.TotalCost},- Kč");
+
+            sb.AppendLine();
+            sb.AppendLine("Částku prosím uhraďte na číslo účtu: 670100 - 2215359802 / 6210 (Mbank) nejpozději do 25.7. 2018. Do zprávy pro příjemce vždy uveďte název týmu.");
+
+            return sb.ToString();
+        }
+
+        private string GetOrgsConfirmationEmail(string emailToUser, LodgingValidationResult validationResult)
         {
             var sb2 = new StringBuilder();
             sb2.AppendLine("Právě proběhla registrace týmu:");

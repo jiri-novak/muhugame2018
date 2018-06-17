@@ -99,13 +99,6 @@ namespace MuhuGame2018.Services
 
             var validationResult = LodgingValidator.Validate(_userRepository, _appSettings, user);
 
-            TrySendMails(user, password, validationResult);
-
-            return user;
-        }
-
-        private void TrySendMails(User user, string password, LodgingValidator.LodgingValidationResult validationResult)
-        {
             try
             {
                 _lodgingService.SendConfirmationEmails(user, password, validationResult);
@@ -114,6 +107,8 @@ namespace MuhuGame2018.Services
             {
                 _logger.LogError($"Chyba při odesílání emailů. {ex.ToString()}");
             }
+
+            return user;
         }
 
         public void Update(User userParam, string password = null)
@@ -128,6 +123,22 @@ namespace MuhuGame2018.Services
                 // username has changed so check if the new username is already taken
                 if (_userRepository.Exists(x => x.Email == userParam.Email))
                     throw new AppException($"Email {userParam.Email} je již obsazen!");
+            }
+
+            // check whether cost changed
+            var previousCost = LodgingValidator.CalculateCosts(_userRepository, _appSettings, user);
+            var newCost = LodgingValidator.CalculateCosts(_userRepository, _appSettings, userParam);
+
+            if (previousCost.TotalCost != newCost.TotalCost)
+            {
+                try
+                {
+                    _lodgingService.SendCostChangedEmails(user, newCost);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Chyba při odesílání emailů. {ex.ToString()}");
+                }
             }
 
             // update user properties

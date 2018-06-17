@@ -89,6 +89,7 @@ namespace MuhuGame2018
             IHostingEnvironment env, 
             ILoggerFactory loggerFactory,
             IUserRepository userRepository,
+            DataContext dataContext,
             IOptions<AppSettings> appSettings)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
@@ -141,6 +142,9 @@ namespace MuhuGame2018
                     routes.MapSpaFallbackRoute(name: "spa-fallback", defaults: new { controller = "Home", action = "Index" });
                 });
             });
+
+            dataContext.Database.Migrate();
+            LodgingValidator.Initialize(userRepository, appSettings);
 
             //Log.Logger = new LoggerConfiguration()
             //    .WriteTo.AzureTableStorage(CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=jnstorage;AccountKey=yGxWAOAgQlj9Qqo9P8HEDlqlsglWvepD1Pq0UZG50Qq4C65hh+W5Ka+3CZAOP3/kvmOxJiCpyevsZAJHuQPU3g==;EndpointSuffix=core.windows.net"))

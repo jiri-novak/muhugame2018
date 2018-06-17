@@ -23,9 +23,9 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
     public summary: Observable<ParticipantsSummary> = this.summarySubject.asObservable();
 
     isBusy: boolean = false;
-    users: User[];
-    teams: number;
-    members: number;
+    users: User[] = [];
+    teams: number = 0;
+    members: number = 0;
 
     subscription: Subscription;
 

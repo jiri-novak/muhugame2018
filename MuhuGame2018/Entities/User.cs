@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace MuhuGame2018.Entities
 {
+
     public class User
     {
         public int Id { get; set; }
