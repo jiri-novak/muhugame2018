@@ -29,6 +29,11 @@
                 <div class="col-md-2 text-right">{{summary.teamsPaid}}</div>
             </div>
 
+            <div class="row">
+                <div class="col-md-10">Týmy, které vzdaly:</div>
+                <div class="col-md-2 text-right">{{summary.teamsQuited}}</div>
+            </div>
+
             <br/>
         </div>
     </div>
@@ -40,6 +45,14 @@
             <div class="row">
                 <div class="col-md-10">Počet účastníků:</div>
                 <div class="col-md-2 text-right">{{summary.inLimitMemberCount}}</div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">Ubytování:</div>
+            </div>
+            <div class="row" *ngFor="let item of summary.inLimitLodgingCounts">
+                <div class="col-md-9 col-md-offset-1">{{item[0]}}</div>
+                <div class="col-md-2 text-right">{{item[1]}}</div>
             </div>
 
             <div class="row">
@@ -85,6 +98,14 @@
             <div class="row">
                 <div class="col-md-10">Počet účastníků:</div>
                 <div class="col-md-2 text-right">{{summary.overLimitMemberCount}}</div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">Ubytování:</div>
+            </div>
+            <div class="row" *ngFor="let item of summary.overLimitLodgingCounts">
+                <div class="col-md-9 col-md-offset-1">{{item[0]}}</div>
+                <div class="col-md-2 text-right">{{item[1]}}</div>
             </div>
 
             <div class="row">

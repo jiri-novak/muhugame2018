@@ -3,6 +3,7 @@ export class ParticipantsSummary {
     teamsLimit: number;
     teamsOverLimit: number;
     teamsPaid: number;
+    teamsQuited: number;
 
     inLimitMemberCount: number;
     inLimitDinner1Total: number;
@@ -11,6 +12,7 @@ export class ParticipantsSummary {
     inLimitDinner2Counts: [string, number][];
     inLimitTshirtTotal: number;
     inLimitTshirtCounts:  [string, number][];
+    inLimitLodgingCounts: [string, number][];
 
     overLimitMemberCount: number;
     overLimitDinner1Total: number;
@@ -19,4 +21,5 @@ export class ParticipantsSummary {
     overLimitDinner2Counts: [string, number][];
     overLimitTshirtTotal: number;
     overLimitTshirtCounts:  [string, number][];
+    overLimitLodgingCounts: [string, number][];
 }

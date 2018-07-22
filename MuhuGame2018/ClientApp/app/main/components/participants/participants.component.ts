@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, TemplateRef, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { UserService } from '../../../shared/_services';
 import { Subscription } from 'rxjs';
-import { User, Member, DinnerType, Dinner, TShirt } from '../../../shared/_models';
+import { User, Member, DinnerType, Dinner, TShirt, Variant } from '../../../shared/_models';
 import { AppSettings } from '../../../app.settings';
 import { ParticipantsSummary } from '../../_models';
 import * as _ from 'lodash';
@@ -43,12 +43,15 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
         let summary = new ParticipantsSummary();
 
         summary.teamsLimit = this.appSettings.maxTeams;
-        summary.teamsRegistered = this.users.length;
+        summary.teamsRegistered = this.users.filter(x => !x.quited).length;
         summary.teamsOverLimit = Math.max(summary.teamsRegistered - summary.teamsLimit, 0);
         summary.teamsPaid = this.users.filter(x => x.paid).length;
+        summary.teamsQuited = this.users.filter(x => x.quited).length;
 
+        let inLimitUsers = new Array<User>();
         let inLimitMembers = new Array<Member>();
-        for (let team of this.users.filter(x => x.id <= this.appSettings.maxTeams)) {
+        for (let team of this.users.filter(x => x.index <= this.appSettings.maxTeams && !x.quited)) {
+            inLimitUsers.push(team);
             for (let member of team.members) {
                 inLimitMembers.push(member);
             }
@@ -61,9 +64,12 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
         summary.inLimitDinner2Total = this.getSelectedCount(summary.inLimitDinner2Counts);
         summary.inLimitTshirtCounts = this.getMap(_(inLimitMembers).countBy(x => this.tshirts(x.tshirt)).value());
         summary.inLimitTshirtTotal = this.getSelectedCount(summary.inLimitTshirtCounts);
+        summary.inLimitLodgingCounts = this.getMap(_(inLimitUsers).countBy(x => this.variants(x.variant)).value());
 
+        let overLimitUsers = new Array<User>();
         let overLimitMembers = new Array<Member>();
-        for (let team of this.users.filter(x => x.id > this.appSettings.maxTeams)) {
+        for (let team of this.users.filter(x => x.index > this.appSettings.maxTeams && !x.quited)) {
+            overLimitUsers.push(team);
             for (let member of team.members) {
                 overLimitMembers.push(member);
             }
@@ -76,6 +82,7 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
         summary.overLimitDinner2Total = this.getSelectedCount(summary.overLimitDinner2Counts);
         summary.overLimitTshirtCounts = this.getMap(_(overLimitMembers).countBy(x => this.tshirts(x.tshirt)).value());
         summary.overLimitTshirtTotal = this.getSelectedCount(summary.overLimitTshirtCounts);
+        summary.overLimitLodgingCounts = this.getMap(_(overLimitUsers).countBy(x => this.variants(x.variant)).value());
 
         return summary;
     }
@@ -92,6 +99,14 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
 
     private tshirts(short: string) {
         let found: TShirt = TShirt.available().find(x => x.id == short);
+        let long: string = found ? found.name : short;
+        if (!long)
+            long = this.notSelected;
+        return long;
+    }
+
+    private variants(short: string) {
+        let found: Variant = Variant.available().find(x => x.id == short);
         let long: string = found ? found.name : short;
         if (!long)
             long = this.notSelected;
@@ -136,11 +151,12 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
 
             let i = 1;
             for (let user of this.users) {
-                if (!user.quited)
+                if (!user.quited) {
                     user.index = i++;
 
-                for (let member of user.members) {
-                    this.members += 1;
+                    for (let member of user.members) {
+                        this.members += 1;
+                    }
                 }
             }
 
