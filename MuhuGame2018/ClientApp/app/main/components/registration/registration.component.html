@@ -129,10 +129,19 @@
 
                 <div class="row" *ngIf="existingUser">
                     <div class="col-md-6">
-                        <label class="control-label" for="celkovacena">Zaplaceno:</label>
+                        <label class="control-label">Zaplaceno:</label>
                     </div>
                     <div class="col-md-6 text-right">
                         <input type="checkbox" [checked]="user.paid" (change)="user.paid = !user.paid" [disabled]="!isAdmin"/>
+                    </div>
+                </div>
+
+                <div class="row" *ngIf="existingUser && isAdmin">
+                    <div class="col-md-6">
+                        <label class="control-label">Vzdali:</label>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <input type="checkbox" [checked]="user.quited" (change)="user.quited = !user.quited" [disabled]="!isAdmin"/>
                     </div>
                 </div>
 

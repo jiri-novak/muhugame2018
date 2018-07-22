@@ -22,6 +22,7 @@ namespace MuhuGame2018.Entities
         public DateTime RegistrationDate { get; set; }
 
         public bool Paid { get; set; }
+        public bool Quited { get;set; }
 
         public IList<Member> Members { get; set; }
     }

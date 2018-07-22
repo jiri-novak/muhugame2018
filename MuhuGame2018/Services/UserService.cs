@@ -148,6 +148,7 @@ namespace MuhuGame2018.Services
             user.Variant = userParam.Variant;
             user.Note = userParam.Note;
             user.Paid = userParam.Paid;
+            user.Quited = userParam.Quited;
 
             for (var i = 0; i < userParam.Members.Count(); ++i)
             {

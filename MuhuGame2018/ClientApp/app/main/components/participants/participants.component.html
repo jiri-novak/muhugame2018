@@ -37,13 +37,13 @@
         </thead>
         <tbody>
             <tr *ngFor="let user of users let i = index" (click)="setClickedRow(i)" [class.active]="!isReadOnly && i == selectedRow"
-                [ngClass]="{ 'limit': user.id == appSettings.maxTeams }">
-                <td class="text-center" style="padding-right: 10px" [ngClass]="{ 'green': user.id <= appSettings.maxTeams, 'red': user.id > appSettings.maxTeams }">{{user.id}}</td>
-                <td [ngClass]="{ 'green': user.paid }">{{user.name}}</td>
-                <td *ngIf="!simplified">{{user.members | arrayLength }}</td>
-                <td *ngIf="!simplified">{{user.members | memberNames }}</td>
-                <td *ngIf="!simplified">{{user.registrationDate | date:'dd.MM.yyyy HH:mm:ss' }}</td>
-                <td class="text-center" [class.green]="user.paid">{{user.paid | questionableBoolean}}</td>
+                [ngClass]="{ 'limit': user.index == appSettings.maxTeams }">
+                <td class="text-center" style="padding-right: 10px" [ngClass]="{ 'green': !!user.index && !user.index && user.index <= appSettings.maxTeams, 'red': !!user.index && user.index > appSettings.maxTeams }">{{user.index}}</td>
+                <td [ngClass]="{ 'green': user.paid, 'quited': user.quited }">{{user.name}}</td>
+                <td [ngClass]="{ 'quited': user.quited }" *ngIf="!simplified">{{user.members | arrayLength }}</td>
+                <td [ngClass]="{ 'quited': user.quited }" *ngIf="!simplified">{{user.members | memberNames }}</td>
+                <td [ngClass]="{ 'quited': user.quited }" *ngIf="!simplified">{{user.registrationDate | date:'dd.MM.yyyy HH:mm:ss' }}</td>
+                <td [ngClass]="{ 'quited': user.quited }" class="text-center" [class.green]="user.paid">{{user.paid | questionableBoolean}}</td>
             </tr>
         </tbody>
     </table>

@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using MuhuGame2018.Services;
 using Microsoft.Extensions.Logging.AzureAppServices;
-using Serilog;
 using MuhuGame2018.Services.Interfaces;
 using Microsoft.Extensions.Options;
 
@@ -100,7 +99,6 @@ namespace MuhuGame2018
                   OutputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss zzz} [{Level}] {RequestId}-{SourceContext}: {Message}{NewLine}{Exception}"
               }
             );
-            loggerFactory.AddSerilog();
 
             app.UseStaticFiles(/*new StaticFileOptions
             {

@@ -9,6 +9,11 @@
     font-weight: bold;
 }
 
+.quited {
+    color: $color-grey;
+    text-decoration: line-through;
+}
+
 .limit {
     border-bottom: 2px solid red !important;
 }
