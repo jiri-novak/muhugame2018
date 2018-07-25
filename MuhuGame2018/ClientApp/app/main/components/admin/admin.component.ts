@@ -18,6 +18,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     summarySubscription: Subscription;
     summary: ParticipantsSummary;
     returnUrl: string;
+    exporting: boolean;
 
     @ViewChild('participants') participants: ParticipantsComponent;
 
@@ -49,9 +50,11 @@ export class AdminComponent implements OnInit, OnDestroy {
     }
 
     export() {
+        this.exporting = true;
         this.userService.export().subscribe(res => {
             const fileName = this.getFileNameFromResponseContentDisposition(res);
             this.saveFile(res.blob(), fileName);
+            this.exporting = false;
         });
     }
 
