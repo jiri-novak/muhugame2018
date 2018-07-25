@@ -52,7 +52,11 @@ export class AuthenticationService {
     }
 
     public getToken(): string {
-        return localStorage.getItem(JWT_TOKEN);
+        let token: string = localStorage.getItem(JWT_TOKEN);
+        if (!this.isTokenExpired(token)) {
+            return token;
+        }
+        //this.logout();
     }
     
     public login(email: string, password: string): Observable<UserInfo> {

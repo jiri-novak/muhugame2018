@@ -8,6 +8,7 @@ import { RouterModule } from '@angular/router';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { AlertModule } from 'ngx-bootstrap/alert';
+import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { VgCoreModule } from "videogular2/core";
 import { VgControlsModule } from "videogular2/controls";
 import { VgOverlayPlayModule } from "videogular2/overlay-play";
@@ -49,6 +50,7 @@ const allComponents = [
         ModalModule.forRoot(),
         CollapseModule.forRoot(),
         AlertModule.forRoot(),
+        ButtonsModule.forRoot(),
         NgSelectModule,
 
         SharedModule

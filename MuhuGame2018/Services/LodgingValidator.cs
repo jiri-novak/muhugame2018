@@ -115,13 +115,13 @@ namespace MuhuGame2018.Services
                     userRepository.Update(user);
                 }
 
-                result.Costs = CalculateCosts(userRepository, appSettings, user);
+                result.Costs = CalculateCosts(appSettings, user);
 
                 return result;
             }
         }
 
-        public static CostsSummary CalculateCosts(IUserRepository userRepository, IOptions<AppSettings> appSettings, User user)
+        public static CostsSummary CalculateCosts(IOptions<AppSettings> appSettings, User user)
         {
             return new CostsSummary(
                 StartingCost,

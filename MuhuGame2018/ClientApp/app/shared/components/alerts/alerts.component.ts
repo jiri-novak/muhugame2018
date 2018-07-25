@@ -32,5 +32,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
 
     onClosed(dismissedAlert: Alert): void {
         this.alerts = this.alerts.filter(alert => alert !== dismissedAlert);
+        if (!this.alerts)
+            this.alerts = [];
     }
 }

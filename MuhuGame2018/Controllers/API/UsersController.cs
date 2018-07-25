@@ -13,6 +13,7 @@ using MuhuGame2018.Helpers;
 using MuhuGame2018.DTO;
 using MuhuGame2018.Entities;
 using System.Linq;
+using MuhuGame2018.Services.Interfaces;
 
 namespace MuhuGame2018.Controllers.API
 {
@@ -20,16 +21,19 @@ namespace MuhuGame2018.Controllers.API
     [Route("[controller]")]
     public class UsersController : Controller
     {
-        private IUserService _userService;
-        private IMapper _mapper;
+        private readonly IUserService _userService;
+        private readonly IExcelExportService _excelExportService;
+        private readonly IMapper _mapper;
         private readonly AppSettings _appSettings;
 
         public UsersController(
             IUserService userService,
+            IExcelExportService excelExportService,
             IMapper mapper,
             IOptions<AppSettings> appSettings)
         {
             _userService = userService;
+            _excelExportService = excelExportService;
             _mapper = mapper;
             _appSettings = appSettings.Value;
         }
@@ -100,7 +104,7 @@ namespace MuhuGame2018.Controllers.API
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody]UserDto userDto)
+        public IActionResult Update(int id, [FromBody] UserDto userDto)
         {
             if (!HasClaimForUserOrIsAdmin(id))
                 return Unauthorized();
@@ -134,6 +138,17 @@ namespace MuhuGame2018.Controllers.API
             return Ok();
         }
 
+        [HttpPost("export")]
+        public IActionResult ExportAll()
+        {
+            if (!IsAdmin())
+                return Unauthorized();
+
+            var users = _userService.GetAll();
+            var stream = _excelExportService.Export(users);
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "mg2018-export.xlsx");
+        }
+
         private bool HasClaimForUserOrIsAdmin(int id)
         {
             var nameClaim = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name);
@@ -143,6 +158,17 @@ namespace MuhuGame2018.Controllers.API
                 return false;
 
             return id == int.Parse(nameClaim.Value) || roleClaim.Value == "Admin";
+        }
+
+        private bool IsAdmin()
+        {
+            var nameClaim = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name);
+            var roleClaim = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role);
+
+            if (nameClaim == null || roleClaim == null)
+                return false;
+
+            return roleClaim.Value == "Admin";
         }
     }
 }

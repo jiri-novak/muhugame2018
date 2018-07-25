@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions, Response } from '@angular/http';
+import { Http, Headers, RequestOptions, Response, ResponseContentType } from '@angular/http';
 
 import { User } from '../_models/index';
 import { map } from 'rxjs/operators';
@@ -38,12 +38,19 @@ export class UserService {
         return this.http.delete('/users/' + id, this.jwt());
     }
 
-    private jwt(): RequestOptions {
+    export(): Observable<Response> {
+        return this.http.post('/users/export', null, this.jwt(ResponseContentType.Blob));
+    }
+
+    private jwt(contentType?: ResponseContentType): RequestOptions {
         // create authorization header with jwt token
+        let headers: Headers;
         let token = this.authService.getToken();
         if (token) {
-            let headers = new Headers({ 'Authorization': 'Bearer ' + token });
-            return new RequestOptions({ headers: headers });
+            headers = new Headers({ 'Authorization': 'Bearer ' + token });
         }
+        let options: RequestOptions = new RequestOptions({ headers: headers, responseType: contentType });
+        console.log(options);
+        return options;
     }
 }

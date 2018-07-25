@@ -126,8 +126,8 @@ namespace MuhuGame2018.Services
             }
 
             // check whether cost changed
-            var previousCost = LodgingValidator.CalculateCosts(_userRepository, _appSettings, user);
-            var newCost = LodgingValidator.CalculateCosts(_userRepository, _appSettings, userParam);
+            var previousCost = LodgingValidator.CalculateCosts(_appSettings, user);
+            var newCost = LodgingValidator.CalculateCosts(_appSettings, userParam);
 
             if (previousCost.TotalCost != newCost.TotalCost)
             {

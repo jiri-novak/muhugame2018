@@ -76,6 +76,7 @@ namespace MuhuGame2018
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMailService, MailService>();
             services.AddScoped<ILodgingService, LodgingService>();
+            services.AddScoped<IExcelExportService, ExcelExportService>();
 
             services.AddSwaggerGen(c =>
             {
@@ -100,15 +101,20 @@ namespace MuhuGame2018
               }
             );
 
-            app.UseStaticFiles(/*new StaticFileOptions
+            // Configure a rewrite rule to auto-lookup for standard default files such as index.html.
+            app.UseDefaultFiles();
+            // Serve static files (html, css, js, images & more). See also the following URL:
+            // https://docs.asp.net/en/latest/fundamentals/static-files.html for further reference.
+            app.UseStaticFiles(new StaticFileOptions()
             {
-                OnPrepareResponse = ctx =>
+                OnPrepareResponse = (context) =>
                 {
-                    const int durationInSeconds = 60 * 60 * 24;
-                    ctx.Context.Response.Headers[HeaderNames.CacheControl] =
-                        "public,max-age=" + durationInSeconds;
+                    // Disable caching for all static files.
+                    context.Context.Response.Headers["Cache-Control"] = "no-cache, no-store";
+                    context.Context.Response.Headers["Pragma"] = "no-cache";
+                    context.Context.Response.Headers["Expires"] = "-1";
                 }
-            }*/);
+            });
 
             app.UseAuthentication();
 
@@ -143,10 +149,6 @@ namespace MuhuGame2018
 
             dataContext.Database.Migrate();
             LodgingValidator.Initialize(userRepository, appSettings);
-
-            //Log.Logger = new LoggerConfiguration()
-            //    .WriteTo.AzureTableStorage(CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=jnstorage;AccountKey=yGxWAOAgQlj9Qqo9P8HEDlqlsglWvepD1Pq0UZG50Qq4C65hh+W5Ka+3CZAOP3/kvmOxJiCpyevsZAJHuQPU3g==;EndpointSuffix=core.windows.net"))
-            //    .CreateLogger();
         }
     }
 }
