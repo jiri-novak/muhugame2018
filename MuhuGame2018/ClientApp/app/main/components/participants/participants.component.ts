@@ -114,7 +114,7 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
     }
 
     private getSelectedCount(counts: [string, number][]): number {
-        return counts.filter(x => x["0"] != this.notSelected).map(x => x["1"]).reduce((sum, current) => sum + current);
+        return counts.filter(x => x["0"] != this.notSelected).map(x => x["1"]).reduce((sum, current) => sum + current, 0);
     }
 
     private getMap(dict: _.Dictionary<number>): [string, number][] {

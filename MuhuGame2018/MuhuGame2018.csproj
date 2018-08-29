@@ -5,6 +5,7 @@
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <IsPackable>false</IsPackable>
+    <UserSecretsId>90c62355-ded4-4c26-8743-9f3ed57bd73d</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,7 +34,7 @@
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
     <Exec Command="yarn" />
-    <Exec Command="npm run build" />
+    <Exec Command="yarn run build" />
 
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>

@@ -50,7 +50,6 @@ export class UserService {
             headers = new Headers({ 'Authorization': 'Bearer ' + token });
         }
         let options: RequestOptions = new RequestOptions({ headers: headers, responseType: contentType });
-        console.log(options);
         return options;
     }
 }

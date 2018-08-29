@@ -6,6 +6,7 @@ import { MessageType, UserInfo, UserLogin } from '../_models';
 import { MessageService } from './message.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 export const JWT_TOKEN: string = 'jwt_token';
 export const CURRENT_USER: string = 'current_user';
@@ -14,11 +15,12 @@ export const CURRENT_USER: string = 'current_user';
 export class AuthenticationService {
     constructor(
         private http: Http,
+        private router: Router,
         private messageService: MessageService
     ) { }
 
     public isTokenExpired(token?: string): boolean {
-        if (!token) token = this.getToken();
+        //if (!token) token = this.getToken();
         if (!token) return true;
 
         const date = this.getTokenExpirationDate(token);
@@ -56,7 +58,11 @@ export class AuthenticationService {
         if (!this.isTokenExpired(token)) {
             return token;
         }
-        //this.logout();
+
+        this.logout();
+        this.router.navigate(['/login']);
+        
+        return null;
     }
     
     public login(email: string, password: string): Observable<UserInfo> {
