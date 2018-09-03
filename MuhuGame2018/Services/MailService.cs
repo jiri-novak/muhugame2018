@@ -31,7 +31,8 @@ namespace MuhuGame2018.Services
                 Credentials = new NetworkCredential(_smtpUser, _smtpPasswd)
             };
 
-            MailMessage mailMessage = new MailMessage { From = new MailAddress(_smtpUser) };
+            MailMessage mailMessage = new MailMessage();
+            mailMessage.From = new MailAddress(_smtpUser);
             foreach (var to in tos)
                 mailMessage.To.Add(to);
             mailMessage.Body = body;
