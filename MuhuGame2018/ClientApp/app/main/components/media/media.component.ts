@@ -1,7 +1,8 @@
-import { Component, OnInit, ViewChild, TemplateRef, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Video } from '../../_models';
+import { Meta, DOCUMENT } from '@angular/platform-browser';
 
 @Component({
     selector: 'media',
@@ -12,27 +13,14 @@ export class MediaComponent implements OnInit, OnDestroy {
     sources: Array<Video>;
     private subscription: Subscription;
 
-    private pressConference: Video = new Video("/assets/videos/press-conf-720p.mp4", "video/mp4", "Video z tiskové konference u příležitosti zakoupení Zóny:");
-    private zoneTeaser: Video = new Video("/assets/videos/zone-teaser-720p.mp4", "video/mp4", "Víkendový pobyt v Zóně s piknikem:");
+    private pressConference: Video = new Video("/assets/videos/press-conf-720p.mp4", "/assets/videos/press-conf-720p.png", "video/mp4", "Video z tiskové konference u příležitosti zakoupení Zóny:");
+    private zoneTeaser: Video = new Video("/assets/videos/zone-teaser-720p.mp4", "/assets/videos/zone-teaser-720p.png", "video/mp4", "Víkendový pobyt v Zóně s piknikem:");
+    private aboutZone: Video = new Video("/assets/videos/about-zone-720p.mp4", "/assets/videos/about-zone-720p.png", "video/mp4", "Vše co jste chtěli vědět o Zóně");
 
-/*
-<meta property="og:site_name" content="Vimeo">
-<meta property="og:url" content="https://vimeo.com/228891505">
-<meta property="og:type" content="video">
-<meta property="og:title" content="Kyrgystan &amp; Kazachstan 2017">
-<meta property="og:description" content="Trekking and wandering. Terskey Alatau, Song Kul, Kul Ukok, Ala Archa, Almaty.">
-<meta property="og:updated_time" content="2018-03-17T23:17:48-04:00">
-<meta property="og:image" content="https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F649061989_1280x720.webp&src1=https%3A%2F%2Ff.vimeocdn.com%2Fimages_v6%2Fshare%2Fplay_icon_overlay.png">
-<meta property="og:image:secure_url" content="https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F649061989_1280x720.webp&src1=https%3A%2F%2Ff.vimeocdn.com%2Fimages_v6%2Fshare%2Fplay_icon_overlay.png">
-<meta property="og:image:type" content="image/jpg">
-<meta property="og:image:width" content="1280">
-<meta property="og:image:height" content="720">
-*/
-
-    constructor(private route: ActivatedRoute) {
+    constructor(private route: ActivatedRoute, private meta: Meta) {
     }
 
-    ngOnInit() {
+    ngOnInit() {        
         this.subscription = this.route.params.subscribe(params => {
             let id = params['id'];
 
@@ -41,20 +29,45 @@ export class MediaComponent implements OnInit, OnDestroy {
                     this.sources = [
                         this.pressConference
                     ];
+                    this.addToHeaders(this.pressConference, 1280, 720);
                     break;
+
                 case 'zone-teaser':
                     this.sources = [
                         this.zoneTeaser
                     ];
+                    this.addToHeaders(this.zoneTeaser, 1280, 720);
                     break;
+
+                case 'about-zone':
+                    this.sources = [
+                        this.aboutZone
+                    ];
+                    this.addToHeaders(this.aboutZone, 720, 576);
+                    break;
+
                 default:
                     this.sources = [
+                        this.aboutZone,
                         this.zoneTeaser,
                         this.pressConference
                     ];
                     break;
             }
         });
+    }
+
+    private addToHeaders(video: Video, width: number, height: number): void {
+        this.meta.addTag({ name: "og:site_name", content: "MuhuGame 2018"});
+        this.meta.addTag({ name: "og:type", content: "video"});
+        this.meta.addTag({ name: "og:url", content: `${window.location.origin}${video.src}`});
+        this.meta.addTag({ name: "og:title", content: video.title})
+        this.meta.addTag({ name: "og:description", content: ""});
+        this.meta.addTag({ name: "og:image", content: `${window.location.origin}${video.img}`});
+        this.meta.addTag({ name: "og:image:secure_url", content: `${window.location.origin}${video.img}`});
+        this.meta.addTag({ name: "og:image:type", content: "image/png"});
+        this.meta.addTag({ name: "og:image:width", content: "1280"});
+        this.meta.addTag({ name: "og:image:height", content: "720"});
     }
 
     ngOnDestroy() {
