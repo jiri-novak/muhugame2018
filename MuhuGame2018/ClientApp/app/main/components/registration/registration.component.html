@@ -7,16 +7,22 @@
 <busy-indicator [isBusy]="isBusy"></busy-indicator>
 
 <div *ngIf="!isBusy">
-    <div class="row" *ngIf="!simplified && temporaryDisabled">
+    <div class="row" *ngIf="!simplified && yetOver">
         <div class="col-lg-12">
             <h3></h3>
+            <p>Registrace již byly pozastaveny...</p>
+        </div>
+    </div>
+
+    <div class="row" *ngIf="!simplified && temporaryDisabled">
+        <div class="col-lg-12">
             <p>Registrace budou spuštěny
                 <b>6.6. 2018 20:00</b>!</p>
             <p>Do té doby vydržte a obnovujte pomocí CTRL+F5 :-)</p>
         </div>
     </div>
 
-    <form class="form-horizontal" name="form" (ngSubmit)="register()" #teamForm="ngForm" novalidate *ngIf="!temporaryDisabled">
+    <form class="form-horizontal" name="form" (ngSubmit)="register()" #teamForm="ngForm" novalidate *ngIf="simplified || (!temporaryDisabled && !yetOver)">
 
         <div class="row">
             <div class="col-md-8">
@@ -26,7 +32,8 @@
                     <div class="form-group required">
                         <label class="col-md-4 control-label" for="name">Název týmu:</label>
                         <div class="col-md-6">
-                            <input type="text" class="form-control" name="name" [(ngModel)]="user.name" #name="ngModel" required [disabled]="!isAdmin && existingUser">
+                            <input type="text" class="form-control" name="name" [(ngModel)]="user.name" #name="ngModel"
+                                required [disabled]="!isAdmin && existingUser">
                         </div>
                     </div>
                 </div>
@@ -35,8 +42,8 @@
                     <div class="form-group required">
                         <label class="col-md-4 control-label" for="email">Email / login:</label>
                         <div class="col-md-6">
-                            <input type="email" class="form-control" name="email" [(ngModel)]="user.email" #email="ngModel" required email [disabled]="!isAdmin && existingUser"
-                            />
+                            <input type="email" class="form-control" name="email" [(ngModel)]="user.email" #email="ngModel"
+                                required email [disabled]="!isAdmin && existingUser" />
                         </div>
                     </div>
                 </div>
@@ -45,8 +52,8 @@
                     <div class="form-group required">
                         <label class="col-md-4 control-label" for="tel">Telefon:</label>
                         <div class="col-md-6">
-                            <input type="tel" class="form-control" name="tel" [(ngModel)]="user.telephone" #telephone="ngModel" required tel pattern='^\+?\d{0,13}'
-                            />
+                            <input type="tel" class="form-control" name="tel" [(ngModel)]="user.telephone" #telephone="ngModel"
+                                required tel pattern='^\+?\d{0,13}' />
                         </div>
                     </div>
                 </div>
@@ -55,8 +62,8 @@
                     <div class="form-group required">
                         <label class="col-md-4 control-label" for="password">Heslo:</label>
                         <div class="col-md-6">
-                            <input type="password" class="form-control" name="password" [(ngModel)]="user.password" #password="ngModel" minlength="5"
-                                required/>
+                            <input type="password" class="form-control" name="password" [(ngModel)]="user.password"
+                                #password="ngModel" minlength="5" required />
                         </div>
                         <div class="col-md-2">
                             >= 5 znaků
@@ -68,8 +75,8 @@
                     <div class="form-group">
                         <label class="col-md-4 control-label" for="password">Heslo (chcete-li ho změnit):</label>
                         <div class="col-md-6">
-                            <input type="password" class="form-control" name="password" [(ngModel)]="user.password" #password="ngModel" minlength="5"
-                            />
+                            <input type="password" class="form-control" name="password" [(ngModel)]="user.password"
+                                #password="ngModel" minlength="5" />
                         </div>
                         <div class="col-md-2">
                             >= 5 znaků
@@ -79,7 +86,7 @@
 
                 <div class="col-md-12">
                     <div class="form-group">
-                        <br/>
+                        <br />
                         <label class="col-md-4 control-label" for="note">Poznámka:</label>
                         <div class="col-md-8">
                             <textarea name="note" [(ngModel)]="user.note" rows="6" style="min-width: 100%"></textarea>
@@ -132,7 +139,7 @@
                         <label class="control-label">Zaplaceno:</label>
                     </div>
                     <div class="col-md-6 text-right">
-                        <input type="checkbox" [checked]="user.paid" (change)="user.paid = !user.paid" [disabled]="!isAdmin"/>
+                        <input type="checkbox" [checked]="user.paid" (change)="user.paid = !user.paid" [disabled]="!isAdmin" />
                     </div>
                 </div>
 
@@ -141,18 +148,18 @@
                         <label class="control-label">Vzdali:</label>
                     </div>
                     <div class="col-md-6 text-right">
-                        <input type="checkbox" [checked]="user.quited" (change)="user.quited = !user.quited" [disabled]="!isAdmin"/>
+                        <input type="checkbox" [checked]="user.quited" (change)="user.quited = !user.quited" [disabled]="!isAdmin" />
                     </div>
                 </div>
 
                 <div class="row" *ngIf="!simplified">
-                    <br/>
+                    <br />
                     <div class="col-md-4">
                         Číslo účtu:
                     </div>
                     <div class="col-md-8">
                         <b>670100-2215359802/6210 (MBank)</b>
-                        <br/> Do zprávy pro příjemce vždy uveďte název týmu!
+                        <br /> Do zprávy pro příjemce vždy uveďte název týmu!
                     </div>
                 </div>
             </div>
@@ -164,14 +171,17 @@
 
             <div class="col-md-12">
                 <ul>
-                    <li>Každý tým bude ubytován dle svého výběru ve vlastním pokoji v budově (přednost mají čtyřčlenné týmy)
-                        či v chatce v areálu poblíž Zóny. V pokojích v budově je možnost (v případě zájmu) ubytovat navíc
+                    <li>Každý tým bude ubytován dle svého výběru ve vlastním pokoji v budově (přednost mají čtyřčlenné
+                        týmy)
+                        či v chatce v areálu poblíž Zóny. V pokojích v budově je možnost (v případě zájmu) ubytovat
+                        navíc
                         až 2 členy doprovodu týmu (bude řešeno dodatečně s orgy).
                     </li>
-                    <li>Pokud má tým speciální požadavek na zajištění stravy / ubytování napište tento požadavek do poznámky
+                    <li>Pokud má tým speciální požadavek na zajištění stravy / ubytování napište tento požadavek do
+                        poznámky
                         při registraci, případně kontaktujte organizátory. Dle možností se ho pokusíme vyřešit.</li>
                 </ul>
-                <br/>
+                <br />
             </div>
         </div>
 
@@ -181,9 +191,10 @@
                     <div class="form-group required">
                         <label class="col-md-4 control-label" for="variant">Typ ubytování:</label>
                         <div class="col-md-8">
-                            <ng-select [selectOnTab]="true" [items]="variants" [selectOnTab]="true" [clearable]="false" (ngModelChange)="updateParticipants($event)"
-                                bindLabel="name" bindValue="id" name="variant" [(ngModel)]="user.variant" #variant="ngModel"
-                                [disabled]="!isAdmin && existingUser" required>
+                            <ng-select [selectOnTab]="true" [items]="variants" [selectOnTab]="true" [clearable]="false"
+                                (ngModelChange)="updateParticipants($event)" bindLabel="name" bindValue="id" name="variant"
+                                [(ngModel)]="user.variant" #variant="ngModel" [disabled]="!isAdmin && existingUser"
+                                required>
                             </ng-select>
                         </div>
                     </div>
@@ -213,21 +224,22 @@
 
         <div class="row" *ngFor="let member of user.members">
             <div class="col-md-2">
-                <input type="text" class="form-control" [(ngModel)]="member.name" name="{{'name-member' + member.order}}" required/>
+                <input type="text" class="form-control" [(ngModel)]="member.name" name="{{'name-member' + member.order}}"
+                    required />
             </div>
             <div class="col-md-2">
-                <ng-select [selectOnTab]="true" [items]="tshirts" [clearable]="true" bindLabel="name" bindValue="id" [(ngModel)]="member.tshirt"
-                    (ngModelChange)="updateTShirt(member, $event)" name="{{'tshirt-member' + member.order}}">
+                <ng-select [selectOnTab]="true" [items]="tshirts" [clearable]="true" bindLabel="name" bindValue="id"
+                    [(ngModel)]="member.tshirt" (ngModelChange)="updateTShirt(member, $event)" name="{{'tshirt-member' + member.order}}">
                 </ng-select>
             </div>
             <div class="col-md-3">
-                <ng-select [selectOnTab]="true" [items]="dinner1" [clearable]="false" bindLabel="name" bindValue="id" [(ngModel)]="member.dinner1"
-                    name="{{'dinner1-member' + member.order}}">
+                <ng-select [selectOnTab]="true" [items]="dinner1" [clearable]="false" bindLabel="name" bindValue="id"
+                    [(ngModel)]="member.dinner1" name="{{'dinner1-member' + member.order}}">
                 </ng-select>
             </div>
             <div class="col-md-3">
-                <ng-select [selectOnTab]="true" [items]="dinner2" [clearable]="false" bindLabel="name" bindValue="id" [(ngModel)]="member.dinner2"
-                    name="{{'dinner2-member' + member.order}}">
+                <ng-select [selectOnTab]="true" [items]="dinner2" [clearable]="false" bindLabel="name" bindValue="id"
+                    [(ngModel)]="member.dinner2" name="{{'dinner2-member' + member.order}}">
                 </ng-select>
             </div>
             <div class="col-md-2 text-right">
@@ -237,14 +249,13 @@
 
         <div class="row">
             <div class="col-md-2">
-                <br/>
+                <br />
                 <button *ngIf="!existingUser" style="min-width: 100%;" class="btn btn-primary" [disabled]="!teamForm.form.valid && !loading">Zaregistrovat</button>
                 <button *ngIf="existingUser" style="min-width: 100%;" class="btn btn-primary" [disabled]="!teamForm.form.valid && !loading">Aktualizovat</button>
             </div>
             <div class="col-md-2">
-                <br/>
-                <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
-                />
+                <br />
+                <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
             </div>
         </div>
     </form>

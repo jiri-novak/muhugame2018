@@ -5,6 +5,7 @@ namespace MuhuGame2018.Helpers
     public class AppSettings
     {
         public string Secret { get; set; }
+        public bool DisableSendingMails { get; set; }
         public _SmtpSettings SmtpSettings { get; set; }
         public _LodgingCounts LodgingCounts { get; set; }
         public _Costs Costs { get; set; }

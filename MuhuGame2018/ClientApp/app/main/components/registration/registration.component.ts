@@ -33,6 +33,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     isBusy: boolean = false;
     isAdmin: boolean = false;
     temporaryDisabled: boolean = false;
+    yetOver: boolean = true;
     existingUser: boolean = false;
 
     subscription: Subscription;

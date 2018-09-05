@@ -60,14 +60,15 @@ export class MediaComponent implements OnInit, OnDestroy {
     private addToHeaders(video: Video, width: number, height: number): void {
         this.meta.addTag({ name: "og:site_name", content: "MuhuGame 2018"});
         this.meta.addTag({ name: "og:type", content: "video"});
-        this.meta.addTag({ name: "og:url", content: `${window.location.origin}${video.src}`});
+        this.meta.addTag({ name: "og:video", content: `${window.location.origin}${video.src}`});
+        this.meta.addTag({ name: "og:url", content: `${window.location.href}`});
         this.meta.addTag({ name: "og:title", content: video.title})
-        this.meta.addTag({ name: "og:description", content: ""});
+        this.meta.addTag({ name: "og:description", content: video.title});
         this.meta.addTag({ name: "og:image", content: `${window.location.origin}${video.img}`});
         this.meta.addTag({ name: "og:image:secure_url", content: `${window.location.origin}${video.img}`});
         this.meta.addTag({ name: "og:image:type", content: "image/png"});
-        this.meta.addTag({ name: "og:image:width", content: "1280"});
-        this.meta.addTag({ name: "og:image:height", content: "720"});
+        this.meta.addTag({ name: "og:image:width", content: `${width}`});
+        this.meta.addTag({ name: "og:image:height", content: `${height}`});
     }
 
     ngOnDestroy() {

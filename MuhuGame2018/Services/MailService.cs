@@ -9,6 +9,7 @@ namespace MuhuGame2018.Services
 {
     public class MailService : IMailService
     {
+        private readonly bool _disableSendingMails;
         private readonly string _smtpHost;
         private readonly int _smtpPort;
         private readonly string _smtpUser;
@@ -20,6 +21,7 @@ namespace MuhuGame2018.Services
             _smtpPort = appSettings.Value.SmtpSettings.Port;
             _smtpUser = appSettings.Value.SmtpSettings.User;
             _smtpPasswd = appSettings.Value.SmtpSettings.Password;
+            _disableSendingMails = appSettings.Value.DisableSendingMails;
         }
 
         public void SendMail(string[] tos, string subject, string body)
@@ -31,14 +33,14 @@ namespace MuhuGame2018.Services
                 Credentials = new NetworkCredential(_smtpUser, _smtpPasswd)
             };
 
-            MailMessage mailMessage = new MailMessage();
-            mailMessage.From = new MailAddress(_smtpUser);
+            MailMessage mailMessage = new MailMessage { From = new MailAddress(_smtpUser) };
             foreach (var to in tos)
                 mailMessage.To.Add(to);
             mailMessage.Body = body;
             mailMessage.Subject = subject;
 
-            client.Send(mailMessage);
+            if (!_disableSendingMails)
+                client.Send(mailMessage);
         }
     }
 }
