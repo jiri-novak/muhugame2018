@@ -146,13 +146,14 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
             if (this.users.length > 0)
                 this.setClickedRow(0);
 
-            this.teams = this.users.length;
+            this.teams = 0;
             this.members = 0;
 
             let i = 1;
             for (let user of this.users) {
                 if (!user.quited) {
                     user.index = i++;
+                    this.teams += 1;
 
                     for (let member of user.members) {
                         this.members += 1;

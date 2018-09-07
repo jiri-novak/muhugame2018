@@ -59,8 +59,8 @@ export class AuthenticationService {
             return token;
         }
 
-        this.logout();
-        this.router.navigate(['/login']);
+        //this.logout();
+        //this.router.navigate(['/login']);
         
         return null;
     }
