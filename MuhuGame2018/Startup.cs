@@ -82,11 +82,18 @@ namespace MuhuGame2018
             {
                 c.SwaggerDoc("v1", new Info { Title = "Muhugame 2018 API", Version = "v1" });
             });
+
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
         }
 
         public void Configure(
-            IApplicationBuilder app, 
-            IHostingEnvironment env, 
+            IApplicationBuilder app,
+            IHostingEnvironment env,
             ILoggerFactory loggerFactory,
             IUserRepository userRepository,
             DataContext dataContext,
@@ -116,6 +123,8 @@ namespace MuhuGame2018
                 }
             });
 
+            app.UseCors("MyPolicy");
+
             app.UseAuthentication();
 
             if (env.IsDevelopment())
@@ -125,7 +134,7 @@ namespace MuhuGame2018
                 app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
                 {
                     HotModuleReplacement = true
-                });   
+                });
             }
             else
             {

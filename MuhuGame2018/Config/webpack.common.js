@@ -94,6 +94,10 @@ module.exports = {
             to: 'assets/icons'
         },
         {
+            from: `ClientApp/assets/presentation`,
+            to: 'assets/presentation'
+        },
+        {
             from: `ClientApp/assets/videos`,
             to: 'assets/videos'
         },
@@ -141,18 +145,18 @@ module.exports = {
             filename: '[name].css'
         }),
 
-        new HtmlWebpackPlugin({
-            template: __dirname + '/../ClientApp/index.html',
-            // title: METADATA.title,
-            // chunksSortMode: function (a, b) {
-            //   const entryPoints = ["inline","polyfills","sw-register","styles","vendor","main"];
-            //   return entryPoints.indexOf(a.names[0]) - entryPoints.indexOf(b.names[0]);
-            // },
-            // metadata: METADATA,
-            // gtmKey: GTM_API_KEY,
-            inject: 'body',
-            xhtml: true,
-            minify: false
-        }),
+        // new HtmlWebpackPlugin({
+        //     template: __dirname + '/../ClientApp/index.html',
+        //     // title: METADATA.title,
+        //     // chunksSortMode: function (a, b) {
+        //     //   const entryPoints = ["inline","polyfills","sw-register","styles","vendor","main"];
+        //     //   return entryPoints.indexOf(a.names[0]) - entryPoints.indexOf(b.names[0]);
+        //     // },
+        //     // metadata: METADATA,
+        //     // gtmKey: GTM_API_KEY,
+        //     inject: 'body',
+        //     xhtml: true,
+        //     minify: false
+        // }),
     ]
 };
