@@ -1,0 +1,54 @@
+{
+    "data": {
+        "labels": [
+            "FCB",
+            "Lamy"
+        ],
+        "datasets": [
+            {
+                "data": [
+                    624
+                ],
+                "datalabels": {
+                    "align": "end",
+                    "anchor": "start"
+                }
+            },
+            {
+                "data": [
+                    614
+                ],
+                "datalabels": {
+                    "align": "end",
+                    "anchor": "start"
+                }
+            }
+        ]
+    },
+    "options": {
+        "responsive": "true",
+        "legend": {
+            "display": false
+        },
+        "tooltips": {
+            "enabled": false
+        },
+        "scales": {
+            "xAxes": [{
+                "ticks": {
+                    "autoSkip": false,
+                    "maxRotation": 90,
+                    "minRotation": 90
+                }
+            }],
+            "yAxes": [
+                {
+                    "display": true,
+                    "ticks": {
+                        "beginAtZero": true
+                    }
+                }
+            ]
+        }
+    }
+}
