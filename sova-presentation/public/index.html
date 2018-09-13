@@ -11,6 +11,13 @@
     <!--[if lt IE 9]>
 	<script src="lib/js/html5shiv.js"></script>
     <![endif]-->
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
 </head>
 
 <body>
@@ -353,7 +360,6 @@
     <script src="js/csv-to-array.js"></script>
     <script src="js/rxjs.js"></script>
     <script src="js/utils.js"></script>
-    <script src="js/utils2.js"></script>
     <script src="js/muhu/muhu.js"></script>
     <script src="js/moment.js"></script>
 
@@ -411,12 +417,47 @@
 
             window.bonus4Chart = createPieChart('bonus4-chart');
 
+            getPrologData(data => {
+                var prolog = data;
+
+                getACodes(data => {
+                    var aCodes = data;
+
+                    getBCodes(data => {
+                        var bCodes = data;
+
+                        getHints(data => {
+                            var hints = data;
+
+                            getFinishData(data => {
+                                var finish = data;
+
+                                getStartData(data => {
+                                    var start = data;
+
+                                    for (var i = 0; i < prolog.length; ++i) {
+                                        var userId = prolog[i].userId;
+                                        var userName = prolog[i].userName;
+                                    }
+                                    console.log(start);
+                                    console.log(finish);
+                                    console.log(prolog);
+                                    console.log(aCodes);
+                                    console.log(bCodes);
+                                    console.log(hints);
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+
             getTeamNames(data => {
                 teams = data;
                 teamsCount = teams.length;
             });
 
-            getPrologData(data => {
+            getPrologDataAsHtml(data => {
                 $('#results-prolog').append(data);
             });
         });
@@ -455,6 +496,10 @@
                 Reveal.removeKeyBinding(keyDown);
                 Reveal.removeKeyBinding(keyUp);
             }
+        });
+
+        Reveal.configure({
+            pdfMaxPagesPerSlide: 1
         });
     </script>
 

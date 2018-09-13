@@ -1,0 +1,16 @@
+{
+  "name": "sova-presentation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+  },
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "",
+  "license": "WTFPL",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
