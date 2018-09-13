@@ -47,7 +47,23 @@
 
             <section>
                 <section>
+                    <h3>Prolog - zadání</h3>
+                    <img width="300" src="data/prolog-0.png">
+                    <img width="300" src="data/prolog-1.png">
+                    <br/>
+                    <img width="300" src="data/prolog-2.png">
+                </section>
+                <section>
                     <h3>Prolog - řešení</h3>
+                    <img class="stretch" src="data/prolog-0.png">
+                </section>
+                <section>
+                    <h3>Prolog - řešení</h3>
+                    <img class="stretch" src="data/prolog-1.png">
+                </section>
+                <section>
+                    <h3>Prolog - řešení</h3>
+                    <img class="stretch" src="data/prolog-2.png">
                 </section>
                 <section>
                     <h3>Prolog - výsledky</h3>
@@ -69,6 +85,7 @@
                     <h3>Jiřetín pod Jedlovou</h3>
 
                     <h4>A1 - orienťácká šifra</h4>
+                    <img width="300" src="data/a-1.png">
                 </section>
                 <section>
                     <h3>A1 - úspěšnost</h3>
@@ -76,6 +93,7 @@
                 </section>
                 <section>
                     <h3>A1 - řešení</h3>
+                    <img class="stretch" src="data/a-1.png">
                 </section>
             </section>
 
@@ -86,6 +104,9 @@
 
                     <h4>A2 - obrázková šifra s hexy</h4>
                     <h4>B2 - káry</h4>
+
+                    <img height="300" src="data/a-2.png">
+                    <img height="300" src="data/b-2.png">
                 </section>
                 <section>
                     <h3>A2 - úspěšnost</h3>
@@ -93,6 +114,7 @@
                 </section>
                 <section>
                     <h3>A2 - řešení</h3>
+                    <img class="stretch" src="data/a-2.png">
                 </section>
                 <section>
                     <h3>B2 - úspěšnost</h3>
@@ -380,43 +402,6 @@
         Reveal.addEventListener('ready', function () {
             chartJsDefaults();
 
-            window.a1Chart = createPieChart('a1-chart');
-
-            window.a2Chart = createPieChart('a2-chart');
-            window.b2Chart = createPieChart('b2-chart');
-
-            window.a3Chart = createPieChart('a3-chart');
-            window.b3Chart = createPieChart('b3-chart');
-
-            window.a4Chart = createPieChart('a4-chart');
-            window.b4Chart = createPieChart('b4-chart');
-
-            window.a5Chart = createPieChart('a5-chart');
-            window.b5Chart = createPieChart('b5-chart');
-
-            window.a6Chart = createPieChart('a6-chart');
-            window.b6Chart = createPieChart('b6-chart');
-
-            window.a7Chart = createPieChart('a7-chart');
-            window.b7Chart = createPieChart('b7-chart');
-
-            window.a8Chart = createPieChart('a8-chart');
-            window.b8Chart = createPieChart('b8-chart');
-
-            window.a9Chart = createPieChart('a9-chart');
-            window.b9Chart = createPieChart('b9-chart');
-
-            window.a10Chart = createPieChart('a10-chart');
-            window.b10Chart = createPieChart('b10-chart');
-
-            window.a11Chart = createPieChart('a11-chart');
-
-            window.bonus1Chart = createPieChart('bonus1-chart');
-            window.bonus2Chart = createPieChart('bonus2-chart');
-            window.bonus3Chart = createPieChart('bonus3-chart');
-
-            window.bonus4Chart = createPieChart('bonus4-chart');
-
             getPrologData(data => {
                 var prolog = data;
 
@@ -426,25 +411,60 @@
                     getBCodes(data => {
                         var bCodes = data;
 
-                        getHints(data => {
-                            var hints = data;
+                        getAnswers(data => {
+                            var answers = data;
 
-                            getFinishData(data => {
-                                var finish = data;
+                            getHints(data => {
+                                var hints = data;
 
-                                getStartData(data => {
-                                    var start = data;
+                                getFinishData(data => {
+                                    var finish = data;
 
-                                    for (var i = 0; i < prolog.length; ++i) {
-                                        var userId = prolog[i].userId;
-                                        var userName = prolog[i].userName;
-                                    }
-                                    console.log(start);
-                                    console.log(finish);
-                                    console.log(prolog);
-                                    console.log(aCodes);
-                                    console.log(bCodes);
-                                    console.log(hints);
+                                    getStartData(data => {
+                                        var start = data;
+
+                                        // spoj data po tymech
+                                        var all = mergeAll(prolog, start, finish, aCodes, bCodes, hints, answers);
+                                        var allCount = all.length;
+
+                                        // spocitej statistiky uspesnosti stanovist
+                                        window.a1Chart = createPieChart('a1-chart', getChartData(all, 's001', 'a'));
+
+                                        window.a2Chart = createPieChart('a2-chart', getChartData(all, 's002', 'a'));
+                                        window.b2Chart = createPieChart('b2-chart', getChartData(all, 's002', 'b'));
+
+                                        window.a3Chart = createPieChart('a3-chart', getChartData(all, 's003', 'a'));
+                                        window.b3Chart = createPieChart('b3-chart', getChartData(all, 's003', 'b'));
+
+                                        window.a4Chart = createPieChart('a4-chart', getChartData(all, 's004', 'a'));
+                                        window.b4Chart = createPieChart('b4-chart', getChartData(all, 's004', 'b'));
+
+                                        window.a5Chart = createPieChart('a5-chart', getChartData(all, 's005', 'a'));
+                                        window.b5Chart = createPieChart('b5-chart', getChartData(all, 's005', 'b'));
+
+                                        window.a6Chart = createPieChart('a6-chart', getChartData(all, 's006', 'a'));
+                                        window.b6Chart = createPieChart('b6-chart', getChartData(all, 's006', 'b'));
+
+                                        window.a7Chart = createPieChart('a7-chart', getChartData(all, 's007', 'a'));
+                                        window.b7Chart = createPieChart('b7-chart', getChartData(all, 's007', 'b'));
+
+                                        window.a8Chart = createPieChart('a8-chart', getChartData(all, 's008', 'a'));
+                                        window.b8Chart = createPieChart('b8-chart', getChartData(all, 's008', 'b'));
+
+                                        window.a9Chart = createPieChart('a9-chart', getChartData(all, 's009', 'a'));
+                                        window.b9Chart = createPieChart('b9-chart', getChartData(all, 's009', 'b'));
+
+                                        window.a10Chart = createPieChart('a10-chart', getChartData(all, 's010', 'a'));
+                                        window.b10Chart = createPieChart('b10-chart', getChartData(all, 's010', 'b'));
+
+                                        window.a11Chart = createPieChart('a11-chart', getChartData(all, 's011', 'a'));
+
+                                        window.bonus1Chart = createPieChart('bonus1-chart', getChartData(all, 's101', 'a'));
+                                        window.bonus2Chart = createPieChart('bonus2-chart', getChartData(all, 's102', 'a'));
+                                        window.bonus3Chart = createPieChart('bonus3-chart', getChartData(all, 's103', 'a'));
+
+                                        window.bonus4Chart = createPieChart('bonus4-chart', getChartData(all, 's104', 'a'));
+                                    });
                                 });
                             });
                         });

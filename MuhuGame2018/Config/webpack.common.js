@@ -94,10 +94,6 @@ module.exports = {
             to: 'assets/icons'
         },
         {
-            from: `ClientApp/assets/presentation`,
-            to: 'assets/presentation'
-        },
-        {
             from: `ClientApp/assets/videos`,
             to: 'assets/videos'
         },

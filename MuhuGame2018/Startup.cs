@@ -147,7 +147,8 @@ namespace MuhuGame2018
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "MuhuGame 2018 V1");
             });
 
-            app.MapWhen(x => !x.Request.Path.Value.StartsWith("/swagger", StringComparison.OrdinalIgnoreCase), builder =>
+            app.MapWhen(x => !x.Request.Path.Value.StartsWith("/swagger", StringComparison.OrdinalIgnoreCase)
+                && !x.Request.Path.Value.StartsWith("/public", StringComparison.OrdinalIgnoreCase), builder =>
             {
                 builder.UseMvc(routes =>
                 {
