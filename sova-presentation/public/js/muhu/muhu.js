@@ -8,6 +8,9 @@ window.chartColors = {
     grey: 'rgb(201, 203, 207)'
 };
 
+var end = moment("15/09/2018 20:30", "DD/MM/YYYY HH:mm:ss");
+var totalEnd = moment("15/09/2018 21:00", "DD/MM/YYYY HH:mm:ss");
+
 function getPrologData(callback) {
     $.ajax({
         type: 'GET',
@@ -31,15 +34,11 @@ function getPrologData(callback) {
                 return entry;
             });
 
+            data = data.filter(x => x.userName != "Sovy v mazutu");
+
             // sort by date
             data = data.sort(function (a, b) {
-                if (a === b)
-                    return 0;
-                if (a === null && b !== null)
-                    return -1;
-                if (a !== null && b === null)
-                    return 1;
-                return new Date(a.date) < new Date(b.date);
+                return a.date - b.date;
             });
 
             // asign order
@@ -50,7 +49,7 @@ function getPrologData(callback) {
             // asign duration from winner
             var winnerDate = data[0].date;
             for (var i = 0; i < data.length; ++i) {
-                data[i].fromWinner = getDateDiffString(winnerDate, data[i].date);
+                data[i].fromWinner = getDateDiffString(data[i].date, winnerDate);
             }
 
             return callback(data);
@@ -114,21 +113,19 @@ function getStartData(callback) {
     });
 }
 
-function getPrologDataAsHtml(callback) {
-    getPrologData(data => {
-        var tableData = [];
+function getPrologDataAsHtml(data) {
+    var tableData = [];
 
-        for (var i = 0; i < data.length; ++i) {
-            tableData.push("<tr>")
-            tableData.push("<td align='center'>" + data[i].order + "</td>")
-            tableData.push("<td>" + data[i].userName + "</td>")
-            tableData.push("<td>" + data[i].fromWinner + "</td>")
-            tableData.push("</tr>")
-        }
+    for (var i = 0; i < data.length; ++i) {
+        tableData.push("<tr>")
+        tableData.push("<td align='center'>" + data[i].order + "</td>")
+        tableData.push("<td>" + data[i].userName + "</td>")
+        tableData.push("<td>" + data[i].fromWinner + "</td>")
+        tableData.push("</tr>")
+    }
 
-        var tableDataString = tableData.join("");
-        callback(tableDataString);
-    });
+    var tableDataString = tableData.join("");
+    return tableDataString;
 }
 
 function getTeamNames(callback) {
@@ -351,20 +348,15 @@ function chartJsDefaults() {
     });
 }
 
-function getChartData(all, stanoviste, typ) {
-    console.log(all)
-
-    // spocitej statistiky uspesnosti stanovist
+function getChartAData(all, stanoviste, typ) {
     var sums = all.map(x => x[stanoviste]).map(x => {
         return {
-            anoBezNapovedy:  x.n == null && x.r == null && x[typ] != null,
-            anoSNapovedou:   x.n != null && x.r == null && x[typ] != null,
+            anoBezNapovedy: x.n == null && x.r == null && x[typ] != null,
+            anoSNapovedou: x.n != null && x.r == null && x[typ] != null,
             napovedaIReseni: x.n != null && x.r != null && x[typ] != null,
-            reseniRovnou:    x.n == null && x.r != null && x[typ] != null
+            reseniRovnou: x.n == null && x.r != null && x[typ] != null
         }
     });
-
-    console.log(sums)
 
     var anoBezNapovedy = sums.map(x => x.anoBezNapovedy).reduce((total, num) => total + num);
     var anoSNapovedou = sums.map(x => x.anoSNapovedou).reduce((total, num) => total + num);
@@ -379,7 +371,61 @@ function getChartData(all, stanoviste, typ) {
     ];
 }
 
-function createPieChart(elementId, data) {
+function getChartBData(all, stanoviste, typ) {
+    var sums = all.map(x => x[stanoviste]).map(x => {
+        return {
+            ano: x[typ] != null,
+            ne: x[typ] == null
+        }
+    });
+
+    var ano = sums.map(x => x.ano).reduce((total, num) => total + num);
+    var ne = sums.map(x => x.ne).reduce((total, num) => total + num);
+
+    return [
+        ano,
+        ne
+    ];
+}
+
+function getChartBonData(all, stanoviste, typ) {
+    var sums = all.map(x => x[stanoviste]).map(x => {
+        return {
+            anoBezNapovedy: x.n == null && x[typ] != null,
+            anoSNapovedou: x.n != null && x[typ] != null,
+            neSNapovedou: x.n != null && x[typ] == null
+        }
+    });
+
+    var anoBezNapovedy = sums.map(x => x.anoBezNapovedy).reduce((total, num) => total + num);
+    var anoSNapovedou = sums.map(x => x.anoSNapovedou).reduce((total, num) => total + num);
+    var neSNapovedou = sums.map(x => x.neSNapovedou).reduce((total, num) => total + num);
+
+    return [
+        anoBezNapovedy,
+        anoSNapovedou,
+        neSNapovedou
+    ];
+}
+
+function getChartFinalData(all, stanoviste, typ) {
+    var sums = all.map(x => x[stanoviste]).map(x => {
+        return {
+            ano: x[typ] != null,
+            ne: x[typ] == null
+        }
+    });
+
+    var ano = sums.map(x => x.ano).reduce((total, num) => total + num);
+    var ne = sums.map(x => x.ne).reduce((total, num) => total + num);
+
+    return [
+        ano,
+        ne
+    ];
+}
+
+function createPieChartA(elementId, data) {
     var config = {
         type: 'pie',
         data: {
@@ -398,6 +444,99 @@ function createPieChart(elementId, data) {
                 'Vyřešili s nápovědou',
                 'Vzali si řešení rovnou',
                 'Vzali si nápovědu i řešení',
+            ]
+        },
+        options: {
+            responsive: true,
+            animation: false,
+            legend: {
+                position: 'bottom',
+            }
+        }
+    };
+
+    var ctx = document.getElementById(elementId).getContext('2d');
+    return new Chart(ctx, config);
+}
+
+function createPieChartBon(elementId, data) {
+    var config = {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: data,
+                backgroundColor: [
+                    window.chartColors.green,
+                    window.chartColors.orange,
+                    window.chartColors.yellow,
+                    window.chartColors.red
+                ],
+                label: 'Dataset 1'
+            }],
+            labels: [
+                'Vyřešili bez nápovědy',
+                'Vyřešili s nápovědou',
+                'Nevyřešili s nápovědou'
+            ]
+        },
+        options: {
+            responsive: true,
+            animation: false,
+            legend: {
+                position: 'bottom',
+            }
+        }
+    };
+
+    var ctx = document.getElementById(elementId).getContext('2d');
+    return new Chart(ctx, config);
+}
+
+function createPieChartFinal(elementId, data) {
+    var config = {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: data,
+                backgroundColor: [
+                    window.chartColors.green,
+                    window.chartColors.red
+                ],
+                label: 'Dataset 1'
+            }],
+            labels: [
+                'Vyřešili',
+                'Nevyřešili'
+            ]
+        },
+        options: {
+            responsive: true,
+            animation: false,
+            legend: {
+                position: 'bottom',
+            }
+        }
+    };
+
+    var ctx = document.getElementById(elementId).getContext('2d');
+    return new Chart(ctx, config);
+}
+
+function createPieChartB(elementId, data) {
+    var config = {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: data,
+                backgroundColor: [
+                    window.chartColors.green,
+                    window.chartColors.red
+                ],
+                label: 'Dataset 1'
+            }],
+            labels: [
+                'Splnili',
+                'Nesplnili'
             ]
         },
         options: {
@@ -441,6 +580,9 @@ function createFinalChart(elementId, labels, data) {
                     formatter: Math.round
                 }
             },
+            legend: {
+                display: false
+            },
             scales: {
                 xAxes: [{
                     maxBarThickness: 20,
@@ -457,7 +599,7 @@ function createFinalChart(elementId, labels, data) {
                     stacked: true,
                     ticks: {
                         display: false,
-                        max: 1000,
+                        max: 140,
                         min: 0
                     }
                 }]
@@ -484,31 +626,43 @@ function finalChartRemoveData(chart, index) {
     chart.update();
 }
 
-function getDateDiffString(now, then) {
-    if (then == null || now == null) {
+function getDateDiffString(end, startTime) {
+    if (end == null || startTime == null) {
         return "n/a"
     }
 
-    if (now == then)
+    if (end == startTime)
         return ""
 
-    var ms = moment(now, "DD/MM/YYYY HH:mm:ss").diff(moment(then, "DD/MM/YYYY HH:mm:ss"));
-    var duration = moment.duration(ms);
+    var duration = moment.duration(moment(end).diff(moment(startTime)));
     return moment.utc(duration.asMilliseconds()).format("HH:mm:ss");
 }
 
-// function showMap() {
-//     var center = SMap.Coords.fromWGS84(14.400307, 50.071853);
-//     var m = new SMap(JAK.gel("m"), center, 5);
-//     m.addDefaultLayer(SMap.DEF_TURIST).enable();
+function getDateDiffMs(end, startTime) {
+    if (end == null || startTime == null) {
+        return "n/a"
+    }
 
-//     $.get('https://pro.mapy.cz/mapybox-export/v1/gpx?tid=5b8c5eab0abe93ae2fe73cc2&rand=0.462882540798113', function (data) {
-//         var gpx = new SMap.Layer.GPX(data, null, { maxPoints: 500 });
-//         m.addLayer(gpx);
-//         gpx.enable();
-//         gpx.fit();
-//     });
-// }
+    if (end == startTime)
+        return ""
+
+    var duration = moment.duration(moment(end).diff(moment(startTime)));
+    return duration.asMilliseconds();
+}
+
+function getDateDiffInMinutes(now, then) {
+    if (then == null || now == null) {
+        return null
+    }
+
+    if (now == then) {
+        return 0
+    }
+
+    var ms = moment(now).diff(moment(then));
+    var duration = moment.duration(ms);
+    return duration.asMinutes();
+}
 
 function mergeAll(prolog, start, finish, aCodes, bCodes, hints, answers) {
     var all = [];
@@ -524,14 +678,18 @@ function mergeAll(prolog, start, finish, aCodes, bCodes, hints, answers) {
         var b = bCodes.find(x => x.userCode == userCode);
         var n = hints.find(x => x.userCode == userCode);
         var r = answers.find(x => x.userCode == userCode);
+        var time = getDateDiffString(finishTime, startTime);
+        var timeMs = getDateDiffMs(finishTime, startTime);
 
-        all.push({
+        var entry = {
             userId: userId,
             userName: userName,
             userCode: userCode,
             prologOrder: prologOrder,
             startTime: startTime,
             finishTime: finishTime,
+            time: time,
+            timeMs: timeMs,
             s001: {
                 a: a == null ? null : a.s001,
                 b: b == null ? null : b.s001,
@@ -622,8 +780,174 @@ function mergeAll(prolog, start, finish, aCodes, bCodes, hints, answers) {
                 n: n == null ? null : n.s104,
                 r: r == null ? null : r.s104
             }
-        });
+        };
+
+        var _stan = [
+            entry.s001, entry.s002, entry.s003,
+            entry.s004, entry.s005, entry.s006,
+            entry.s007, entry.s008, entry.s009,
+            entry.s010, entry.s011
+        ];
+
+        var _bon1 = entry.s101;
+        var _bon2 = entry.s102;
+        var _bon3 = entry.s103;
+        var _bon4 = entry.s104;
+
+        entry.points_a = _stan.map(x => {
+            if (x.r != null)
+                return 0;
+            else if (x.n != null && x.r == null)
+                return 5;
+            else
+                return 10;
+        }).reduce(sum);
+        entry.points_n = _stan.map(x => x.n).map(x => x == null ? 0 : 1).reduce(sum);
+        entry.points_r = _stan.map(x => x.r).map(x => x == null ? 0 : 1).reduce(sum);
+        entry.points_b = _stan.map(x => x.b).map(x => x == null ? 0 : 1).reduce(sum) * 5;
+        entry.points_b1 = evaluateBonus(_bon1);
+        entry.points_b2 = evaluateBonus(_bon2);
+        entry.points_b3 = evaluateBonus(_bon3);
+        entry.points_b4 = evaluateMegaBonus(_bon4);
+        entry.penaltyTime = evaluatePenaltyTime(entry);
+        entry.penaltyEnvelopes = evaluatePenaltyEnvelopes(entry);
+        entry.penaltyWrong = evaluatePenaltyWrong(entry);
+
+        entry.points_all =
+            entry.points_a +
+            //entry.points_n +
+            //entry.points_r +
+            entry.points_b +
+            entry.points_b1 +
+            entry.points_b2 +
+            entry.points_b3 +
+            entry.points_b4 +
+            entry.penaltyTime +
+            entry.penaltyEnvelopes +
+            entry.penaltyWrong;
+
+        if (entry.userName != "Sovy v mazutu")
+            all.push(entry);
     }
 
+    // TADY
+    all = all.sort(function (a, b) {
+        //return b.points_all - a.points_all
+
+        // if (a.points_all > b.points_all) {
+        //     return 1;
+        // } else if (a.points_all < a.points_all) { 
+        //     return -1;
+        // }
+    
+        // if (a.timeMs < b.timeMs) { 
+        //     return -1;
+        // } else if (a.timeMs > b.timeMs) {
+        //     return 1
+        // } else {
+        //     return 0;
+        // }
+        return orderDesc(a.points_all, b.points_all) 
+            || orderAsc(a.timeMs, b.timeMs)
+    });
+
     return all;
+}
+
+function orderDesc(a, b) {
+    if (a > b) return -1;
+    if (a < b) return +1;
+    return 0;
+}
+
+function orderAsc(a, b) {
+    if (a > b) return +1;
+    if (a < b) return -1;
+    return 0;
+}
+
+function evaluatePenaltyEnvelopes(entry) {
+    if (entry.userCode == "BARVIVO" || entry.userCode == "FLOTILA") {
+        return -200;
+    }
+    else {
+        return 0;
+    }
+}
+
+function evaluatePenaltyWrong(entry) {
+    if (entry.userCode == "SADISTA") {
+        return -4;
+    }
+    else {
+        return 0;
+    }
+}
+
+function evaluatePenaltyTime(entry) {
+    if (entry.finishTime == null || moment(entry.finishTime).isAfter(totalEnd)) {
+        return -200;
+    }
+    else if (moment(entry.finishTime).isAfter(end) && moment(entry.finishTime).isBefore(totalEnd)) {
+        var diffMins = getDateDiffInMinutes(entry.finishTime, end);
+        return -Math.round(diffMins / 2, 0)
+    } else {
+        return 0;
+    }
+}
+
+function evaluateBonus(stan) {
+    var a = stan.a == null ? 0 : 1;
+    var n = stan.n == null ? 0 : 1;
+
+    if (a != 1 && n == 1) {
+        return 0;
+    } else {
+        return a * 15 + n * -5;
+    }
+}
+
+function evaluateMegaBonus(stan) {
+    var a = stan.a == null ? 0 : 1;
+    var n = stan.n == null ? 0 : 1;
+
+    return a * 20 + n * -10;
+}
+
+function sum(t, a) {
+    return t + a;
+}
+
+function statsAsHtml(data) {
+    var tableData = [];
+
+    for (var i = 0; i < data.length; ++i) {
+        if (i < 3) {
+            tableData.push("<tr style='background:red'>")
+        }
+        else {
+            tableData.push("<tr>")
+        }
+        tableData.push("<td align='center'>" + (i + 1) + ".</td>")
+        tableData.push("<td>" + data[i].userName + "</td>")
+        tableData.push("<td align='right'>" + data[i].time + "</td>")
+        tableData.push("<td align='right'>" + data[i].points_a + "</td>")
+        tableData.push("<td align='right'>" + data[i].points_n + "x</td>")
+        tableData.push("<td align='right'>" + data[i].points_r + "x</td>")
+        tableData.push("<td align='right'>" + data[i].points_b + "</td>")
+        tableData.push("<td align='right'>" + data[i].points_b1 + "</td>")
+        tableData.push("<td align='right'>" + data[i].points_b2 + "</td>")
+        tableData.push("<td align='right'>" + data[i].points_b3 + "</td>")
+        tableData.push("<td align='right'>" + data[i].points_b4 + "</td>")
+        // tableData.push("<td align='right'>" + data[i].prologOrder + ".</td>")
+        tableData.push("<td align='right'>" + data[i].penaltyTime + "</td>")
+        tableData.push("<td align='right'>" + data[i].penaltyEnvelopes + "</td>")
+        tableData.push("<td align='right'>" + data[i].penaltyWrong + "</td>")
+        tableData.push("<td align='right'>" + data[i].points_all + "</td>")
+        // tableData.push("<td align='right'>" + data[i].timeMs + "</td>")
+        tableData.push("</tr>")
+    }
+
+    var tableDataString = tableData.join("");
+    return tableDataString;
 }

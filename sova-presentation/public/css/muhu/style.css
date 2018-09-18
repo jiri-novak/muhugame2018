@@ -1,10 +1,19 @@
 table {
-    font-size: 10pt !important;
+    font-size: 8pt !important;
     word-wrap: break-word;
+    border-spacing: 0px;
+    border-collapse: collapse;
 }
 
-tr:nth-child(even) {
-    background: #636363
+thead {
+    background-color: #2b8cbe;
+    border-top: 0px;
+    border-bottom: 0px;
+}
+
+.table>tbody>tr>td,
+.table>tbody>tr>th {
+  border-top: none;
 }
 
 tr:nth-child(odd) {
