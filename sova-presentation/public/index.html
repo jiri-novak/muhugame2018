@@ -466,21 +466,22 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th>#.</th>
                             <th>Tým</th>
                             <th>Čas</th>
-                            <th>A</th>
-                            <th>Náp</th>
-                            <th>Řeš</th>
-                            <th>B</th>
-                            <th>Bon 1</th>
-                            <th>Bon 2</th>
-                            <th>Bon 3</th>
-                            <th>Bon 4</th>
+                            <th>Áčka</th>
+                            <th>náp</th>
+                            <th>řeš</th>
+                            <th>Penalizace (náp + řeš)</th>
+                            <th>Béčka</th>
+                            <th>Bonus 1</th>
+                            <th>Bonus 2</th>
+                            <th>Bonus 3</th>
+                            <th>Bonus 4</th>
                             <!-- <th>Prolog</th> -->
                             <th>Penalizace (čas)</th>
                             <th>Penalizace (obálky)</th>
-                            <th>Penalizace (haluzení)</th>
+                            <!-- <th>Penalizace (haluzení)</th> -->
                             <th>Body</th>
                             <!-- <th>Čas ms</th> -->
                         </tr>
@@ -490,10 +491,39 @@
                 </table>
             </section>
 
-                <section data-state="chart-final-1">
-                    <h2>Děkujeme</h2>
-                    <h3>Lamy</h3>
-                </section>
+            <section>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#.</th>
+                            <th>Tým</th>
+                            <th align="center" width="35">Prolog</th>
+                            <th align="center" width="35">1</th>
+                            <th align="center" width="35">2</th>
+                            <th align="center" width="35">3</th>
+                            <th align="center" width="35">4</th>
+                            <th align="center" width="35">5</th>
+                            <th align="center" width="35">6</th>
+                            <th align="center" width="35">7</th>
+                            <th align="center" width="35">8</th>
+                            <th align="center" width="35">9</th>
+                            <th align="center" width="35">10</th>
+                            <th align="center" width="35">11</th>
+                            <th align="center" width="35">101</th>
+                            <th align="center" width="35">102</th>
+                            <th align="center" width="35">103</th>
+                            <th align="center" width="35">104</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-stan">
+                    </tbody>
+                </table>
+            </section>
+
+            <section data-state="chart-final-1">
+                <h2>Děkujeme</h2>
+                <h3>Lamy</h3>
+            </section>
         </div>
     </div>
 
@@ -554,6 +584,7 @@
                                         teamsCount = teams.length;
 
                                         $('#results-all').append(statsAsHtml(teams));
+                                        $('#results-stan').append(statsStanAsHtml(teams));
 
                                         // spocitej statistiky uspesnosti stanovist
                                         window.a1Chart = createPieChartA('a1-chart', getChartAData(teams, 's001', 'a'));

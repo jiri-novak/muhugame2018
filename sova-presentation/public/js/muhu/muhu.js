@@ -794,7 +794,8 @@ function mergeAll(prolog, start, finish, aCodes, bCodes, hints, answers) {
         var _bon3 = entry.s103;
         var _bon4 = entry.s104;
 
-        entry.points_a = _stan.map(x => {
+        entry.points_a = _stan.map(x => x.a).map(x => x == null ? 0 : 1).reduce(sum) * 10;
+        entry.points_a_real = _stan.map(x => {
             if (x.r != null)
                 return 0;
             else if (x.n != null && x.r == null)
@@ -814,7 +815,7 @@ function mergeAll(prolog, start, finish, aCodes, bCodes, hints, answers) {
         entry.penaltyWrong = evaluatePenaltyWrong(entry);
 
         entry.points_all =
-            entry.points_a +
+            entry.points_a_real +
             //entry.points_n +
             //entry.points_r +
             entry.points_b +
@@ -839,7 +840,7 @@ function mergeAll(prolog, start, finish, aCodes, bCodes, hints, answers) {
         // } else if (a.points_all < a.points_all) { 
         //     return -1;
         // }
-    
+
         // if (a.timeMs < b.timeMs) { 
         //     return -1;
         // } else if (a.timeMs > b.timeMs) {
@@ -847,7 +848,7 @@ function mergeAll(prolog, start, finish, aCodes, bCodes, hints, answers) {
         // } else {
         //     return 0;
         // }
-        return orderDesc(a.points_all, b.points_all) 
+        return orderDesc(a.points_all, b.points_all)
             || orderAsc(a.timeMs, b.timeMs)
     });
 
@@ -876,12 +877,13 @@ function evaluatePenaltyEnvelopes(entry) {
 }
 
 function evaluatePenaltyWrong(entry) {
-    if (entry.userCode == "SADISTA") {
-        return -4;
-    }
-    else {
-        return 0;
-    }
+    return 0;
+    // if (entry.userCode == "SADISTA") {
+    //     return -4;
+    // }
+    // else {
+    //     return 0;
+    // }
 }
 
 function evaluatePenaltyTime(entry) {
@@ -934,6 +936,7 @@ function statsAsHtml(data) {
         tableData.push("<td align='right'>" + data[i].points_a + "</td>")
         tableData.push("<td align='right'>" + data[i].points_n + "x</td>")
         tableData.push("<td align='right'>" + data[i].points_r + "x</td>")
+        tableData.push("<td align='right'>-" + (data[i].points_a - data[i].points_a_real) + "</td>")
         tableData.push("<td align='right'>" + data[i].points_b + "</td>")
         tableData.push("<td align='right'>" + data[i].points_b1 + "</td>")
         tableData.push("<td align='right'>" + data[i].points_b2 + "</td>")
@@ -942,12 +945,122 @@ function statsAsHtml(data) {
         // tableData.push("<td align='right'>" + data[i].prologOrder + ".</td>")
         tableData.push("<td align='right'>" + data[i].penaltyTime + "</td>")
         tableData.push("<td align='right'>" + data[i].penaltyEnvelopes + "</td>")
-        tableData.push("<td align='right'>" + data[i].penaltyWrong + "</td>")
+        // tableData.push("<td align='right'>" + data[i].penaltyWrong + "</td>")
         tableData.push("<td align='right'>" + data[i].points_all + "</td>")
         // tableData.push("<td align='right'>" + data[i].timeMs + "</td>")
         tableData.push("</tr>")
     }
 
     var tableDataString = tableData.join("");
+    console.log(tableDataString);
     return tableDataString;
 }
+
+function statsStanAsHtml(data) {
+    var tableData = [];
+
+    for (var i = 0; i < data.length; ++i) {
+        tableData.push("<tr>")
+        tableData.push("<td align='center'>" + (i + 1) + ".</td>")
+        tableData.push("<td>" + data[i].userName + "</td>")
+
+        tableData.push("<td align='center' style='background-color: " + getColor("OK") + "'>OK</td>")
+
+        var s001 = getString(data[i].s001);
+        var s002 = getString(data[i].s002);
+        var s003 = getString(data[i].s003);
+        var s004 = getString(data[i].s004);
+        var s005 = getString(data[i].s005);
+        var s006 = getString(data[i].s006);
+        var s007 = getString(data[i].s007);
+        var s008 = getString(data[i].s008);
+        var s009 = getString(data[i].s009);
+        var s010 = getString(data[i].s010);
+        var s011 = getString(data[i].s011);
+
+        var s101 = getStringBon(data[i].s101);
+        var s102 = getStringBon(data[i].s102);
+        var s103 = getStringBon(data[i].s103);
+        var s104 = getStringBon(data[i].s104);
+
+        tableData.push("<td align='center' style='background-color: " + getColor(s001) + "'>" + s001 + "</td>")
+        tableData.push("<td align='center' style='background-color: " + getColor(s002) + "'>" + s002 + "</td>")
+        tableData.push("<td align='center' style='background-color: " + getColor(s003) + "'>" + s003 + "</td>")
+        tableData.push("<td align='center' style='background-color: " + getColor(s004) + "'>" + s004 + "</td>")
+        tableData.push("<td align='center' style='background-color: " + getColor(s005) + "'>" + s005 + "</td>")
+        tableData.push("<td align='center' style='background-color: " + getColor(s006) + "'>" + s006 + "</td>")
+        tableData.push("<td align='center' style='background-color: " + getColor(s007) + "'>" + s007 + "</td>")
+        tableData.push("<td align='center' style='background-color: " + getColor(s008) + "'>" + s008 + "</td>")
+        tableData.push("<td align='center' style='background-color: " + getColor(s009) + "'>" + s009 + "</td>")
+        tableData.push("<td align='center' style='background-color: " + getColor(s010) + "'>" + s010 + "</td>")
+        tableData.push("<td align='center' style='background-color: " + getColor(s011) + "'>" + s011 + "</td>")
+        tableData.push("<td align='center' style='background-color: " + getColor(s101) + "'>" + s101 + "</td>")
+        tableData.push("<td align='center' style='background-color: " + getColor(s102) + "'>" + s102 + "</td>")
+        tableData.push("<td align='center' style='background-color: " + getColor(s103) + "'>" + s103 + "</td>")
+        tableData.push("<td align='center' style='background-color: " + getColor(s104) + "'>" + s104 + "</td>")
+
+        tableData.push("</tr>")
+    }
+
+    var tableDataString = tableData.join("");
+    console.log(tableDataString);
+    return tableDataString;
+}
+
+function getColor(s) {
+    if (s == "OK")
+        return window.chartColors.green;
+    else if (s == "N/A")
+        return window.chartColors.grey;
+    else if (s == "NAP" || s == "NAP :-)")
+        return window.chartColors.yellow;
+    else if (s == "NAP+RES")
+        return window.chartColors.orange;
+    else if (s == "RES")
+        return window.chartColors.red;
+}
+
+function getString(data) {
+    if (!data.r && !data.n && !data.a && !data.b) {
+        return "N/A";
+    }
+    else if (!!data.r) {
+        if (!!data.n) {
+            return "NAP+RES";
+        }
+        else {
+            return "RES";
+        }
+    }
+    else if (!!data.n) {
+        return "NAP";
+    }
+    else {
+        return "OK";
+    }
+}
+
+function getStringBon(data) {
+    if (!data.r && !data.n && !data.a && !data.b) {
+        return "N/A";
+    }
+    else if (!!data.n && !!data.a) {
+        return "NAP :-)";
+    }
+    else if (!data.n && !!data.a) {
+        return "OK";
+    }
+    else if (!!data.n && !data.a) {
+        return "NAP :-(";
+    }
+}
+
+/*
+red: 'rgb(255, 99, 132)',
+orange: 'rgb(255, 159, 64)',
+yellow: 'rgb(255, 205, 86)',
+green: 'rgb(75, 192, 192)',
+blue: 'rgb(54, 162, 235)',
+purple: 'rgb(153, 102, 255)',
+grey: 'rgb(201, 203, 207)'
+*/

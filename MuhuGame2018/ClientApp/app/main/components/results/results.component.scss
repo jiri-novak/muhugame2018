@@ -1,0 +1,24 @@
+#table1 tr:nth-of-type(-n+3) td {
+    background-color: red;
+    color: black;
+}
+
+#table1 tr td {
+    background-color: white;
+    color: black;
+}
+
+#table1 thead th {
+    background-color: rgb(54, 162, 235);
+    color: black;
+}
+
+#table2 tr td {
+    background-color: white;
+    color: black;
+}
+
+#table2 thead th {
+    background-color: rgb(54, 162, 235);
+    color: black;
+}
