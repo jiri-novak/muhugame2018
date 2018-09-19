@@ -389,7 +389,7 @@ function getChartBData(all, stanoviste, typ) {
 }
 
 function getChartBonData(all, stanoviste, typ) {
-    var sums = all.map(x => x[stanoviste]).map(x => {
+    var sums = all.map(x => x[stanoviste]).filter(x => !(!x.n && !x.r && !x.a && !x.b)).map(x => {
         return {
             anoBezNapovedy: x.n == null && x[typ] != null,
             anoSNapovedou: x.n != null && x[typ] != null,
@@ -409,7 +409,7 @@ function getChartBonData(all, stanoviste, typ) {
 }
 
 function getChartFinalData(all, stanoviste, typ) {
-    var sums = all.map(x => x[stanoviste]).map(x => {
+    var sums = all.map(x => x[stanoviste]).filter(x => !(!x.n && !x.r && !x.a && !x.b)).map(x => {
         return {
             ano: x[typ] != null,
             ne: x[typ] == null
