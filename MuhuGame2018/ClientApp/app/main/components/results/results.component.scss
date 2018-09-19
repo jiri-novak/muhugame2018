@@ -1,24 +1,55 @@
+$borderColor: #3182bd;
+
+// TABLE
+table tr td {
+    background-color: transparent;
+    color: white;
+    border-left: 1px dotted  $borderColor;
+    border-bottom: 1px dotted  $borderColor;
+}
+
+table tr td:nth-of-type(-n+2) {
+    border-left: 0px dotted  $borderColor;
+    border-bottom: 0px dotted  $borderColor;
+}
+
+table thead th {
+    background-color: $borderColor;
+    color: black;
+    padding: 5px;
+}
+
+table tr td:first-of-type {
+    border-left: 2px double $borderColor;
+}
+
+table tr:last-of-type {
+    border-bottom: 2px double $borderColor;
+}
+
+table tr td:first-of-type {
+    border-left: 2px double $borderColor;
+}
+
+table thead th:last-of-type {
+    border-right: 2px double $borderColor;
+}
+
+table thead th:first-of-type {
+    border-left: 2px double $borderColor;
+}
+
+table tr td:last-of-type {
+    border-right: 2px double $borderColor;
+}
+
+// TABLE 1
 #table1 tr:nth-of-type(-n+3) td {
     background-color: red;
-    color: black;
+    color: white;
+    border-right: 1px dotted  $borderColor;
 }
 
-#table1 tr td {
-    background-color: white;
-    color: black;
-}
-
-#table1 thead th {
-    background-color: rgb(54, 162, 235);
-    color: black;
-}
-
-#table2 tr td {
-    background-color: white;
-    color: black;
-}
-
-#table2 thead th {
-    background-color: rgb(54, 162, 235);
-    color: black;
+#table1 tr td:nth-of-type(-n+2) {
+    border-right: 0px dotted  $borderColor;
 }
