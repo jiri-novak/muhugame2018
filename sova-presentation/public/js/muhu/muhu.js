@@ -392,43 +392,54 @@ function getChartBData(all, stanoviste, typ) {
 }
 
 function getChartBonData(all, stanoviste, typ) {
-    var sums = all.map(x => x[stanoviste]).filter(x => !(!x.n && !x.r && !x.a && !x.b)).map(x => {
+    var sums = all.map(x => x[stanoviste]).map(x => {
         return {
             anoBezNapovedy: x.n == null && x[typ] != null,
             anoSNapovedou: x.n != null && x[typ] != null,
-            neSNapovedou: x.n != null && x[typ] == null
+            neSNapovedou: x.n != null && x[typ] == null,
+            nevyzvedli: x.n == null && x[typ] == null
         }
     });
 
     var anoBezNapovedy = sums.map(x => x.anoBezNapovedy).reduce((total, num) => total + num);
     var anoSNapovedou = sums.map(x => x.anoSNapovedou).reduce((total, num) => total + num);
     var neSNapovedou = sums.map(x => x.neSNapovedou).reduce((total, num) => total + num);
+    var nevyzvedli = sums.map(x => x.nevyzvedli).reduce((total, num) => total + num);
 
     return [
         anoBezNapovedy,
         anoSNapovedou,
-        neSNapovedou
+        neSNapovedou,
+        nevyzvedli
     ];
 }
 
 function getChartFinalData(all, stanoviste, typ) {
-    var sums = all.map(x => x[stanoviste]).filter(x => !(!x.n && !x.r && !x.a && !x.b)).map(x => {
+    var sums = all.map(x => x[stanoviste]).map(x => {
         return {
-            ano: x[typ] != null,
-            ne: x[typ] == null
+            ano: x.n != null && x[typ] != null,
+            ne: x.n != null && x[typ] == null,
+            nevyzvedli: x.n == null && x[typ] == null
         }
     });
 
     var ano = sums.map(x => x.ano).reduce((total, num) => total + num);
     var ne = sums.map(x => x.ne).reduce((total, num) => total + num);
+    var nevyzvedli = sums.map(x => x.nevyzvedli).reduce((total, num) => total + num);
 
     return [
         ano,
-        ne
+        ne,
+        nevyzvedli
     ];
 }
 
 function createPieChartA(elementId, data) {
+    for (var i = 0; i < data.length; ++i) {
+        if (data[i] == 0)
+            data[i] = "";
+    }
+
     var config = {
         type: 'pie',
         data: {
@@ -438,15 +449,16 @@ function createPieChartA(elementId, data) {
                     window.chartColors.green,
                     window.chartColors.orange,
                     window.chartColors.yellow,
-                    window.chartColors.red
-                ],
-                label: 'Dataset 1'
+                    window.chartColors.red,
+                    window.chartColors.grey
+                ]
             }],
             labels: [
                 'Vyřešili bez nápovědy',
                 'Vyřešili s nápovědou',
                 'Vzali si řešení rovnou',
                 'Vzali si nápovědu i řešení',
+                'Nevyzvedli / nedokončili'
             ]
         },
         options: {
@@ -463,6 +475,11 @@ function createPieChartA(elementId, data) {
 }
 
 function createPieChartBon(elementId, data) {
+    for (var i = 0; i < data.length; ++i) {
+        if (data[i] == 0)
+            data[i] = "";
+    }
+
     var config = {
         type: 'pie',
         data: {
@@ -472,14 +489,14 @@ function createPieChartBon(elementId, data) {
                     window.chartColors.green,
                     window.chartColors.orange,
                     window.chartColors.yellow,
-                    window.chartColors.red
-                ],
-                label: 'Dataset 1'
+                    window.chartColors.grey
+                ]
             }],
             labels: [
                 'Vyřešili bez nápovědy',
                 'Vyřešili s nápovědou',
-                'Nevyřešili s nápovědou'
+                'Nevyřešili ani s nápovědou',
+                'Nevyzvedli / nedokončili'
             ]
         },
         options: {
@@ -496,6 +513,11 @@ function createPieChartBon(elementId, data) {
 }
 
 function createPieChartFinal(elementId, data) {
+    for (var i = 0; i < data.length; ++i) {
+        if (data[i] == 0)
+            data[i] = "";
+    }
+
     var config = {
         type: 'pie',
         data: {
@@ -503,13 +525,14 @@ function createPieChartFinal(elementId, data) {
                 data: data,
                 backgroundColor: [
                     window.chartColors.green,
-                    window.chartColors.red
-                ],
-                label: 'Dataset 1'
+                    window.chartColors.red,
+                    window.chartColors.grey
+                ]
             }],
             labels: [
                 'Vyřešili',
-                'Nevyřešili'
+                'Nevyřešili',
+                'Nevyzvedli / nedokončili'
             ]
         },
         options: {
@@ -526,6 +549,11 @@ function createPieChartFinal(elementId, data) {
 }
 
 function createPieChartB(elementId, data) {
+    for (var i = 0; i < data.length; ++i) {
+        if (data[i] == 0)
+            data[i] = "";
+    }
+
     var config = {
         type: 'pie',
         data: {
@@ -534,8 +562,7 @@ function createPieChartB(elementId, data) {
                 backgroundColor: [
                     window.chartColors.green,
                     window.chartColors.red
-                ],
-                label: 'Dataset 1'
+                ]
             }],
             labels: [
                 'Splnili',
@@ -969,7 +996,7 @@ function getColor(s) {
         return window.chartColors.green;
     else if (s == "N/A")
         return window.chartColors.grey;
-    else if (s == "NAP" || s == "NAP :-)")
+    else if (s == "NAP")
         return window.chartColors.yellow;
     else if (s == "NAP+RES")
         return window.chartColors.orange;
@@ -1002,13 +1029,13 @@ function getStringBon(data) {
         return "N/A";
     }
     else if (!!data.n && !!data.a) {
-        return "NAP :-)";
+        return "NAP";
     }
     else if (!data.n && !!data.a) {
         return "OK";
     }
     else if (!!data.n && !data.a) {
-        return "NAP :-(";
+        return "NAP ";
     }
 }
 
