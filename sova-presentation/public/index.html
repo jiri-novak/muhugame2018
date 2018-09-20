@@ -468,7 +468,7 @@
                         <tr>
                             <th>#.</th>
                             <th>Tým</th>
-                            <th>Čas</th>
+                            <th>Čas cílové SMS</th>
                             <th>Áčka</th>
                             <th>náp</th>
                             <th>řeš</th>
@@ -519,6 +519,13 @@
                     </tbody>
                 </table>
             </section>
+
+            <!-- <section>
+                <section data-state="chart-difficulty-1">
+                    <h3>Obtížnost úkolů</h3>
+                    <canvas class="stretch" id="chart-difficulty-1"></canvas>
+                </section>
+            </section> -->
 
             <section data-state="chart-final-1">
                 <h2>Děkujeme</h2>
@@ -623,6 +630,223 @@
                                         window.bonus3Chart = createPieChartBon('bonus3-chart', getChartBonData(teams, 's103', 'a'));
 
                                         window.bonus4Chart = createPieChartFinal('bonus4-chart', getChartFinalData(teams, 's104', 'a'));
+
+/*
+                                        var s001 = getChartAData(teams, 's001', 'a');
+                                        var s002 = getChartAData(teams, 's002', 'a');
+                                        var s002b = getChartBData(teams, 's002', 'b');
+                                        var s003 = getChartAData(teams, 's003', 'a');
+                                        var s003b = getChartBData(teams, 's003', 'b');
+                                        var s004 = getChartAData(teams, 's004', 'a');
+                                        var s004b = getChartBData(teams, 's004', 'b');
+                                        var s005 = getChartAData(teams, 's005', 'a');
+                                        var s005b = getChartBData(teams, 's005', 'b');
+                                        var s006 = getChartAData(teams, 's006', 'a');
+                                        var s006b = getChartBData(teams, 's006', 'b');
+                                        var s007 = getChartAData(teams, 's007', 'a');
+                                        var s007b = getChartBData(teams, 's007', 'b');
+                                        var s008 = getChartAData(teams, 's008', 'a');
+                                        var s008b = getChartBData(teams, 's008', 'b');
+                                        var s009 = getChartAData(teams, 's009', 'a');
+                                        var s009b = getChartBData(teams, 's009', 'b');
+                                        var s010 = getChartAData(teams, 's010', 'a');
+                                        var s010b = getChartBData(teams, 's010', 'b');
+                                        var s011 = getChartAData(teams, 's011', 'a');
+
+                                        var s011 = getChartAData(teams, 's011', 'a');
+                                        var s011 = getChartAData(teams, 's011', 'a');
+                                        var s011 = getChartAData(teams, 's011', 'a');
+                                        var s011 = getChartAData(teams, 's011', 'a');
+
+                                        window.difficulty1Chart = new Chart('chart-difficulty-1', {
+                                            type: 'bar',
+                                            data: {
+                                                labels: [
+                                                    "A1 - orienťák",
+                                                    "A2 - obrázková",
+                                                    "B2 - káry",
+                                                    "A3 - vlaková",
+                                                    "B3 - rozhledna selfie",
+                                                    "A4 - chemická",
+                                                    "B4 - komunikátor",
+                                                    "A5 - smyslová",
+                                                    "B5 - logik",
+                                                    "A6 - terče",
+                                                    "B6 - biatlon",
+                                                    "A7 - křížovka",
+                                                    "B7 - slackline",
+                                                    "A8 - vážící",
+                                                    "B8 - námořní bitva",
+                                                    "A9 - vysýpací",
+                                                    "B9 - pípáky",
+                                                    "A10 - digitálky",
+                                                    "B10 - lasery",
+                                                    "A11 - Křížová Hora"
+                                                ],
+                                                datasets: [
+                                                    {
+                                                        label: "Vyřešili bez nápovědy",
+                                                        data: [
+                                                            s001[0],
+                                                            s002[0],
+                                                            s002b[0],
+                                                            s003[0],
+                                                            s003b[0],
+                                                            s004[0],
+                                                            s004b[0],
+                                                            s005[0],
+                                                            s005b[0],
+                                                            s006[0],
+                                                            s006b[0],
+                                                            s007[0],
+                                                            s007b[0],
+                                                            s008[0],
+                                                            s008b[0],
+                                                            s009[0],
+                                                            s009b[0],
+                                                            s010[0],
+                                                            s010b[0],
+                                                            s011[0]
+                                                        ],
+                                                        backgroundColor: Samples.color(0)
+                                                    },
+                                                    {
+                                                        label: "Vyřešili s nápovědou",
+                                                        data: [
+                                                            s001[1],
+                                                            s002[1],
+                                                            s002b[1],
+                                                            s003[1],
+                                                            s003b[1],
+                                                            s004[1],
+                                                            s004b[1],
+                                                            s005[1],
+                                                            s005b[1],
+                                                            s006[1],
+                                                            s006b[1],
+                                                            s007[1],
+                                                            s007b[1],
+                                                            s008[1],
+                                                            s008b[1],
+                                                            s009[1],
+                                                            s009b[1],
+                                                            s010[1],
+                                                            s010b[1],
+                                                            s011[1]
+                                                        ],
+                                                        backgroundColor: Samples.color(1)
+                                                    },
+                                                    {
+                                                        label: "Vzali rovnou řešení",
+                                                        data: [
+                                                            s001[2],
+                                                            s002[2],
+                                                            s002b[2],
+                                                            s003[2],
+                                                            s003b[2],
+                                                            s004[2],
+                                                            s004b[2],
+                                                            s005[2],
+                                                            s005b[2],
+                                                            s006[2],
+                                                            s006b[2],
+                                                            s007[2],
+                                                            s007b[2],
+                                                            s008[2],
+                                                            s008b[2],
+                                                            s009[2],
+                                                            s009b[2],
+                                                            s010[2],
+                                                            s010b[2],
+                                                            s011[2]
+                                                        ],
+                                                        backgroundColor: Samples.color(2)
+                                                    },
+                                                    {
+                                                        label: "Nevyřešili s nápovědou",
+                                                        data: [
+                                                            s001[3],
+                                                            s002[3],
+                                                            s002b[3],
+                                                            s003[3],
+                                                            s003b[3],
+                                                            s004[3],
+                                                            s004b[3],
+                                                            s005[3],
+                                                            s005b[3],
+                                                            s006[3],
+                                                            s006b[3],
+                                                            s007[3],
+                                                            s007b[3],
+                                                            s008[3],
+                                                            s008b[3],
+                                                            s009[3],
+                                                            s009b[3],
+                                                            s010[3],
+                                                            s010b[3],
+                                                            s011[3]
+                                                        ],
+                                                        backgroundColor: Samples.color(3)
+                                                    },
+                                                    {
+                                                        label: "Nevyzvedli / nedokončili",
+                                                        data: [
+                                                            s001[4],
+                                                            s002[4],
+                                                            s002b[4],
+                                                            s003[4],
+                                                            s003b[4],
+                                                            s004[4],
+                                                            s004b[4],
+                                                            s005[4],
+                                                            s005b[4],
+                                                            s006[4],
+                                                            s006b[4],
+                                                            s007[4],
+                                                            s007b[4],
+                                                            s008[4],
+                                                            s008b[4],
+                                                            s009[4],
+                                                            s009b[4],
+                                                            s010[4],
+                                                            s010b[4],
+                                                            s011[4]
+                                                        ],
+                                                        backgroundColor: Samples.color(4)
+                                                    }
+                                                ]
+                                            },
+                                            options: {
+                                                plugins: {
+                                                    datalabels: {
+                                                        color: 'white',
+                                                        display: function (context) {
+                                                            return context.dataset.data[context.dataIndex] > 0;
+                                                        },
+                                                        font: {
+                                                            weight: 'bold'
+                                                        },
+                                                        formatter: Math.round
+                                                    }
+                                                },
+                                                legend: {
+                                                    display: true,
+                                                    position: 'bottom'
+                                                },
+                                                scales: {
+                                                    xAxes: [{
+                                                        stacked: true,
+                                                        ticks: {
+                                                            autoSkip: false
+                                                        }
+                                                    }],
+                                                    yAxes: [{
+                                                        stacked: true
+                                                    }]
+                                                }
+                                            }
+                                        });
+                                        */
                                     });
                                 });
                             });
@@ -640,7 +864,59 @@
                 data.push(0);
             }
 
-            window.final1Chart = createFinalChart('chart-final-1', labels, data)
+            window.final1Chart = new Chart('chart-final-1', {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        backgroundColor: Samples.color(0),
+                        datalabels: {
+                            align: 'center',
+                            anchor: 'center',
+                            rotation: -90
+                        },
+                        data: data
+                    }]
+                },
+                options: {
+                    plugins: {
+                        datalabels: {
+                            color: 'white',
+                            display: function (context) {
+                                return context.dataset.data[context.dataIndex] > 0;
+                            },
+                            font: {
+                                weight: 'bold'
+                            },
+                            formatter: Math.round
+                        }
+                    },
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        xAxes: [{
+                            maxBarThickness: 20,
+                            categoryPercentage: 1.0,
+                            barPercentage: 1.0,
+                            stacked: true,
+                            ticks: {
+                                autoSkip: false,
+                                maxRotation: 90,
+                                minRotation: 90
+                            }
+                        }],
+                        yAxes: [{
+                            stacked: true,
+                            ticks: {
+                                display: false,
+                                max: 140,
+                                min: 0
+                            }
+                        }]
+                    }
+                }
+            });
         });
 
         Reveal.addEventListener('slidechanged', function (event) {

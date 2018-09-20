@@ -354,7 +354,8 @@ function getChartAData(all, stanoviste, typ) {
             anoBezNapovedy: x.n == null && x.r == null && x[typ] != null,
             anoSNapovedou: x.n != null && x.r == null && x[typ] != null,
             napovedaIReseni: x.n != null && x.r != null && x[typ] != null,
-            reseniRovnou: x.n == null && x.r != null && x[typ] != null
+            reseniRovnou: x.n == null && x.r != null && x[typ] != null,
+            nevyzvedli: x.n == null && x.r == null && x[typ] == null
         }
     });
 
@@ -362,12 +363,14 @@ function getChartAData(all, stanoviste, typ) {
     var anoSNapovedou = sums.map(x => x.anoSNapovedou).reduce((total, num) => total + num);
     var napovedaIReseni = sums.map(x => x.napovedaIReseni).reduce((total, num) => total + num);
     var reseniRovnou = sums.map(x => x.reseniRovnou).reduce((total, num) => total + num);
+    var nevyzvedli = sums.map(x => x.nevyzvedli).reduce((total, num) => total + num);
 
     return [
         anoBezNapovedy,
         anoSNapovedou,
         reseniRovnou,
-        napovedaIReseni
+        napovedaIReseni,
+        nevyzvedli
     ];
 }
 
@@ -552,62 +555,6 @@ function createPieChartB(elementId, data) {
     return new Chart(ctx, config);
 }
 
-function createFinalChart(elementId, labels, data) {
-    return new Chart(elementId, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                backgroundColor: Samples.color(0),
-                datalabels: {
-                    align: 'center',
-                    anchor: 'center',
-                    rotation: -90
-                },
-                data: data
-            }]
-        },
-        options: {
-            plugins: {
-                datalabels: {
-                    color: 'white',
-                    display: function (context) {
-                        return context.dataset.data[context.dataIndex] > 0;
-                    },
-                    font: {
-                        weight: 'bold'
-                    },
-                    formatter: Math.round
-                }
-            },
-            legend: {
-                display: false
-            },
-            scales: {
-                xAxes: [{
-                    maxBarThickness: 20,
-                    categoryPercentage: 1.0,
-                    barPercentage: 1.0,
-                    stacked: true,
-                    ticks: {
-                        autoSkip: false,
-                        maxRotation: 90,
-                        minRotation: 90
-                    }
-                }],
-                yAxes: [{
-                    stacked: true,
-                    ticks: {
-                        display: false,
-                        max: 140,
-                        min: 0
-                    }
-                }]
-            }
-        }
-    });
-}
-
 function finalChartAddData(chart, index, label, data) {
     chart.data.labels[index] = label;
     chart.data.datasets.forEach(function (dataset, i) {
@@ -650,6 +597,14 @@ function getDateDiffMs(end, startTime) {
     return duration.asMilliseconds();
 }
 
+function getDateDiffMs2(end) {
+    if (end == null) {
+        return "n/a"
+    }
+
+    return moment(end).valueOf();
+}
+
 function getDateDiffInMinutes(now, then) {
     if (then == null || now == null) {
         return null
@@ -679,7 +634,9 @@ function mergeAll(prolog, start, finish, aCodes, bCodes, hints, answers) {
         var n = hints.find(x => x.userCode == userCode);
         var r = answers.find(x => x.userCode == userCode);
         var time = getDateDiffString(finishTime, startTime);
+        var time2 = moment(finishTime).format("HH:mm:ss")
         var timeMs = getDateDiffMs(finishTime, startTime);
+        var timeMs2 = getDateDiffMs2(finishTime);
 
         var entry = {
             userId: userId,
@@ -689,7 +646,9 @@ function mergeAll(prolog, start, finish, aCodes, bCodes, hints, answers) {
             startTime: startTime,
             finishTime: finishTime,
             time: time,
+            time2: time2,
             timeMs: timeMs,
+            timeMs2: timeMs2,
             s001: {
                 a: a == null ? null : a.s001,
                 b: b == null ? null : b.s001,
@@ -849,7 +808,7 @@ function mergeAll(prolog, start, finish, aCodes, bCodes, hints, answers) {
         //     return 0;
         // }
         return orderDesc(a.points_all, b.points_all)
-            || orderAsc(a.timeMs, b.timeMs)
+            || orderAsc(a.timeMs2, b.timeMs2)
     });
 
     return all;
@@ -932,7 +891,7 @@ function statsAsHtml(data) {
         }
         tableData.push("<td align='center'>" + (i + 1) + ".</td>")
         tableData.push("<td>" + data[i].userName + "</td>")
-        tableData.push("<td align='right'>" + data[i].time + "</td>")
+        tableData.push("<td align='right'>" + data[i].time2 + "</td>")
         tableData.push("<td align='right'>" + data[i].points_a + "</td>")
         tableData.push("<td align='right'>" + data[i].points_n + "x</td>")
         tableData.push("<td align='right'>" + data[i].points_r + "x</td>")
@@ -952,7 +911,6 @@ function statsAsHtml(data) {
     }
 
     var tableDataString = tableData.join("");
-    console.log(tableDataString);
     return tableDataString;
 }
 
@@ -1003,7 +961,6 @@ function statsStanAsHtml(data) {
     }
 
     var tableDataString = tableData.join("");
-    console.log(tableDataString);
     return tableDataString;
 }
 
