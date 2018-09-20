@@ -467,29 +467,35 @@
             </section>
 
             <section>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>#.</th>
-                            <th>Tým</th>
-                            <th>Čas cílové SMS</th>
-                            <th>Áčka</th>
-                            <th>náp</th>
-                            <th>řeš</th>
-                            <th>Penalizace (náp + řeš)</th>
-                            <th>Béčka</th>
-                            <th>Bonus 1</th>
-                            <th>Bonus 2</th>
-                            <th>Bonus 3</th>
-                            <th>Bonus 4</th>
-                            <th>Penalizace (čas)</th>
-                            <th>Penalizace (obálky)</th>
-                            <th>Body</th>
-                        </tr>
-                    </thead>
-                    <tbody id="results-all">
-                    </tbody>
-                </table>
+                <section id="results-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th align="right">#.</th>
+                                <th>Tým</th>
+                                <th align="right">Čas cílové SMS</th>
+                                <th align="right">Áčka</th>
+                                <th align="right">náp</th>
+                                <th align="right">řeš</th>
+                                <th align="right">Penalizace<br />(náp + řeš)</th>
+                                <th align="right">Béčka</th>
+                                <th align="right">Bonus 1</th>
+                                <th align="right">Bonus 2</th>
+                                <th align="right">Bonus 3</th>
+                                <th align="right">Bonus 4</th>
+                                <th align="right">Penalizace<br />(čas)</th>
+                                <th align="right">Penalizace<br />(obálky)</th>
+                                <th align="right">Body</th>
+                            </tr>
+                        </thead>
+                        <tbody id="results-all">
+                        </tbody>
+                    </table>
+                </section>
+                <section id="chart-final-details">
+                    <!-- <h3>Výsledné pořadí - detail</h3> -->
+                    <canvas class="stretch" id="chart-final-2"></canvas>
+                </section>
             </section>
 
             <section>
@@ -522,21 +528,21 @@
             </section>
 
             <section>
-                <section data-state="chart-difficulty-1">
+                <section id="difficulty-a">
                     <h3>Obtížnost A úkolů</h3>
                     <canvas class="stretch" id="chart-difficulty-1"></canvas>
                 </section>
-                <section data-state="chart-difficulty-2">
+                <section id="difficulty-b">
                     <h3>Obtížnost B úkolů</h3>
                     <canvas class="stretch" id="chart-difficulty-2"></canvas>
                 </section>
-                <section data-state="chart-difficulty-3">
+                <section id="difficulty-bonus">
                     <h3>Obtížnost Bonusů</h3>
                     <canvas class="stretch" id="chart-difficulty-3"></canvas>
                 </section>
             </section>
 
-            <section data-state="chart-final-1">
+            <section>
                 <h2>Děkujeme</h2>
                 <h3>Lamy</h3>
             </section>
@@ -601,6 +607,87 @@
                                         $('#results-all').append(statsAsHtml(teams));
                                         $('#results-stan').append(statsStanAsHtml(teams));
 
+                                        // final 2 chart
+                                        var i = 0;
+                                        window.final2Chart = new Chart('chart-final-2', {
+                                            type: 'bar',
+                                            data: {
+                                                labels: teams.map(x => x.userName + (++i).toString().padStart(5, ' ') + '.'),
+                                                datasets: [
+                                                    {
+                                                        label: "A-kódy",
+                                                        data: teams.map(x => x.points_a),
+                                                        backgroundColor: Samples.color(0)
+                                                    },
+                                                    {
+                                                        label: "B-kódy",
+                                                        data: teams.map(x => x.points_b),
+                                                        backgroundColor: Samples.color(1)
+                                                    },
+                                                    {
+                                                        label: "Nápovědy + Řešení",
+                                                        data: teams.map(x => x.points_a_real - x.points_a),
+                                                        backgroundColor: Samples.color(2)
+                                                    },
+                                                    {
+                                                        label: "Bonusy",
+                                                        data: teams.map(x => x.points_b1 + x.points_b2 + x.points_b3),
+                                                        backgroundColor: Samples.color(3)
+                                                    },
+                                                    {
+                                                        label: "Finální úloha",
+                                                        data: teams.map(x => x.points_b4),
+                                                        backgroundColor: Samples.color(4)
+                                                    },
+                                                    {
+                                                        label: "Penalizace - čas",
+                                                        data: teams.map(x => x.penaltyTime),
+                                                        backgroundColor: Samples.color(5)
+                                                    },
+                                                    {
+                                                        label: "Penalizace - obálky",
+                                                        data: teams.map(x => x.penaltyEnvelopes),
+                                                        backgroundColor: Samples.color(6)
+                                                    },
+                                                ]
+                                            },
+                                            options: {
+                                                plugins: {
+                                                    datalabels: {
+                                                        color: 'black',
+                                                        display: function (context) {
+                                                            return Math.abs(context.dataset.data[context.dataIndex]) != 0;
+                                                        },
+                                                        font: {
+                                                            weight: 'normal',
+                                                            size: 9
+                                                        },
+                                                        formatter: Math.round
+                                                    }
+                                                },
+                                                legend: {
+                                                    display: true,
+                                                    position: 'top'
+                                                },
+                                                scales: {
+                                                    xAxes: [{
+                                                        stacked: true,
+                                                        ticks: {
+                                                            autoSkip: false,
+                                                            maxRotation: 90,
+                                                            minRotation: 90
+                                                        }
+                                                    }],
+                                                    yAxes: [{
+                                                        stacked: true,
+                                                        ticks: {
+                                                            display: false
+                                                        }
+                                                    }]
+                                                }
+                                            }
+                                        });
+
                                         // spocitej statistiky uspesnosti stanovist
                                         window.a1Chart = createPieChartA('a1-chart', getChartAData(teams, 's001', 'a'));
 
@@ -633,7 +720,7 @@
 
                                         window.a11Chart = createPieChartA('a11-chart', getChartAData(teams, 's011', 'a'));
 
-                                        window.bonus0Chart = createPieChartFinal('bonus0-chart', [ 0, 0, teams.length ]);
+                                        window.bonus0Chart = createPieChartFinal('bonus0-chart', [0, 0, teams.length]);
                                         window.bonus1Chart = createPieChartBon('bonus1-chart', getChartBonData(teams, 's101', 'a'));
                                         window.bonus2Chart = createPieChartBon('bonus2-chart', getChartBonData(teams, 's102', 'a'));
                                         window.bonus3Chart = createPieChartBon('bonus3-chart', getChartBonData(teams, 's103', 'a'));
@@ -917,7 +1004,6 @@
                                                 }
                                             }
                                         });
-
                                     });
                                 });
                             });
@@ -998,7 +1084,7 @@
                 Reveal.addKeyBinding(keyDown, function () {
                     if (i > 0) {
                         --i;
-                        finalChartAddData(window.final1Chart, i, teams[i].userName + ' | ' + (i + 1).toString().padStart(5, ' ') + '.', [teams[i].points_all]);
+                        finalChartAddData(window.final1Chart, i, teams[i].userName + (i + 1).toString().padStart(5, ' ') + '.', [teams[i].points_all]);
                     }
                 });
 

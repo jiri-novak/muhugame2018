@@ -32,13 +32,13 @@ module.exports = {
                 include: [clientAppRoot],
                 loaders: ['awesome-typescript-loader?doTypeCheck=false&useBabel=true&useWebpackText=true ', 'angular2-template-loader', 'angular-router-loader']
             },
-            // html loader
-            {
-                test: /\.html$/,
-                loader: 'raw-loader',
-                include: [clientAppRoot],
-                exclude: [Helpers.root('ClientApp/index.html')]
-            },
+            // // html loader
+            // {
+            //     test: /\.html$/,
+            //     loader: 'raw-loader',
+            //     include: [clientAppRoot],
+            //     exclude: [Helpers.root('ClientApp/index.html')]
+            // },
             // static assets
             {
                 test: /\.(png|jpe?g|gif|svg|woff|woff2|otf|ttf|eot|ico)$/,
