@@ -4,8 +4,26 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-lg-12">
-        <h3></h3>
-    </div>
-</div>
+<table class="table borderless" [class.table-hover]="!isReadOnly">
+    <thead>
+        <tr>
+            <th class="text-center" style="padding-right: 10px">#</th>
+            <th>#.</th>
+            <th>STANOVIŠTĚ</th>
+            <th>ZADÁNÍ</th>
+            <th>NÁPOVĚDA</th>
+            <th>ŘEŠENÍ</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let user of users let i = index" (click)="setClickedRow(i)" [class.active]="!isReadOnly && i == selectedRow"
+            [ngClass]="{ 'limit': user.index == appSettings.maxTeams }">
+            <td class="text-center" style="padding-right: 10px" [ngClass]="{ 'green': !!user.index && !user.index && user.index <= appSettings.maxTeams, 'red': !!user.index && user.index > appSettings.maxTeams }">{{user.index}}</td>
+            <td [ngClass]="{ 'green': user.paid, 'quited': user.quited }">{{user.name}}</td>
+            <td [ngClass]="{ 'quited': user.quited }" *ngIf="!simplified">{{user.members | arrayLength }}</td>
+            <td [ngClass]="{ 'quited': user.quited }" *ngIf="!simplified">{{user.members | memberNames }}</td>
+            <td [ngClass]="{ 'quited': user.quited }" *ngIf="!simplified">{{user.registrationDate | date:'dd.MM.yyyy HH:mm:ss' }}</td>
+            <td [ngClass]="{ 'quited': user.quited }" class="text-center" [class.green]="user.paid">{{user.paid | questionableBoolean}}</td>
+        </tr>
+    </tbody>
+</table>
