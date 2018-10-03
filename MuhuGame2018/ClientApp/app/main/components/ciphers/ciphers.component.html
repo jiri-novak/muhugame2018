@@ -4,26 +4,145 @@
     </div>
 </div>
 
-<table class="table borderless" [class.table-hover]="!isReadOnly">
+<table class="table borderless">
     <thead>
         <tr>
             <th class="text-center" style="padding-right: 10px">#</th>
-            <th>#.</th>
             <th>STANOVIŠTĚ</th>
+            <th>POPIS</th>
             <th>ZADÁNÍ</th>
             <th>NÁPOVĚDA</th>
             <th>ŘEŠENÍ</th>
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let user of users let i = index" (click)="setClickedRow(i)" [class.active]="!isReadOnly && i == selectedRow"
-            [ngClass]="{ 'limit': user.index == appSettings.maxTeams }">
-            <td class="text-center" style="padding-right: 10px" [ngClass]="{ 'green': !!user.index && !user.index && user.index <= appSettings.maxTeams, 'red': !!user.index && user.index > appSettings.maxTeams }">{{user.index}}</td>
-            <td [ngClass]="{ 'green': user.paid, 'quited': user.quited }">{{user.name}}</td>
-            <td [ngClass]="{ 'quited': user.quited }" *ngIf="!simplified">{{user.members | arrayLength }}</td>
-            <td [ngClass]="{ 'quited': user.quited }" *ngIf="!simplified">{{user.members | memberNames }}</td>
-            <td [ngClass]="{ 'quited': user.quited }" *ngIf="!simplified">{{user.registrationDate | date:'dd.MM.yyyy HH:mm:ss' }}</td>
-            <td [ngClass]="{ 'quited': user.quited }" class="text-center" [class.green]="user.paid">{{user.paid | questionableBoolean}}</td>
+        <tr>
+            <td class="text-center" style="padding-right: 10px">1.</td>
+            <td>Jiřetín pod Jedlovou</td>
+            <td>Orienťácká</td>
+            <td><a href="assets/images/ciphers/a01.pdf" target="_blank">Šifra 1</a></td>
+            <td><span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="ORG1: Uz jsi se zorientoval v te anomalni mape? ORG2: Ano, nasel jsem par slov, ale je narocne koukat na vychod, jit na zapad a cist uprostred."></span></td>
+            <td><a href="assets/images/ciphers/a01-reseni.pdf" target="_blank">Řešení 1</a></td>
+        </tr>
+        <tr>
+            <td class="text-center" style="padding-right: 10px">2.</td>
+            <td>Adrenalin park</td>
+            <td>Obrázková</td>
+            <td><a href="assets/images/ciphers/a02.pdf" target="_blank">Šifra 2</a></td>
+            <td><span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="ORG1: Uz mas ta slova pro karticky? ORG2: Uz pro ne mam i obrazky."></span></td>
+            <td><a href="assets/images/ciphers/a02-reseni.pdf" target="_blank">Řešení 2</a></td>
+        </tr>
+        <tr>
+            <td class="text-center" style="padding-right: 10px">3.</td>
+            <td>Jedlová - rozhledna</td>
+            <td>Vlaková</td>
+            <td><a href="assets/images/ciphers/a03.pdf" target="_blank">Šifra 3</a></td>
+            <td><span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="ORG1: Tak co, uz jsi vyzvedl ty ruzice? ORG2: Jeste ne, trmacim se beckem pres Penkavci vrch."></span></td>
+            <td><a href="assets/images/ciphers/a03-reseni.pdf" target="_blank">Řešení 3</a></td>
+        </tr>
+        <tr>
+            <td class="text-center" style="padding-right: 10px">4.</td>
+            <td>Malý Stožec</td>
+            <td>Chemická</td>
+            <td><a href="assets/images/ciphers/a04.pdf" target="_blank">Šifra 4</a></td>
+            <td><span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="ORG1: Je treba najit tu co chybi. ORG2: A na vsech sousednich hranach musi byt to stejne."></span></td>
+            <td><a href="assets/images/ciphers/a04-reseni.pdf" target="_blank">Řešení 4</a></td>
+        </tr>
+        <tr>
+            <td class="text-center" style="padding-right: 10px">5.</td>
+            <td>Malý Semerink</td>
+            <td>Smyslová</td>
+            <td><a href="assets/images/ciphers/a05.pdf" target="_blank">Šifra 5</a></td>
+            <td><span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="ORG1: A smyslu je prave pet. ORG2: Ted si je jeste seradit a kouknout do pomucek."></span></td>
+            <td><a href="assets/images/ciphers/a05-reseni.pdf" target="_blank">Řešení 5</a></td>
+        </tr>
+        <tr>
+            <td class="text-center" style="padding-right: 10px">6.</td>
+            <td>Střelecký terč</td>
+            <td>Terče</td>
+            <td><a href="assets/images/ciphers/a06.pdf" target="_blank">Šifra 6</a></td>
+            <td><span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="ORG1: Nemuzu se furt trefit. ORG2: To je tim, ze nestrilis slepejma."></span></td>
+            <td><a href="assets/images/ciphers/a06-reseni.pdf" target="_blank">Řešení 6</a></td>
+        </tr>
+        <tr>
+            <td class="text-center" style="padding-right: 10px">7.</td>
+            <td>Lesní divadlo</td>
+            <td>Křížovka</td>
+            <td><a href="assets/images/ciphers/a07.pdf" target="_blank">Šifra 7</a></td>
+            <td><span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="ORG1: A v tajence jim bude porad vychazet to same. ORG2: Takze jim dojde, ze musi pocitat i s legendou."></span></td>
+            <td><a href="assets/images/ciphers/a07-reseni.pdf" target="_blank">Řešení 7</a></td>
+        </tr>
+        <tr>
+            <td class="text-center" style="padding-right: 10px">8.</td>
+            <td>Tomiškův rybník</td>
+            <td>Vážící</td>
+            <td><a href="assets/images/ciphers/a08.pdf" target="_blank">Šifra 8</a></td>
+            <td><span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="ORG1: A kazde minislovo musi peclive zvazit. ORG2: Berou pismeno, ktere bude nejniz."></span></td>
+            <td><a href="assets/images/ciphers/a08-reseni.pdf" target="_blank">Řešení 8</a></td>
+        </tr>
+        <tr>
+            <td class="text-center" style="padding-right: 10px">9.</td>
+            <td>Chřibská přehrada</td>
+            <td>Vysýpací</td>
+            <td><a href="assets/images/ciphers/a09.pdf" target="_blank">Šifra 9</a></td>
+            <td><span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="ORG1: Na zacatku je to stabilni. ORG2: A pak s tim zacnou otacet po smeru hodin vzdy o sestinu a neco z toho vypadne."></span></td>
+            <td><a href="assets/images/ciphers/a09-reseni.pdf" target="_blank">Řešení 9</a></td>
+        </tr>
+        <tr>
+            <td class="text-center" style="padding-right: 10px">10.</td>
+            <td>Jedlová - osada</td>
+            <td>Digitálky</td>
+            <td><a href="assets/images/ciphers/a10.pdf" target="_blank">Šifra 10</a></td>
+            <td><span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="ORG1: Kolik je hodin? ORG2: Ty jo, ty hodinky nic neukazujou."></span></td>
+            <td><a href="assets/images/ciphers/a10-reseni.pdf" target="_blank">Řešení 10</a></td>
+        </tr>
+        <tr>
+            <td class="text-center" style="padding-right: 10px">11.</td>
+            <td>Křížová Hora</td>
+            <td>Postupový kód</td>
+            <td><a href="assets/images/ciphers/a11.pdf" target="_blank">Šifra 11</a></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="text-center" style="padding-right: 10px">B0.</td>
+            <td>Bonus 0</td>
+            <td>Puzzle</td>
+            <td><a href="assets/images/ciphers/b00.pdf" target="_blank">Bonus 0</a></td>
+            <td></td>
+            <td><a href="assets/images/ciphers/b00-reseni.pdf" target="_blank">Řešení bonus 0</a></td>
+        </tr>
+        <tr>
+            <td class="text-center" style="padding-right: 10px">B1.</td>
+            <td>Bonus 1</td>
+            <td>Slepá včela</td>
+            <td><a href="assets/images/ciphers/b01.pdf" target="_blank">Bonus 1</a></td>
+            <td><span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="ORG1: Nakresli si vceli mrizku a najdou v ni vsechna slepa pismena. ORG2: A cara z nich vybere tajenku."></span></td>
+            <td><a href="assets/images/ciphers/b01-reseni.pdf" target="_blank">Řešení bonus 1</a></td>
+        </tr>
+        <tr>
+            <td class="text-center" style="padding-right: 10px">B2.</td>
+            <td>Bonus 2</td>
+            <td>Praporky</td>
+            <td><a href="assets/images/ciphers/b02.pdf" target="_blank">Bonus 2</a></td>
+            <td><span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="ORG1: Velky odpovida zacatku, maly konci, s natocenim pomuze poskladat si je do mrizky od slepe vcely. ORG2: A zacit od tech jednoznacnych."></span></td>
+            <td><a href="assets/images/ciphers/b02-reseni.pdf" target="_blank">Řešení bonus 2</a></td>
+        </tr>
+        <tr>
+            <td class="text-center" style="padding-right: 10px">B3.</td>
+            <td>Bonus 3</td>
+            <td>Barvy</td>
+            <td><a href="assets/images/ciphers/b03.pdf" target="_blank">Bonus 3</a></td>
+            <td><span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="ORG1: Vezmeme sest barev misto praporku podle slov na okrajich vceli plochy. ORG2: Takze aspon nejaka budou urcite znat."></span></td>
+            <td><a href="assets/images/ciphers/b03-reseni.pdf" target="_blank">Řešení bonus 3</a></td>
+        </tr>
+        <tr>
+            <td class="text-center" style="padding-right: 10px">B4.</td>
+            <td>Bonus 4</td>
+            <td>Finální úloha</td>
+            <td><a href="assets/images/ciphers/finalni.pdf" target="_blank">Bonus 4</a></td>
+            <td><span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="Finalni uloha je na miste 50.8691500, 14.5793900. Reknete stalkerovi heslo: 'MRCHOZROUT'."></span></td>
+            <td><a href="assets/images/ciphers/finalni-reseni.pdf" target="_blank">Řešení bonus 4</a></td>
         </tr>
     </tbody>
 </table>
